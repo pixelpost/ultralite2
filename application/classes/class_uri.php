@@ -61,12 +61,18 @@ class Uri
 	 * @param string $key 
 	 * @return bool|string FALSE if key is not found, the string result if the key is found.
 	 */
-	public static function get($key)
+	public static function get($key=null)
 	{
+		if (empty($key))
+		{
+			return self::$parameters;
+		}
+		
 		if(array_key_exists($key, self::$parameters))
 		{
 			return self::$parameters[$key];
 		}
+		
 		return false;
 	}
 
