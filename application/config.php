@@ -15,22 +15,22 @@
 return array (
   'database' => 
   array (
-    'host' => 'localhost',
-    'username' => 'root',
+    'host' => '',
+    'username' => '',
     'password' => '',
-    'database' => 'ultralite',
+    'database' => 'pixelpost.sqlite3',
     'prefix' => '',
-    'sqlite' => './application/pixelpost.sqlite3',
     'adapter' => 'sqlite',
   ),
   'site_name' => 'My Ultralite Photoblog',
   'site_description' => 'Guess what, it\'s open source, and it\'s ultralite!',
   'copyright' => '(c) 2009 Pixelpost',
-  'url' => 'http://localhost/ultralite/',
+  'url' => 'http://localhost/ultralite2/',
   'email' => 'user@domain.com',
-  'locale' => 'EN',
-  'theme' => 'greyspace_neue',
-  'posts_per_page' => 5,
+  'language' => 'en',
+  'theme' => 'simple',
+  // 'filter' => 'markdown',
+  'per_page' => 5,
   'feed_items' => 5,
   'feed_pagination' => true,
   'timezone' => 'America/Chicago',
@@ -45,26 +45,8 @@ return array (
     // 6 => 'category',
     // 7 => 'tag',
   ),
-  'default_comment_status' => 'denied',
-  'allowed_comment_html' => 
-  array (
-    0 => 'strong',
-    1 => 'em',
-    2 => 'blockquote',
-    3 => 'code',
-    4 => 'pre',
-    5 => 'a',
-  ),
-  'logging' => 
-  array (
-    'log_handler' => 'file',
-    'log_file' => 'application/pixelpost.log',
-    'log_level' => 999,
-  ),
   'default_controller' => 'Post',
   'default_action' => 'indexAction',
-  'error_controller' => 'Error',
-  'static_controller' => 'Static',
 )
 
 ?>
