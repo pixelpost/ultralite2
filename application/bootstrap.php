@@ -27,8 +27,10 @@ Uri::getInstance();
 
 // var_dump(Uri::$parameters);
 
+
 /**
  * File Scanner
+ * @todo Cache $files array for optimal speed
  */
 $scan = array();
 
@@ -56,7 +58,6 @@ foreach ($scan as $section => $dirs) {
 
 
 var_dump($files);
-
 
 /**
  * 
@@ -94,3 +95,24 @@ include $page;
 
 var_dump($page);
 
+
+/**
+ * Autoload Class
+ */
+function autoload_class($class_name)
+{
+	global $files;
+
+	$name = strtolower('class_'.$class_name);
+	
+	if (array_key_exists($name,$files['class']))
+	{
+		require_once $files['class'][$name];
+	}
+}
+spl_autoload_register('autoload_class');
+
+
+// $helper = new Helper;
+
+var_dump(Helper::entities('Blast<Tag>Over'));
