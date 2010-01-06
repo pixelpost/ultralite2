@@ -6,7 +6,7 @@
 class Helper
 {
 	
-	function __construct()
+	private function __construct()
 	{
 		# code...
 	}
@@ -19,6 +19,11 @@ class Helper
 	static function entities($value='')
 	{
 		return htmlentities($value,ENT_QUOTES,'UTF-8');
+	}
+	
+	static function jsescape($value='')
+	{
+		return addcslashes($value,"\\\'&\n\r\t"); 
 	}
 	
 	static function isactive($value='')

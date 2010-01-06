@@ -14,16 +14,14 @@ class Loader
 	
 	public static $files = array();
 
-	private static $instance = null;
+	private static $instance;
 
 
-	public static function getInstance()
+	public static function & getInstance()
 	{
- 		if(is_null(self::$instance))
- 		{
- 			self::$instance = new Loader;
- 		}
-		return self::$instance;
+		static $instance = null;
+		
+		return $instance = (empty($instance)) ? new self() : $instance;
 	}
 
 
@@ -47,6 +45,8 @@ class Loader
 
 	public static function scan()
 	{
+		self::getInstance();
+		
 		self::$files = array();
 		
 		foreach (self::$paths as $type => $paths)
@@ -78,6 +78,8 @@ class Loader
 	
 	public static function exists($type,$name)
 	{
+		self::getInstance();
+		
 		if (array_key_exists($name, self::$files[$type] ))
 			return self::$files[$type][$name];
 		else
@@ -86,6 +88,7 @@ class Loader
 	
 	public static function find($type,$names=null)
 	{
+		self::getInstance();
 		
 		if (!array_key_exists($type,self::$files)) 
 			return false;
@@ -117,16 +120,25 @@ class Loader
 	
 	public static function load($file)
 	{
+		if (!file_exists($file))
+			return false;
+			
 		return include $file;
 	}
 	
 	public static function autoload($class_name)
 	{
+		self::getInstance();
 		
 		$type = 'class';
 		$name = strtolower($type.'_'.$class_name);
 		
-		return self::exists($type,$name);
+		// If the scanner hasn't run yet, we can still include the core classes
+		if (empty(self::$files) && self::load(APPPATH.'classes/'.$name.'.php'))
+		 	return true;
+		
+		return self::load(self::exists($type,$name));
+		
 	}
 
 } //endclass

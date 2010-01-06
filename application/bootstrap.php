@@ -18,17 +18,14 @@ define('CONTENTPATH', realpath(dirname(__FILE__).'/../content').'/');
 
 // var_dump(APPPATH,CACHEPATH,CONTENTPATH);
 
-require_once 'classes/class_uri.php';
-
-require_once 'classes/class_loader.php';
-
-Uri::getInstance();
-
-Loader::getInstance();
-Loader::scan();
 
 // Initialize Autoloader
+require_once 'classes/class_loader.php';
 spl_autoload_register(array('Loader','autoload'));
+
+
+// Search directories:
+Loader::scan();
 
 
 $controller = Loader::find('controller');

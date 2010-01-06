@@ -10,7 +10,7 @@
  * @author Alex Suraci and individual contributors
  * @author Jay Williams
  */
-class Pixelpost_Config
+class Config
 {
 	
 	/**

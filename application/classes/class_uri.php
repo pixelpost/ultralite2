@@ -17,18 +17,15 @@ class Uri
 	public static $clean_url = false;
 
 
-	private static $instance = null;
+	private static $instance;
 
 
-	public static function getInstance()
+	public static function & getInstance()
 	{
- 		if(is_null(self::$instance))
- 		{
- 			self::$instance = new Uri;
- 		}
-		return self::$instance;
+		static $instance = null;
+		
+		return $instance = (empty($instance)) ? new self() : $instance;
 	}
-
 
 	private function __construct()
 	{
@@ -63,6 +60,8 @@ class Uri
 	 */
 	public static function get($key=null)
 	{
+		self::getInstance();
+		
 		if (empty($key))
 		{
 			return self::$parameters;
@@ -85,6 +84,8 @@ class Uri
 	 */
 	public static function total()
 	{
+		self::getInstance();
+		
 		return count(self::$parameters);
 	}
 	
@@ -98,6 +99,8 @@ class Uri
 	 */
 	public static function create($uri=null)
 	{
+		self::getInstance();
+		
 		$output = '';
 		
 		if(!empty($uri))
