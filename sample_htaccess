@@ -1,5 +1,5 @@
 ######### Ultralite .htaccess Code
-# Generated on: January 3, 2010
+# Generated on: January 6, 2010
 # 
 # Rename this file to ".htaccess" if you wish to use clean URLs.
 
@@ -14,12 +14,11 @@ RewriteEngine On
 RewriteBase /ultralite2/
 
 # Secure sensitive directores and filetypes
-RewriteRule (application|cache)/.*$ - [F,L]
-RewriteRule \.(sqlite3|ini|db|phtml|htaccess)$ - [F,L]
+RewriteRule (application|cache)/.*|content/.*\.php|\.(sqlite3|ini|db|htaccess)$ - [F,L]
 
 # Clean url rewriting
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)$ index.php?mod_rewrite=true&$1 [L,QSA]
+RewriteRule ^(.*)$ index.php?clean_url=true&uri=$1 [L,QSA]
 
 </IfModule>
