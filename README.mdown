@@ -6,14 +6,18 @@ The second generation core framework for Pixelpost.
 Requirements
 ------------
 
-* PHP 5.2
-* SQLite or mySQL
+* Web Server
+	* Optimally with rewrite support such as Apache.
+* PHP 5.2+
+* Database
+	* SQLite 3 (via PDO)
+	* mySQL
 
 Setup & Configuration
 ---------------------
 
 1. Modify and rename `sample_htaccess` to `.htaccess`.
-2. Adjust the settings in `application/config.php`.
+2. Modify and rename `application/sample_config.php` to `application/config.php`.
 
 License & Copyright
 -------------------
