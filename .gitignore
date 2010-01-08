@@ -1,0 +1,6 @@
+cache/.*
+.htaccess
+application/config.php
+.DS\_Store
+.DS_Store
+*.tmproj
