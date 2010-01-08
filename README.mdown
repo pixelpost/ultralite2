@@ -1,0 +1,21 @@
+Ultralite2
+==========
+
+The second generation core framework for Pixelpost.
+
+Requirements
+------------
+
+* PHP 5.2
+* SQLite or mySQL
+
+Setup & Configuration
+---------------------
+
+1. Modify and rename `sample_htaccess` to `.htaccess`.
+2. Adjust the settings in `application/config.php`.
+
+License & Copyright
+-------------------
+
+(c) 2010 Jay Williams, Licensed under the [GNU General Public License v2](http://opensource.org/licenses/gpl-2.0.php).
