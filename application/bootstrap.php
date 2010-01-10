@@ -29,11 +29,12 @@ Loader::scan();
 
 
 $controller = Loader::find('controller');
-Loader::load($controller);
+
+$controller = new $controller;
 
 var_dump($controller);
 
-$template = Loader::find('template');
+$template = Loader::find('template',true);
 Loader::load($template);
 
 var_dump($template);

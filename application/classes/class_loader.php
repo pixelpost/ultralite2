@@ -86,35 +86,42 @@ class Loader
 			return false;
 	}
 	
-	public static function find($type,$names=null)
+	public static function find($type,$path=false,$keys=null)
 	{
 		self::getInstance();
 		
 		if (!array_key_exists($type,self::$files)) 
 			return false;
 		
-		// If no names are specfied, use the page URI
-		if (empty($names))
-			$names = array_keys(Uri::get());
-		elseif(is_string($names))
-			$names = explode('_',$names);
+		// If no keys are specfied, use the page URI
+		if (empty($keys))
+			$keys = array_keys(Uri::get());
+		elseif(is_string($keys))
+			$keys = explode('_',$keys);
 		
 		
 		// Add the first section, if its not listed
-		if (!array_key_exists($type,$names))
-			array_unshift($names,$type);
+		if (!array_key_exists($type,$keys))
+			array_unshift($keys,$type);
 		
-		$total = count($names);
+		$total = count($keys);
 
 		for ($i=0; $i < $total; $i++)
 		{
-			$name = implode($names,'_');
+			$name = implode($keys,'_');
 			
 			$file = self::exists($type,$name);
-			if ($file) return $file;
+			// if ($file) return $file;
+			if ($file)
+			{
+				if ($path)
+					return $file;
+				else
+					return self::capitalize($name);
+			} 
 			
 			// Remove the last section on each pass
-			array_pop($names);
+			array_pop($keys);
 		}
 	}
 	
@@ -126,18 +133,37 @@ class Loader
 		return include $file;
 	}
 	
+	public static function capitalize($class_name='')
+	{
+		return str_replace(' ', '_', ucwords(str_replace('_', ' ', $class_name)));
+	}
+	
 	public static function autoload($class_name)
 	{
 		self::getInstance();
 		
-		$type = 'class';
-		$name = strtolower($type.'_'.$class_name);
+		$class_name = strtolower($class_name);
+		
+		// If the class has a underscore in the name,
+		// extract the first portion as the $type
+		if (($length = strpos($class_name,'_')) !== FALSE)
+			$type = substr($class_name, 0, $length);
+		else
+			$type = $class_name;
+		
+		// If the $type doesn't exist, it may be a class,
+		// so we'll add set the $type to 'class'
+		if(!array_key_exists($type, self::$files))
+		{
+			$type = 'class';
+			$class_name = $type.'_'.$class_name;
+		}
 		
 		// If the scanner hasn't run yet, we can still include the core classes
-		if (empty(self::$files) && self::load(APPPATH.'classes/'.$name.'.php'))
+		if ($type == 'class' && empty(self::$files) && self::load(APPPATH.'classes/'.$class_name.'.php'))
 		 	return true;
 		
-		return self::load(self::exists($type,$name));
+		return self::load(self::exists($type,$class_name));
 		
 	}
 
