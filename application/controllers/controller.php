@@ -24,7 +24,9 @@ class Controller
 		$template = Loader::find('template',true);
 		
 		if (!file_exists($template))
-			return false;
+		{
+			return Error::message(404, 'Oh No!', 'We can\'t seem to locate the template file. Please try visiting the <a href="/">home page</a>.');
+		}
 		
 		ob_start();
 		include $template;
