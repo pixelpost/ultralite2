@@ -10,7 +10,7 @@ class Controller
 	function __construct()
 	{
 		// Initalize Global $site properties
-		$this->site = new stdClass;
+		$this->site = new Void; // Untill we create a proper Site class
 	}
 	
 	public function indexAction($uri=array())

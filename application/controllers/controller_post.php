@@ -11,8 +11,7 @@ class Controller_Post extends Controller
 	{
 		
 		$this->post = new Post($uri['post']);
-		$this->site = new stdClass;
-		$this->paginator = new stdClass;
+		// $this->paginator = new Void;
 		
 		$this->render();
 	}

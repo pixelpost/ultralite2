@@ -30,7 +30,8 @@ class Post
 		if (class_exists($class_name))
 			return new $class_name($this->id);
 		
-		return null;
+		// Return an empty placeholder, if no class exists
+		return new Void;
 	}
 	
 	public function get($id=null)
