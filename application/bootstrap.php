@@ -33,5 +33,5 @@ $controller = Loader::find('controller');
 $controller = new $controller;
 
 // Output Page
-$controller->indexAction(Uri::get());
+echo $controller->indexAction(Uri::get());
 

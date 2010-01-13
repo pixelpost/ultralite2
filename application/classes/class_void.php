@@ -20,6 +20,11 @@ class Void
 	{
 		return $this;
 	}
+	
+	public function __isset($name)
+	{
+		return false;
+	}
 
 	public function __call($name, $arguments)
 	{

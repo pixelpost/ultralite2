@@ -5,7 +5,7 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 
-	<title><?php if($this->post->title) {  ?><?php echo $this->post->title  ?> | <?php } ?><?php echo $this->site->title ?></title>
+	<title><?php if(!empty($this->post->title)) {  ?><?php echo $this->post->title  ?> | <?php } ?><?php echo $this->site->title ?></title>
 	
 </head>
 
@@ -22,7 +22,7 @@
 
 <?php echo "PHP still works too!"; ?>
 
-<?php if($this->post->photos) {  ?>
+<?php if(!empty($this->post->photos)) {  ?>
 <h3>Extra Photos, for your enjoyment</h3>
 <ul>
 	<?php foreach($this->post->photos as $this->photo) {  ?>

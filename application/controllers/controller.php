@@ -6,6 +6,7 @@
 class Controller
 {
 	var $site;
+	var $output;
 	
 	function __construct()
 	{
@@ -15,16 +16,21 @@ class Controller
 	
 	public function indexAction($uri=array())
 	{
-		$this->render();
+		return $this->output();
 	}
 	
-	public function render()
+	public function output()
 	{
 		$template = Loader::find('template',true);
 		
 		if (!file_exists($template))
 			return false;
 		
+		ob_start();
 		include $template;
+		$this->output = ob_get_contents();
+		ob_end_clean();
+		
+		return $this->output;
 	}
 }

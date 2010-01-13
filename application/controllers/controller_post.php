@@ -13,7 +13,7 @@ class Controller_Post extends Controller
 		$this->post = new Post($uri['post']);
 		// $this->paginator = new Void;
 		
-		$this->render();
+		return $this->output();
 	}
 	
 }

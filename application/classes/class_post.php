@@ -19,13 +19,30 @@ class Post
 	}
 
 	/**
-	 * Load sub class, on request
+	 * Check if property or sub-class exists
+	 */
+	public function __isset($property)
+	{
+		$class_name = __CLASS__ . '_' . ucfirst($property);
+		
+		// var_dump("ISSET: $class_name");
+		
+		if (isset($this->$property))
+			return true;
+		elseif (class_exists($class_name))
+			return true;
+		else
+			return false;
+	}
+
+	/**
+	 * Load sub-class, on request
 	 */
 	public function __get($property)
 	{
 		$class_name = __CLASS__ . '_' . ucfirst($property);
 		
-		// var_dump("CALLING: $class_name");
+		// var_dump("GET: $class_name");
 		
 		if (class_exists($class_name))
 			return new $class_name($this->id);
