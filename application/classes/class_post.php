@@ -1,6 +1,9 @@
 <?php
 /**
- * Uri
+ * Post
+ * 
+ * Loads the specified post, and can navigate forwards and backwards by posts.
+ * It can also load any sub-classes on demand. e.g. $post->comments == new Post_Comments
  *
  * @package Pixelpost
  * @author Jay Williams
