@@ -28,14 +28,10 @@ spl_autoload_register(array('Loader','autoload'));
 Loader::scan();
 
 
+// Find and initialize controller
 $controller = Loader::find('controller');
-
 $controller = new $controller;
 
-var_dump($controller);
-
-$template = Loader::find('template',true);
-Loader::load($template);
-
-var_dump($template);
+// Output Page
+$controller->indexAction(Uri::get());
 

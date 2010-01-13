@@ -5,10 +5,16 @@
 */
 class Controller_Post extends Controller
 {
+	var $post;
 	
-	function __construct()
+	public function indexAction($uri=array())
 	{
-		parent::__construct();
-		var_dump('Post Controller Initialized');
+		
+		$this->post = new Post($uri['post']);
+		$this->site = new stdClass;
+		$this->paginator = new stdClass;
+		
+		$this->render();
 	}
+	
 }
