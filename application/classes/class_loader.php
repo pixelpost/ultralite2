@@ -17,7 +17,7 @@ class Loader
 	private static $instance;
 
 
-	public static function & getInstance()
+	public static function & current()
 	{
 		static $instance = null;
 		
@@ -27,7 +27,7 @@ class Loader
 
 	private function __construct()
 	{
-		$config = Config::getInstance();
+		$config = Config::current();
 		
 		// Setup Default paths:
 		
@@ -47,7 +47,7 @@ class Loader
 
 	public static function scan()
 	{
-		self::getInstance();
+		self::current();
 		
 		self::$files = array();
 		
@@ -80,7 +80,7 @@ class Loader
 	
 	public static function exists($type,$name)
 	{
-		self::getInstance();
+		self::current();
 		
 		if (array_key_exists($name, self::$files[$type] ))
 			return self::$files[$type][$name];
@@ -90,7 +90,7 @@ class Loader
 	
 	public static function find($type,$path=false,$keys=null)
 	{
-		self::getInstance();
+		self::current();
 		
 		if (!array_key_exists($type,self::$files)) 
 			return false;
@@ -142,7 +142,7 @@ class Loader
 	
 	public static function autoload($class_name)
 	{
-		self::getInstance();
+		self::current();
 		
 		$class_name = strtolower($class_name);
 		

@@ -48,7 +48,7 @@ class Config
 		$this->config = Helper::array2obj($this->config);
 		
 		foreach ($this->config as $setting => $value)
-				$this->$setting = $value;
+			$this->$setting = $value;
 	}
 	
 	/**
@@ -61,7 +61,7 @@ class Config
 	 */
 	public static function set($setting, $value, $overwrite = false)
 	{
-		 $self = self::getInstance();
+		 $self = self::current();
 		
 		if (!$overwrite and isset($self->$setting) and $self->$setting == $value)
 			return false;
@@ -70,7 +70,7 @@ class Config
 		$self->config[$setting] = $self->$setting = $value;
 		
 		// if (class_exists("Trigger"))
-			// Trigger::getInstance()->call("change_setting", $setting, $value, $overwrite);
+			// Trigger::current()->call("change_setting", $setting, $value, $overwrite);
 			
 		if (!$self->store()) {
 			/**
@@ -89,7 +89,7 @@ class Config
 	 */
 	public static function remove($setting)
 	{
-		$self = self::getInstance();
+		$self = self::current();
 		
 		if (!isset($self->$setting))
 			return false;
@@ -106,7 +106,7 @@ class Config
 	 *
 	 * @return $instance
 	 */
-	public static function & getInstance($reset=false)
+	public static function & current($reset=false)
 	{
 
 		static $instance = null;

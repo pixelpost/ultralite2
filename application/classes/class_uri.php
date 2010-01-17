@@ -20,7 +20,7 @@ class Uri
 	private static $instance;
 
 
-	public static function & getInstance()
+	public static function & current()
 	{
 		static $instance = null;
 		
@@ -60,7 +60,7 @@ class Uri
 	 */
 	public static function get($key=null)
 	{
-		self::getInstance();
+		self::current();
 		
 		if (empty($key))
 		{
@@ -77,7 +77,7 @@ class Uri
 
 	public static function set($key=null,$value=null)
 	{
-		self::getInstance();
+		self::current();
 		
 		if (empty($key))
 		{
@@ -96,7 +96,7 @@ class Uri
 	 */
 	public static function total()
 	{
-		self::getInstance();
+		self::current();
 		
 		return count(self::$parameters);
 	}
@@ -111,7 +111,7 @@ class Uri
 	 */
 	public static function create($uri=null)
 	{
-		self::getInstance();
+		self::current();
 		
 		$output = '';
 		

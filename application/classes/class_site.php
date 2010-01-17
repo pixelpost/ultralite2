@@ -18,7 +18,7 @@ class Site
 		if ($entities !== null)
 			$this->entities == (bool) $entities;
 		
-		$config = Config::getInstance()->site;
+		$config = Config::current()->site;
 		
 		// Escape values if $this->entities is true
 		if ($this->entities)

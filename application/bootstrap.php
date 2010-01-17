@@ -20,7 +20,7 @@ define('CONTENTPATH', realpath(dirname(__FILE__).'/../content').'/');
 require_once APPPATH.'classes/class_helper.php';
 require_once APPPATH.'classes/class_error.php';
 require_once APPPATH.'classes/class_config.php';
-$config = Config::getInstance();
+$config = Config::current();
 
 // By setting the include path, templates can simply call include('header.php');
 // and it will include the template header file.
