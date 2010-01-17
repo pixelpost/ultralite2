@@ -19,6 +19,8 @@ class Config
 	 * @var string
 	 */
 	private $file = "";
+	
+	private $config = array();
 
 	/**
 	 * Initializes and loads the configuration file.
@@ -28,18 +30,24 @@ class Config
 		
 		
 		$this->file = APPPATH.'config.php';
+		$this->load();
 		
-		$config = $this->load();
+		if(empty($this->config))
+			Error::quit(500, 'Configuration Missing?', 'Yup, it looks like the config file is empty or doesn\'t exist. So we\'re stuck until it gets created.');
 		
-		if (empty($config))
-		{
-			throw new Exception("Unable to load configuration file.", E_ERROR);
-			return false;
-		}
+		// Merge the defaults with the the config, 
+		// just in case the user didn't fill out an important setting.
+		$defaults                 = $this->defaults();
+		$this->config             = array_merge($defaults, $this->config);
+		$this->config['site']     = array_merge($defaults['site'], $this->config['site']);
+		$this->config['database'] = array_merge($defaults['database'], $this->config['database']);
 		
-		$config = Helper::array2obj($config);
+		// Is the config ready for action?
+		$this->validate();
 		
-		foreach ($config as $setting => $value)
+		$this->config = Helper::array2obj($this->config);
+		
+		foreach ($this->config as $setting => $value)
 				$this->$setting = $value;
 	}
 	
@@ -116,9 +124,89 @@ class Config
 	{
 		
 		if(file_exists($this->file)){
-			return include $this->file;
+			$this->config = include $this->file;
+			return true;
 		}else
 			return false;
+	}
+	
+	/**
+	 * Default Pixelpost Configuration
+	 * 
+	 * Pixelpost will use these values if the config file is missing an option.
+	 *
+	 * @return array
+	 */
+	protected function defaults()
+	{
+		return array (
+		  'database' => 
+		  array (
+		    'host' => 'localhost',
+		    'username' => '',
+		    'password' => '',
+		    'database' => '',
+		    'prefix' => 'pixelpost_',
+		    'type' => '',
+		  ),
+		  'site' => 
+		  array (
+		    'title' => 'Untitled',
+		    'description' => '',
+		    'copyright' => '(c) All Rights Reserved',
+		    'url' => 'http://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']) . '/',
+		    'language' => 'en',
+		  ),
+		  'email' => '',
+		  'template' => 'simple',
+		  'timezone' => 'GMT',
+		  'default' => 'post',
+		  'plugins' => 
+		  array (
+		  ),
+		);
+	}
+	
+	/**
+	 * Verify that the config file is setup properly, and fix any potential problems.
+	 */
+	protected function validate()
+	{
+		if (substr($this->config['site']['url'], -1) != '/')
+		{
+			$this->config['site']['url'] = $this->config['site']['url'].'/';
+		}
+		
+		if ($this->config['site']['language'] != 'en') 
+		{
+			$this->config['site']['language'] = strtolower($this->config['site']['language']);
+		}
+		
+		if (!is_dir(CONTENTPATH.'templates/'.$this->config['template'].'/'))
+		{
+			Error::quit(500, 'Oops!', 'The template either wasn\'t specified or it doesn\'t exist.');
+		}
+		
+		if (!file_exists(APPPATH.'languages/language_'.$this->config['site']['language'].'.php'))
+		{
+			Error::quit(500, 'No Comprendo?', 'The template either wasn\'t specified or it doesn\'t exist.');
+		}
+
+		if (empty($this->config['database']['type']) || empty($this->config['database']['database']))
+		{
+			Error::quit(500, 'No Database?', 'The config must contain the proper database information, or we\'re dead in the water.');
+		}
+		
+		if (!empty($this->config['plugins'])) 
+		{
+			foreach ($this->config['plugins'] as $key => $plugin) 
+			{
+				if(!is_dir(APPPATH.'plugins/'.$plugin.'/'))
+					unset($this->config['plugins'][$key]);
+			}
+		}
+
+		return true;
 	}
 	
 	/**

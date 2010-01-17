@@ -11,18 +11,23 @@ if (defined('DEBUG'))
 	error_reporting(E_ALL|E_STRICT); // Development
 else
 	error_reporting(0); // Production
-	
+
 define('APPPATH', realpath(dirname(__FILE__)).'/');
 define('CACHEPATH', realpath(dirname(__FILE__).'/../cache').'/');
 define('CONTENTPATH', realpath(dirname(__FILE__).'/../content').'/');
 
 // Load Helper & Config
 require_once APPPATH.'classes/class_helper.php';
+require_once APPPATH.'classes/class_error.php';
 require_once APPPATH.'classes/class_config.php';
 $config = Config::getInstance();
 
+// By setting the include path, templates can simply call include('header.php');
+// and it will include the template header file.
+set_include_path(CONTENTPATH.'templates/'.$config->template.'/' . PATH_SEPARATOR . APPPATH);
+
 // Initialize Autoloader
-require_once APPPATH.'classes/class_loader.php';
+require_once 'classes/class_loader.php';
 spl_autoload_register(array('Loader','autoload'));
 
 // Search directories:
