@@ -16,17 +16,21 @@ define('APPPATH', realpath(dirname(__FILE__)).'/');
 define('CACHEPATH', realpath(dirname(__FILE__).'/../cache').'/');
 define('CONTENTPATH', realpath(dirname(__FILE__).'/../content').'/');
 
-// var_dump(APPPATH,CACHEPATH,CONTENTPATH);
-
-
 // Initialize Autoloader
-require_once 'classes/class_loader.php';
+require_once APPPATH.'classes/class_loader.php';
 spl_autoload_register(array('Loader','autoload'));
 
+// Load Config
+$config = Config::getInstance();
 
 // Search directories:
 Loader::scan();
 
+// Load default page, if no page is specified
+if (isset($config->default) && count(Uri::get()) < 1) 
+{
+	Uri::set($config->default);
+}
 
 // Find and initialize controller
 $controller = Loader::find('controller');

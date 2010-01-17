@@ -75,6 +75,18 @@ class Uri
 		return false;
 	}
 
+	public static function set($key=null,$value=null)
+	{
+		self::getInstance();
+		
+		if (empty($key))
+		{
+			return false;
+		}
+		
+		return self::$parameters[$key] = $value;
+	}
+
 	/**
 	 * Total number of parameters
 	 * 

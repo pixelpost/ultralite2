@@ -14,13 +14,6 @@ class Config
 {
 	
 	/**
-	 * Holds all of the settings as a $key => $val
-	 *
-	 * @var $config array
-	 */
-	private $config = array();
-	
-	/**
 	 * Config file path
 	 *
 	 * @var string
@@ -33,21 +26,21 @@ class Config
 	private function __construct()
 	{
 		
+		
 		$this->file = APPPATH.'config.php';
 		
-		if (!$this->load())
+		$config = $this->load();
+		
+		if (empty($config))
 		{
 			throw new Exception("Unable to load configuration file.", E_ERROR);
 			return false;
 		}
-			
 		
-		foreach ($this->config as $setting => $value)
+		$config = Helper::array2obj($config);
+		
+		foreach ($config as $setting => $value)
 				$this->$setting = $value;
-			
-		/**
-		 * @todo Possibly add some error checking, to make sure the required settings exist
-		 */
 	}
 	
 	/**
@@ -118,15 +111,12 @@ class Config
 	
 	/**
 	 * Loads the configuration file.
-	 *
-	 * @return bool true if loaded successfully
 	 */
 	private function load()
 	{
 		
 		if(file_exists($this->file)){
-			$this->config = include $this->file;
-			return true;
+			return include $this->file;
 		}else
 			return false;
 	}

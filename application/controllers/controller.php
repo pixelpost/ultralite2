@@ -11,7 +11,7 @@ class Controller
 	function __construct()
 	{
 		// Initalize Global $site properties
-		$this->site = new Void; // Untill we create a proper Site class
+		$this->site = Config::getInstance();
 	}
 	
 	public function indexAction($uri=array())

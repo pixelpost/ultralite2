@@ -11,11 +11,13 @@
 
 class Post
 {
+	
+	private $prev;
+	private $next;
 
-	public function __construct($id=null)
+	public function __construct($id)
 	{
-		if ($id !== null)
-			return $this->get($id);
+		return $this->request($id);
 	}
 
 	/**
@@ -51,7 +53,7 @@ class Post
 		return new Void;
 	}
 	
-	public function get($id=null)
+	public function request($id=null)
 	{
 		if (empty($id))
 		{
@@ -80,7 +82,7 @@ class Post
 		- the action of giving such a representation or account : teaching by demonstration and description.';
 
 		$this->slug           = 'my-post-title';
-		$this->url            = 'http://example.com/post/my-post-title';
+		$this->url            = 'http://localhost/ultralite2/post/'.$this->id;
 
 		$this->date           = 'January 5, 2010 3:55 pm'; // Formatted Date
 		$this->date_raw       = '2010-01-05 15:55:22 GMT'; // Raw Date
@@ -88,12 +90,20 @@ class Post
 
 		// Image Sizes
 		$this->caption        = 'A title or brief explanation appended to an article, illustration, cartoon, or poster.';
-		$this->url_t          = 'http://farm3.static.flickr.com/2768/4150163278_df06c69e2b_t.jpg';
+		$this->photo_t        = 'http://farm3.static.flickr.com/2768/4150163278_df06c69e2b_t.jpg';
 		$this->height_t       = 75;
 		$this->width_t        = 100;
-		$this->url_m          = 'http://farm3.static.flickr.com/2768/4150163278_df06c69e2b.jpg';
-		$this->height_m       = 373;
-		$this->width_m        = 500;
+		$this->photo          = 'http://farm3.static.flickr.com/2768/4150163278_df06c69e2b.jpg';
+		$this->height         = 373;
+		$this->width          = 500;
+	}
+
+	/**
+	 * Fetch a single Post
+	 */
+	public function get($id)
+	{
+		return new self($id);
 	}
 
 	/**
@@ -105,7 +115,12 @@ class Post
 		// will find the next post by publish date
 		$id = $this->id + 1;
 		
-		return new self($id);
+		if(is_object($this->next))
+			return $this->next;
+		
+		$this->next = new self($id);
+		
+		return $this->next;
 	}
 	
 	/**
@@ -117,7 +132,12 @@ class Post
 		// will find the next post by publish date
 		$id = $this->id - 1;
 		
-		return new slef($id);
+		if(is_object($this->prev))
+			return $this->prev;
+		
+		$this->prev = new self($id);
+		
+		return $this->prev;
 	}
 	
 	/**

@@ -14,7 +14,7 @@
 <em><?php echo $this->post->date ?></em>
 
 <p>
-	<img src="<?php echo $this->post->url_m ?>" width="<?php echo $this->post->width_m ?>" height="<?php echo $this->post->height_m ?>"/>
+	<img src="<?php echo $this->post->photo ?>" width="<?php echo $this->post->width ?>" height="<?php echo $this->post->height ?>"/>
 </p>
 <p>
 	<?php echo $this->post->description  ?>
@@ -36,5 +36,6 @@
 
 <?php echo $this->post->next()->title ?>
 
+<?php var_dump($this->post); ?>
 </body>
 </html>
