@@ -29,7 +29,7 @@ class Config
 	private $config    = array();
 
 	/**
-	 * Initializes and loads the configuration file.
+	 * Setup the class and load the config into memory.
 	 */
 	private function __construct()
 	{
@@ -40,7 +40,7 @@ class Config
 		if(empty($this->config))
 			Error::quit(500, 'Configuration Missing?', 'Yup, it looks like the config file is empty or doesn\'t exist. So we\'re stuck until it gets created.');
 		
-		// Merge the defaults with the the config.
+		// Use the default options, if they aren't set in the config
 		$defaults     = $this->defaults();
 		$this->config = array_merge($defaults, $this->config);
 		
