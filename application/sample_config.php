@@ -15,31 +15,29 @@
 return array (
   'database' => 
   array (
-    'host' => '',
+    'host' => 'localhost',
     'username' => '',
     'password' => '',
     'database' => 'pixelpost.sqlite3',
-    'prefix' => '',
-    'adapter' => 'sqlite',
+    'prefix' => 'pixelpost_',
+    'type' => 'sqlite',
   ),
-  'site_name' => 'My Ultralite Photoblog',
-  'site_description' => 'Guess what, it\'s open source, and it\'s ultralite!',
-  'copyright' => '(c) 2009 Pixelpost',
-  'url' => 'http://localhost/ultralite2/',
-  'email' => 'user@domain.com',
-  'language' => 'en',
-  'theme' => 'simple',
-  'filter' => 'markdown',
-  'per_page' => 5,
-  'feed_items' => 5,
-  'feed_pagination' => true,
-  'timezone' => 'America/Chicago',
-  'enabled_plugins' => 
+  'site' => 
   array (
-    // 0 => 'example',
+    'title' => 'Example Photoblog',
+    'description' => 'Example Description',
+    'copyright' => '(c) Your Name, All Rights Reserved',
+    'url' => 'http://example.com/pixelpost/',
+    'language' => 'en',
   ),
-  'default_controller' => 'Post',
-  'default_action' => 'indexAction',
-)
+  'email' => 'user@example.com',
+  'template' => 'simple',
+  'timezone' => 'America/New_York',
+  'default' => 'post',
+  'plugins' => 
+  array (
+    1 => 'example',
+  ),
+);
 
 ?>

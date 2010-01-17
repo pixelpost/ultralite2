@@ -189,7 +189,7 @@ class Config
 		
 		if (!file_exists(APPPATH.'languages/language_'.$this->config['site']['language'].'.php'))
 		{
-			Error::quit(500, 'No Comprendo?', 'The template either wasn\'t specified or it doesn\'t exist.');
+			Error::quit(500, 'No Comprendo?', 'The language file doesn\'t exist, which means we\'re stuck.');
 		}
 
 		if (empty($this->config['database']['type']) || empty($this->config['database']['database']))
