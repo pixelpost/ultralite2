@@ -1,54 +1,58 @@
 <?php
 
 /**
- * Holds all of the configuration variables for the entire site, as well as addon settings.
+ * Config Class
  * 
- * This class is based off of the work of Alex Suraci's Chyrp application.
+ * Provides a simple interface to read and change the Pixelpost config file.
+ * 
+ * Example:
+ * 
+ *    // Display the site title:
+ *    echo Config::current()->title;
+ * 
+ *    // Change the site title:
+ *    Config::current()->title = 'New Title';
+ * 
+ *    // Delete the site title:
+ *    unset(Config::current()->title);
  *
  * @package Pixelpost
- * @subpackage Config
- * @author Alex Suraci and individual contributors
+ * @subpackage Classes
  * @author Jay Williams
  */
 class Config
 {
 	
-	/**
-	 * Config file path
-	 *
-	 * @var string
-	 */
-	private $file = "";
-	
-	private $changed = false;
-	
-	private $config = array();
+	private $file      = "";
+	private $file_temp = "";
+	private $changed   = false;
+	private $config    = array();
 
 	/**
 	 * Initializes and loads the configuration file.
 	 */
-	private function __construct($config=null)
+	private function __construct()
 	{
-		
-		if ($config) {
-			$this->config = $config;
-			return true;
-		}
-		
-		$this->file = APPPATH.'config.php';
+		$this->file      = APPPATH.'config.php';
+		$this->file_temp = CACHEPATH.'config_temp.php';
 		$this->load();
 		
 		if(empty($this->config))
 			Error::quit(500, 'Configuration Missing?', 'Yup, it looks like the config file is empty or doesn\'t exist. So we\'re stuck until it gets created.');
 		
 		// Merge the defaults with the the config.
-		$defaults                 = $this->defaults();
-		$this->config             = array_merge($defaults, $this->config);
-
+		$defaults     = $this->defaults();
+		$this->config = array_merge($defaults, $this->config);
+		
 		$this->validate();
 	}
 	
-
+	/**
+	 * Get the requested option
+	 * 
+	 * Example:
+	 *    echo Config::current()->title;
+	 */
 	public function __get($property)
 	{
 		$self = self::current();
@@ -59,6 +63,12 @@ class Config
 		return $self->config[$property];
 	}
 
+	/**
+	 * Change the requested option
+	 * 
+	 * Example:
+	 *    Config::current()->title = 'New Title';
+	 */
 	public function __set($property, $value)
 	{
 		$self = self::current();
@@ -74,6 +84,12 @@ class Config
 		return true;
 	}
 
+	/**
+	 * Verify that the option exists
+	 * 
+	 * Example:
+	 *    isset(Config::current()->title);
+	 */
 	public function __isset($property)
 	{
 		$self = self::current();
@@ -84,6 +100,12 @@ class Config
 		return false;
 	}
 
+	/**
+	 * Remove the specified option
+	 * 
+	 * Example:
+	 *    unset(Config::current()->title);
+	 */
 	public function __unset($property)
 	{
 		$self = self::current();
@@ -97,20 +119,21 @@ class Config
 		}
 	}
 	
+	/**
+	 * Save any changes, when PHP finishes rendering the page.
+	 */
 	public function __destruct()
 	{
 		$self = self::current();
 		
-		if ($self->changed && !$self->store())
+		if ($self->changed && !$self->save())
 		{
 			Error::quit(500, 'Unable to Save Config', 'Any changes that were made, weren\'t saved.');
 		}
 	}
 
 	/**
-	 * Returns a singleton reference to the current configuration.
-	 *
-	 * @return $instance
+	 * Returns a singleton reference to the class.
 	 */
 	public static function & current()
 	{
@@ -120,24 +143,22 @@ class Config
 	}
 	
 	/**
-	 * Loads the configuration file.
+	 * Load the configuration file into $this->config.
 	 */
 	private function load()
 	{
-		
-		if(file_exists($this->file)){
+		if(file_exists($this->file))
+		{
 			$this->config = include $this->file;
 			return true;
-		}else
-			return false;
+		}
+		
+		return false;
 	}
 	
 	/**
-	 * Default Pixelpost Configuration
-	 * 
-	 * Pixelpost will use these values if the config file is missing an option.
-	 *
-	 * @return array
+	 * Default Configuration Options
+	 * These are only used when the config file doesn't contain the option.
 	 */
 	protected function defaults()
 	{
@@ -164,7 +185,8 @@ class Config
 	}
 	
 	/**
-	 * Verify that the config file is setup properly, and fix any potential problems.
+	 * Verify that the config file is filled out properly,
+	 * and fix any potential problems.
 	 */
 	protected function validate()
 	{
@@ -212,11 +234,9 @@ class Config
 	}
 	
 	/**
-	 * Stores the configuration file.
-	 *
-	 * @return bool true if stored successfully
+	 * Writes the configuration file.
 	 */
-	private function store()
+	private function save()
 	{
 		
 		// Convert the settings to a PHP parsable array
@@ -241,10 +261,19 @@ return $contents;
 
 CONFIG;
 		
-		if(!@file_put_contents($this->file, $contents))
+		if(!@file_put_contents($this->file_temp, $contents))
 			return false;
-		else
-			return true;
+	
+		// Override the config file with our temp file
+		if (!@rename($this->file_temp, $this->file))
+		{
+			// If it doesn't work, try deleting the config file first
+			@unlink($this->file);
+			if(@rename($this->file_temp, $this->file))
+				return false;
+		}
+		
+		return true;
 	}
 	
-}
+} // endclass
