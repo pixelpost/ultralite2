@@ -39,7 +39,7 @@ class Loader
 		self::$paths['language'][] = APPPATH.'languages/';
 
 		// Page paths to Scan:
-		self::$paths['template'][] = CONTENTPATH.'templates/simple/';
+		self::$paths['template'][] = CONTENTPATH.'templates/greyspace/';
 	}
 
 
