@@ -13,31 +13,23 @@
  **/
 
 return array (
-  'database' => 
-  array (
-    'host' => 'localhost',
-    'username' => '',
-    'password' => '',
-    'database' => 'pixelpost.sqlite3',
-    'prefix' => 'pixelpost_',
-    'type' => 'sqlite',
-  ),
-  'site' => 
-  array (
-    'title' => 'Example Photoblog',
-    'description' => 'Example Description',
-    'copyright' => '(c) Your Name, All Rights Reserved',
-    'url' => 'http://example.com/pixelpost/',
-    'language' => 'en',
-  ),
+  'db_host' => 'localhost',
+  'db_username' => '',
+  'db_password' => '',
+  'db_name' => 'pixelpost.sqlite3',
+  'db_prefix' => 'pixelpost_',
+  'db_type' => 'sqlite',
+  'title' => 'Example Photoblog',
+  'description' => 'Example Description',
+  'copyright' => '(c) Your Name, All Rights Reserved',
+  'url' => 'http://example.com/pixelpost/',
+  'language' => 'en',
   'email' => 'user@example.com',
   'template' => 'simple',
   'timezone' => 'America/New_York',
   'default' => 'post',
   'plugins' => 
   array (
-    1 => 'example',
+    0 => 'example',
   ),
 );
-
-?>
