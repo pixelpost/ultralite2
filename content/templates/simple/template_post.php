@@ -10,32 +10,12 @@
 </head>
 
 <body>
-<h1><?php echo $this->post->title ?></h1>
-<em><?php echo $this->post->date ?></em>
+<?php 
 
-<p>
-	<img src="<?php echo $this->post->photo ?>" width="<?php echo $this->post->width ?>" height="<?php echo $this->post->height ?>"/>
-</p>
-<p>
-	<?php echo $this->post->description  ?>
-</p>
+var_dump($this);
 
-<?php echo "PHP still works too!"; ?>
+var_dump($this->blue);
 
-<?php if(!empty($this->post->photos)) {  ?>
-<h3>Extra Photos, for your enjoyment</h3>
-<ul>
-	<?php foreach($this->post->photos as $this->photo) {  ?>
-		<li><?php echo $this->photo;  ?></li>
-	<?php } ?>
-</ul>
-<?php } ?>
-
-
-<?php //echo translate($this->post->next->title); ?>
-
-<?php echo $this->post->next()->title ?>
-
-<?php var_dump($this->post); ?>
+?>
 </body>
 </html>

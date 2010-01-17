@@ -11,7 +11,25 @@ class Controller
 	function __construct()
 	{
 		// Initalize Global $site properties
-		$this->site = Config::getInstance();
+		$this->site = new Site;
+	}
+	
+	/**
+	 * To avoid template notice errors, redirect 
+	 * any non-existent properties to the Void.
+	 */
+	public function __get($name)
+	{
+		return new Void;
+	}
+	
+	/**
+	 * When isset() or empty() are called on 
+	 * non-existent properties, return false.
+	 */
+	public function __isset($name)
+	{
+		return false;
 	}
 	
 	public function indexAction($uri=array())

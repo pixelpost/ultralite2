@@ -11,49 +11,23 @@
 
 class Post
 {
-	
-	private $prev;
+	/**
+	 * Stores the next() object, if called
+	 *
+	 * @var object
+	 * @access private
+	 */
 	private $next;
 
+	/**
+	 * Stores the prev() object, if called
+	 *
+	 * @var object
+	 * @access private
+	 */
+	private $prev;
+
 	public function __construct($id)
-	{
-		return $this->request($id);
-	}
-
-	/**
-	 * Check if property or sub-class exists
-	 */
-	public function __isset($property)
-	{
-		$class_name = __CLASS__ . '_' . ucfirst($property);
-		
-		// var_dump("ISSET: $class_name");
-		
-		if (isset($this->$property))
-			return true;
-		elseif (class_exists($class_name))
-			return true;
-		else
-			return false;
-	}
-
-	/**
-	 * Load sub-class, on request
-	 */
-	public function __get($property)
-	{
-		$class_name = __CLASS__ . '_' . ucfirst($property);
-		
-		// var_dump("GET: $class_name");
-		
-		if (class_exists($class_name))
-			return new $class_name($this->id);
-		
-		// Return an empty placeholder, if no class exists
-		return new Void;
-	}
-	
-	public function request($id=null)
 	{
 		if (empty($id))
 		{
@@ -99,7 +73,41 @@ class Post
 	}
 
 	/**
-	 * Fetch a single Post
+	 * Checks if a sub-class exists when an empty() or isset() 
+	 * function is called on a non-existent property.
+	 * 
+	 * Input:
+	 *    "test" ($post->test)
+	 * Output:
+	 *    true (if the class "Post_Test" exists)
+	 */
+	public function __isset($property)
+	{
+		$class_name = __CLASS__ . '_' . ucfirst($property);
+		
+		if (class_exists($class_name))
+			return true;
+		else
+			return false;
+	}
+
+	/**
+	 * Loads the sub class, when requested
+	 */
+	public function __get($property)
+	{
+		$class_name = __CLASS__ . '_' . ucfirst($property);
+		
+		if (class_exists($class_name))
+			return new $class_name($this->id);
+		
+		// Return an empty placeholder, if no class exists
+		return new Void;
+	}
+
+	/**
+	 * Fetch a new Post
+	 * A shorthand way to create a new Post class
 	 */
 	public function get($id)
 	{

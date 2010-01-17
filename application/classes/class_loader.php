@@ -27,6 +27,8 @@ class Loader
 
 	private function __construct()
 	{
+		$config = Config::getInstance();
+		
 		// Setup Default paths:
 		
 		// Controller paths to Scan:
@@ -39,7 +41,7 @@ class Loader
 		self::$paths['language'][] = APPPATH.'languages/';
 
 		// Page paths to Scan:
-		self::$paths['template'][] = CONTENTPATH.'templates/greyspace/';
+		self::$paths['template'][] = CONTENTPATH.'templates/'.$config->template.'/';
 	}
 
 

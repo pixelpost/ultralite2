@@ -42,7 +42,7 @@
 
 		<div class="bottom section">
 
-			<?php if ($config->posts_per_page): ?>
+			<?php if ($this->site->posts_per_page): ?>
 
 				<div class="pagination">
 

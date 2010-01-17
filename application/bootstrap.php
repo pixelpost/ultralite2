@@ -16,12 +16,14 @@ define('APPPATH', realpath(dirname(__FILE__)).'/');
 define('CACHEPATH', realpath(dirname(__FILE__).'/../cache').'/');
 define('CONTENTPATH', realpath(dirname(__FILE__).'/../content').'/');
 
+// Load Helper & Config
+require_once APPPATH.'classes/class_helper.php';
+require_once APPPATH.'classes/class_config.php';
+$config = Config::getInstance();
+
 // Initialize Autoloader
 require_once APPPATH.'classes/class_loader.php';
 spl_autoload_register(array('Loader','autoload'));
-
-// Load Config
-$config = Config::getInstance();
 
 // Search directories:
 Loader::scan();
