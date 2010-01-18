@@ -176,7 +176,9 @@ class Config
 		  'language' => 'en',
 		  'email' => '',
 		  'template' => 'simple',
+		  'date_format' => 'F jS, Y g:i a',
 		  'timezone' => 'GMT',
+		  'permalink' => 'id',
 		  'default' => 'post',
 		  'plugins' => 
 		  array (

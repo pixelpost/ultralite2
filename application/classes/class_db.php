@@ -68,10 +68,15 @@ class DB
 			{
 				self::$error = self::$DB->error;
 				self::$errno = self::$DB->errno;
-			
 				return false;
 			}
-			
+				
+			self::connect(	Config::current()->db_username, 
+							Config::current()->db_password, 
+							Config::current()->db_name, 
+							Config::current()->db_host);
+		
+			self::set_table_prefix(Config::current()->db_prefix);
 		}
 		elseif($type == 'mysqli')
 		{
@@ -81,6 +86,13 @@ class DB
 				self::$errno = self::$DB->errno;
 				return false;
 			}
+			
+			self::connect(	Config::current()->db_username, 
+							Config::current()->db_password, 
+							Config::current()->db_name, 
+							Config::current()->db_host);
+							
+			self::set_table_prefix(Config::current()->db_prefix);
 		}
 		elseif($type == 'pdo')
 		{
@@ -90,6 +102,9 @@ class DB
 				self::$errno = self::$DB->errno;
 				return false;
 			}
+			self::connect( 'sqlite:'.Config::current()->db_name );
+			
+			self::set_table_prefix(Config::current()->db_prefix);
 		}
 		else
 		{
