@@ -39,6 +39,8 @@ if (count(Uri::get()) < 1)
 // Set the default time zone
 date_default_timezone_set(Config::current()->timezone);
 
+DB::init(Config::current()->db_type);
+
 // Find and initialize the controller
 $controller = Loader::find('controller');
 $controller = new $controller;

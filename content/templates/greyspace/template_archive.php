@@ -46,11 +46,11 @@
 
 				<div class="pagination">
 
-					<?php if ((Pixelpost_Uri::$page) == 2): ?>
-						<a href="<?php echo Pixelpost_Uri::$uri; ?>" class="previous">&#x2190; Previous Page</a>
+					<?php if ((Uri::$page) == 2): ?>
+						<a href="<?php echo Uri::$uri; ?>" class="previous">&#x2190; Previous Page</a>
 
-					<?php elseif ((Pixelpost_Uri::$page) > 1): ?>
-						<a href="<?php echo Pixelpost_Uri::$uri . '/page/' . (Pixelpost_Uri::$page-1); ?>" class="previous">&#x2190; Previous Page</a>
+					<?php elseif ((Uri::$page) > 1): ?>
+						<a href="<?php echo Uri::$uri . '/page/' . (Uri::$page-1); ?>" class="previous">&#x2190; Previous Page</a>
 
 					<?php else: ?>
 						<a class="previous disabled">&#x2190; Previous Page</a>
@@ -58,8 +58,8 @@
 					<?php endif ?>
 
 
-					<?php if (Pixelpost_Uri::$page < Pixelpost_Uri::$total_pages): ?>
-						<a href="<?php echo Pixelpost_Uri::$uri . '/page/' . (Pixelpost_Uri::$page+1); ?>" class="next">Next Page &#x2192;</a>
+					<?php if (Uri::$page < Uri::$total_pages): ?>
+						<a href="<?php echo Uri::$uri . '/page/' . (Uri::$page+1); ?>" class="next">Next Page &#x2192;</a>
 
 					<?php else: ?>
 						<a class="next disabled">Next Page &#x2192;</a>
@@ -67,7 +67,7 @@
 					<?php endif ?>
 
 
-					<span class="page"><?php echo "Page " . Pixelpost_Uri::$page . " of " . Pixelpost_Uri::$total_pages; ?></span>
+					<span class="page"><?php echo "Page " . Uri::$page . " of " . Uri::$total_pages; ?></span>
 
 					<br class="clear"/>
 				</div>
