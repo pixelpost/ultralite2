@@ -14,7 +14,7 @@ class Controller_Post extends Controller
 		// $this->paginator = new Void;
 		
 		if (!$this->post->success) {
-			return Error::quit(404, 'Oh No!', 'We can\'t seem to locate the template file. Please try visiting the <a href="/">home page</a>.');
+			return Error::quit(404, 'So Sorry!', 'The post you are trying to view doesn\'t exist. Please try visiting the <a href="'.Config::current()->url.'">home page</a>.');
 		}
 		
 		return $this->output();

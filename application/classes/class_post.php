@@ -34,34 +34,42 @@ class Post
 	
 	public $success = false;
 
-	public function __construct($key)
+	public function __construct($post=null)
 	{
 		$this->config = Config::current();
 		
 		// var_dump($this->$config);
-		if (empty($key))
+		
+		if (is_object($post))
+		{
+			$this->post = $post;
+		}
+		elseif (empty($post))
 		{
 			// Query Database
 			// Load the default (latest) post
 			$sql = "SELECT * FROM `{$this->config->db_prefix}posts` WHERE `published` = '1' AND `date` <= CURRENT_TIMESTAMP ORDER BY `date` DESC LIMIT 1";
 		}
-		elseif(is_numeric($key))
+		elseif(is_numeric($post))
 		{
 			// Query Database
 			// Load the specified post_id
-			$sql = "SELECT * FROM `{$this->config->db_prefix}posts` WHERE `published` = '1' AND `id` = '$key' AND `date` <= CURRENT_TIMESTAMP ORDER BY `date` DESC LIMIT 1";
+			$sql = "SELECT * FROM `{$this->config->db_prefix}posts` WHERE `published` = '1' AND `id` = '$post' AND `date` <= CURRENT_TIMESTAMP ORDER BY `date` DESC LIMIT 1";
 		}
 		else
 		{
 			// Query Databse
 			// Load the specific post_slug
-			$sql = "SELECT * FROM `{$this->config->db_prefix}posts` WHERE `published` = '1' AND `slug` = '$key' AND `date` <= CURRENT_TIMESTAMP ORDER BY `date` DESC LIMIT 1";
+			$sql = "SELECT * FROM `{$this->config->db_prefix}posts` WHERE `published` = '1' AND `slug` = '$post' AND `date` <= CURRENT_TIMESTAMP ORDER BY `date` DESC LIMIT 1";
 		}
 		
-		$this->post = DB::get_row($sql);
 		
-		if (empty($this->post)) {
-			 return false;
+		if (empty($this->post))
+		{
+			$this->post = DB::get_row($sql);
+			
+			if (empty($this->post))
+				 return false;
 		}
 		
 		foreach ($this->post as $key => $value) {
@@ -165,35 +173,41 @@ class Post
 	}
 
 	/**
-	 * Fetch the Next Post
+	 * Fetch the Next (Newer) Post
 	 */
 	public function next()
 	{
-		// Rough, prototype code, the final code
-		// will find the next post by publish date
-		$id = $this->id + 1;
-		
 		if(is_object($this->next))
 			return $this->next;
 		
-		$this->next = new self($id);
+		$sql = "SELECT * FROM `{$this->config->db_prefix}posts` WHERE `published` = '1' AND `id` != '{$this->id}'  AND `date` => '{$this->date_raw}'  AND `date` <= CURRENT_TIMESTAMP ORDER BY `date` ASC LIMIT 1";
+		
+		$post = DB::get_row($sql);
+		
+		if (empty($post))
+			 return new Void;
+		
+		$this->next = new self($post);
 		
 		return $this->next;
 	}
 	
 	/**
-	 * Fetch the Previous Post
+	 * Fetch the Previous (Older) Post
 	 */
 	public function prev()
 	{
-		// Rough, prototype code, the final code
-		// will find the next post by publish date
-		$id = $this->id - 1;
-		
 		if(is_object($this->prev))
 			return $this->prev;
 		
-		$this->prev = new self($id);
+		$sql = "SELECT * FROM `{$this->config->db_prefix}posts` WHERE `published` = '1' AND `id` != '{$this->id}' AND `date` <= '{$this->date_raw}'  AND `date` <= CURRENT_TIMESTAMP ORDER BY `date` DESC LIMIT 1";
+		
+		$post = DB::get_row($sql);
+		
+		if (empty($post))
+			 return new Void;
+		
+		$this->prev = new self($post);
 		
 		return $this->prev;
 	}
