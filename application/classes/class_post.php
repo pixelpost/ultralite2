@@ -191,9 +191,7 @@ class Post
 				break;
 		}
 		
-		$result = DB::get_row($sql);
-		
-		return $result;
+		return DB::get_row($sql);
 	}
 
 
