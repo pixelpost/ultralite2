@@ -12,23 +12,18 @@
 class Post
 {
 	/**
-	 * Stores the next() object
-	 *
-	 * @var object
-	 * @access private
+	 * Storage for the respective method calls
+	 * next(), prev(), first(), last()
 	 */
 	private $_next;
+	private $_prev;
+	private $_first;
+	private $_last;
 	
 	/**
-	 * Stores the prev() object
-	 *
-	 * @var object
-	 * @access private
+	 * Storage for the current config, and post database result
 	 */
-	private $_prev;
-	
 	private $config;
-	
 	private $post;
 	
 	public $success = false;
