@@ -11,21 +11,21 @@
 
 class Post
 {
-	/**
-	 * Stores the next() object, if called
-	 *
-	 * @var object
-	 * @access private
-	 */
-	private $next;
-
-	/**
-	 * Stores the prev() object, if called
-	 *
-	 * @var object
-	 * @access private
-	 */
-	private $prev;
+	// /**
+	//  * Stores the next() object, if called
+	//  *
+	//  * @var object
+	//  * @access private
+	//  */
+	// private $_next;
+	// 
+	// /**
+	//  * Stores the prev() object, if called
+	//  *
+	//  * @var object
+	//  * @access private
+	//  */
+	// private $_prev;
 	
 	private $config;
 	
@@ -97,7 +97,7 @@ class Post
 	}
 
 	/**
-	 * Loads the sub class, when requested
+	 * Loads the sub class, with a inaccessible property is requested
 	 */
 	public function __get($property)
 	{
@@ -110,6 +110,24 @@ class Post
 		return new Void;
 	}
 
+
+	public function __call($name, $arguments)
+	{
+		$name = '_'.$name;
+		
+		if(isset($this->$name))
+			return $this->$name;
+		
+		$result = $this->query($name, $arguments);
+		
+		if (empty($result))
+			 return new Void;
+		
+		$this->$name = new self($result);
+		
+		return $this->$name;
+	}
+
 	/**
 	 * Fetch a new Post
 	 * A shorthand way to create a new Post class
@@ -120,61 +138,18 @@ class Post
 	}
 
 	/**
-	 * Fetch the Next (Newer) Post
-	 */
-	public function next()
-	{
-		if(is_object($this->next))
-			return $this->next;
-		
-		$post = $this->query('__next');
-		
-		if (empty($post))
-			 return new Void;
-		
-		$this->next = new self($post);
-		
-		return $this->next;
-	}
-	
-	/**
-	 * Fetch the Previous (Older) Post
-	 */
-	public function prev()
-	{
-		if(is_object($this->prev))
-			return $this->prev;
-		
-		$post = $this->query('__prev');
-		
-		if (empty($post))
-			 return new Void;
-		
-		$this->prev = new self($post);
-		
-		return $this->prev;
-	}
-		
-	/**
-	 * Alias for prev()
-	 */
-	public function previous()
-	{
-		return $this->prev();
-	}
-
-	/**
 	 * Perform a Database Query
 	 */
-	public function query($post=null)
+	public function query($post=null, $arguments=array())
 	{
 		switch ($post) {
 			
-			case '__next': // Load the the Next (Newer) Post
+			case '_next': // Load the the Next (Newer) Post
 				$sql = "SELECT * FROM `{$this->config->db_prefix}posts` WHERE `published` = '1' AND `id` != '{$this->id}'  AND `date` => '{$this->date_raw}'  AND `date` <= CURRENT_TIMESTAMP ORDER BY `date` ASC LIMIT 1";
 				break;
 			
-			case '__prev': // Load the the Previous (Older) Post
+			case '_prev': // Load the the Previous (Older) Post
+			case '_previous': // Alias for _prev
 				$sql = "SELECT * FROM `{$this->config->db_prefix}posts` WHERE `published` = '1' AND `id` != '{$this->id}' AND `date` <= '{$this->date_raw}'  AND `date` <= CURRENT_TIMESTAMP ORDER BY `date` DESC LIMIT 1";
 				break;
 			
