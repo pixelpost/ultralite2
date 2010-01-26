@@ -12,10 +12,24 @@
 <body>
 <?php 
 
-var_dump($this);
+// var_dump($this->post);
 
-var_dump($this->blue);
+echo "Current:";
+var_dump($this->post->title);
 
+echo "Next:";
+var_dump($this->post->next()->title);
+
+echo "Previous:";
+var_dump($this->post->prev()->title);
+
+echo "First:";
+var_dump($this->post->first()->title);
+
+echo "Last:";
+var_dump($this->post->last()->title);
+
+// var_dump($this->post);
 ?>
 </body>
 </html>

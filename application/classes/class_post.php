@@ -11,21 +11,21 @@
 
 class Post
 {
-	// /**
-	//  * Stores the next() object, if called
-	//  *
-	//  * @var object
-	//  * @access private
-	//  */
-	// private $_next;
-	// 
-	// /**
-	//  * Stores the prev() object, if called
-	//  *
-	//  * @var object
-	//  * @access private
-	//  */
-	// private $_prev;
+	/**
+	 * Stores the next() object
+	 *
+	 * @var object
+	 * @access private
+	 */
+	private $_next;
+	
+	/**
+	 * Stores the prev() object
+	 *
+	 * @var object
+	 * @access private
+	 */
+	private $_prev;
 	
 	private $config;
 	
@@ -79,7 +79,7 @@ class Post
 
 	/**
 	 * Checks if a sub-class exists when an empty() or isset() 
-	 * function is called on a non-existent property.
+	 * function is called on an inaccessible property.
 	 * 
 	 * Input:
 	 *    "test" ($post->test)
@@ -97,7 +97,7 @@ class Post
 	}
 
 	/**
-	 * Loads the sub class, with a inaccessible property is requested
+	 * Loads the sub class, when an inaccessible property is requested
 	 */
 	public function __get($property)
 	{
@@ -110,7 +110,15 @@ class Post
 		return new Void;
 	}
 
-
+	/**
+	 * Executes a requested call
+	 * 
+	 * Example:
+	 *    $post->next();
+	 *    $post->prev();
+	 *    $post->first();
+	 *    $post->last();
+	 */
 	public function __call($name, $arguments)
 	{
 		$name = '_'.$name;
@@ -145,7 +153,7 @@ class Post
 		switch ($post) {
 			
 			case '_next': // Load the the Next (Newer) Post
-				$sql = "SELECT * FROM `{$this->config->db_prefix}posts` WHERE `published` = '1' AND `id` != '{$this->id}'  AND `date` => '{$this->date_raw}'  AND `date` <= CURRENT_TIMESTAMP ORDER BY `date` ASC LIMIT 1";
+				$sql = "SELECT * FROM `{$this->config->db_prefix}posts` WHERE `published` = '1' AND `id` != '{$this->id}'  AND `date` >= '{$this->date_raw}'  AND `date` <= CURRENT_TIMESTAMP ORDER BY `date` ASC LIMIT 1";
 				break;
 			
 			case '_prev': // Load the the Previous (Older) Post
@@ -153,8 +161,13 @@ class Post
 				$sql = "SELECT * FROM `{$this->config->db_prefix}posts` WHERE `published` = '1' AND `id` != '{$this->id}' AND `date` <= '{$this->date_raw}'  AND `date` <= CURRENT_TIMESTAMP ORDER BY `date` DESC LIMIT 1";
 				break;
 			
+			case '_last':
 			case '': // Load the default (latest) post
 				$sql = "SELECT * FROM `{$this->config->db_prefix}posts` WHERE `published` = '1' AND `date` <= CURRENT_TIMESTAMP ORDER BY `date` DESC LIMIT 1";
+				break;
+			
+			case '_first':
+				$sql = "SELECT * FROM `{$this->config->db_prefix}posts` WHERE `published` = '1' AND `date` <= CURRENT_TIMESTAMP ORDER BY `date` ASC LIMIT 1";
 				break;
 			
 			case (is_numeric($post)): // Load the specified post_id
