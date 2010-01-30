@@ -30,10 +30,10 @@ class Post
 
 	public function __construct($post=null)
 	{
-		$this->config = Config::current();
+		$this->config = & Config::current();
 		
 		if (is_object($post))
-			$this->post = $post;
+			$this->post = & $post;
 		else
 			$this->post = $this->query($post);
 
