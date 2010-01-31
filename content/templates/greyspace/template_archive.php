@@ -42,14 +42,13 @@
 
 		<div class="bottom section">
 
-			<?php if ($this->site->posts_per_page): ?>
-
+			<?php if ($this->site->per_page): ?>
+				
 				<div class="pagination">
-
-					<?php if ((Uri::$page) == 2): ?>
+					<?php if ($this->archive->page == 2): ?>
 						<a href="<?php echo Uri::$uri; ?>" class="previous">&#x2190; Previous Page</a>
 
-					<?php elseif ((Uri::$page) > 1): ?>
+					<?php elseif ($this->archive->page > 1): ?>
 						<a href="<?php echo Uri::$uri . '/page/' . (Uri::$page-1); ?>" class="previous">&#x2190; Previous Page</a>
 
 					<?php else: ?>
@@ -58,7 +57,7 @@
 					<?php endif ?>
 
 
-					<?php if (Uri::$page < Uri::$total_pages): ?>
+					<?php if ($this->archive->page < $this->archive->total_pages): ?>
 						<a href="<?php echo Uri::$uri . '/page/' . (Uri::$page+1); ?>" class="next">Next Page &#x2192;</a>
 
 					<?php else: ?>
@@ -67,7 +66,7 @@
 					<?php endif ?>
 
 
-					<span class="page"><?php echo "Page " . Uri::$page . " of " . Uri::$total_pages; ?></span>
+					<span class="page"><?php echo "Page " . $this->archive->page . " of " . $this->archive->total_pages; ?></span>
 
 					<br class="clear"/>
 				</div>

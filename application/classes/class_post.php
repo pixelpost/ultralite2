@@ -40,12 +40,14 @@ class Post
 		if (empty($this->post))
 			 return false;
 		
-		foreach ($this->post as $key => $value)
+		foreach ($this->post as $key => & $value)
 		{
 			if (is_numeric($value))
 				$this->$key = (int) $value;
-			else
+			elseif($key == 'description')
 				$this->$key = $value;
+			else
+				$this->$key = Helper::entities($value);
 		}
 		
 		// Format Dates
@@ -54,6 +56,7 @@ class Post
 		$this->date           = date($this->config->date_format, $this->date_timestamp);
 		
 		$this->author_name = 'Jay Williams'; // Pull from db, on request?
+		
 		
 		// Format Permalink
 		if ($this->config->permalink == 'slug')
