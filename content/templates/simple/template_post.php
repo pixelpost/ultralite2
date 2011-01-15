@@ -29,7 +29,7 @@ var_dump($this->post->first()->title);
 echo "Last:";
 var_dump($this->post->last()->title);
 
-// var_dump($this->post);
+var_dump($this->post);
 ?>
 </body>
 </html>
