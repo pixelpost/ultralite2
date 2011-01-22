@@ -1,6 +1,6 @@
 <?php
 
-namespace 'pixelpost';
+namespace pixelpost;
 
 /**
  * Configuration support 
@@ -68,7 +68,7 @@ final class Config extends \ArrayObject
             throw Error::create();
         }
 
-        if ( false !== $content = file_get_contents($filename) )
+        if ( false == $content = file_get_contents($filename) )
         {
             throw Error::create();
         }
@@ -83,6 +83,8 @@ final class Config extends \ArrayObject
         static::create()->exchangeArray($conf);
 
         self::$_file = $filename;
+
+        return self::$_instance;
     }
 
     /**

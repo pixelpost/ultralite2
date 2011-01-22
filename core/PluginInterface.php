@@ -1,6 +1,6 @@
 <?php
 
-namespace 'pixelpost';
+namespace pixelpost;
 
 /**
  * Plugin support 

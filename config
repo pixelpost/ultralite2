@@ -1,6 +1,7 @@
 {
     "debug"   : true,
     "url"     : "http://www.something.com/",
+    "timezone": "America/Chicago",
     "userdir" : "",
     "api"     : "api",
     "admin"   : "admin",

@@ -1,7 +1,7 @@
 <?php
 
 // Step 0. Hello world, here is the entry point
-namespace 'pixelpost';
+namespace pixelpost;
 
 // Step 1. A little of PHP conf
 error_reporting(E_ALL|E_STRICT);
@@ -26,29 +26,29 @@ ini_set('short_open_tag',                'off');
 ini_set('magic_quotes_gpc',              'off');
 
 // Step 2. A little of constant creation
-defined('SEP')       or define('SEP',       \DIRECTORY_SEPARATOR,        true);
-defined('CORE_PATH') or define('CORE_PATH',  __DIR__,                    true);
-defined('ROOT_PATH') or define('ROOT_PATH',  dirname(__DIR__),           true);
-defined('SHOT_PATH') or define('SHOT_PATH', ROOT_PATH . SEP . 'photos',  true);
-defined('PLUG_PATH') or define('PLUG_PATH', ROOT_PATH . SEP . 'plugins', true);
+defined('SEP')       or define('SEP',       \DIRECTORY_SEPARATOR,         true);
+defined('ROOT_PATH') or define('ROOT_PATH',  dirname(__FILE__) . SEP,    true);
+defined('CORE_PATH') or define('CORE_PATH', ROOT_PATH . 'core' . SEP,    true);
+defined('SHOT_PATH') or define('SHOT_PATH', ROOT_PATH . 'photos' . SEP,  true);
+defined('PLUG_PATH') or define('PLUG_PATH', ROOT_PATH . 'plugins' . SEP, true);
 
 // Step 3. A little of error handling
-set_error_handler(function ($errno, $errstr, $errfile, $errline)
-{
-    throw new \ErrorException($errstr, 0, $errno, $errfile, $errline);
-});
-
-set_exception_handler(function ($exception) 
-{
-    if (class_exists('\pixelpost\Event'))
-    {
-        \pixelpost\Event::signal('error.new', array($exception));
-    }
-    elseif (DEBUG)
-    {
-        echo $exception;
-    }
-});
+// set_error_handler(function ($errno, $errstr, $errfile, $errline)
+// {
+//     throw new \ErrorException($errstr, 0, $errno, $errfile, $errline);
+// });
+// 
+// set_exception_handler(function ($exception)
+// {
+//     if (class_exists('\pixelpost\Event'))
+//     {
+//         \pixelpost\Event::signal('error.new', array($exception));
+//     }
+//     elseif (DEBUG)
+//     {
+//         echo $exception;
+//     }
+// });
 
 // Step 4. We need to load the minimum to work
 require_once CORE_PATH . 'Error.php';
@@ -59,9 +59,11 @@ require_once CORE_PATH . 'Plugin.php';
 require_once CORE_PATH . 'Db.php';
 require_once CORE_PATH . 'Filter.php';
 require_once CORE_PATH . 'Photo.php';
+require_once CORE_PATH . 'PluginInterface.php';
+require_once PLUG_PATH . 'router/plugin.php';
 
 // Step 5. We need to parse the config file and set properly the environnement
-$conf = Config::load(ROOT_PATH . SEP . 'config');
+$conf = Config::load(ROOT_PATH . 'config');
 
 defined('DEBUG')   or define('DEBUG',   $conf->debug, true);
 defined('WEB_URL') or define('WEB_URL', $conf->url,   true);

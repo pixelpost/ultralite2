@@ -1,6 +1,6 @@
 <?php
 
-namespace 'pixelpost';
+namespace pixelpost;
 
 /**
  * Request support 
@@ -352,7 +352,7 @@ class Request
      *
      * @return string
      */
-    public function get scheme()
+    public function get_scheme()
     {
         return $this->_scheme;
     }

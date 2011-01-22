@@ -1,6 +1,6 @@
 <?php
 
-namespace 'pixelpost';
+namespace pixelpost;
 
 /**
  * Plugin support 
@@ -14,7 +14,7 @@ class Plugin
 {
     const NS_SEP     = '\\';
     const NS         = 'plugins';
-    const PLUG_CLASS = 'plugin';
+    const PLUG_CLASS = 'Plugin';
     const PLUG_FILE  = 'plugin.php';
     const PLUG_IFACE = '\pixelpost\PluginInterface';
 
@@ -35,7 +35,7 @@ class Plugin
 
         $conf = Config::create();
 
-        if ( ! isset($conf->plugins[$plugin] )
+        if ( ! isset($conf->plugins[$plugin]) )
         {
             self::set_state($plugin, self::STATE_UNINSTALLED);
         }
@@ -92,8 +92,8 @@ class Plugin
     public static function get_class($plugin)
     {
         Filter::is_string($plugin);
-        
-        return __NAMESPACE__ . NS_SEP . NS . NS_SEP . $plugin . NS_SEP . PLUG_CLASS;
+
+        return __NAMESPACE__ . self::NS_SEP . self::NS . self::NS_SEP . $plugin . self::NS_SEP . self::PLUG_CLASS;
     }
 
     /**

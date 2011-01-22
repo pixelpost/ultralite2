@@ -1,8 +1,8 @@
 <?php
 
-namespace 'pixelpost\plugins\router';
+namespace pixelpost\plugins\router;
 
-use 'pixelpost';
+use pixelpost;
 
 /**
  * Base router for utltralite2. 
@@ -22,7 +22,7 @@ use 'pixelpost';
  * @version    0.0.1
  * @since      File available since Release 2.0.0
  */
-class Plugin implements PluginInterface
+class Plugin implements pixelpost\PluginInterface
 {
     public static function on_request(Event $event)
     {
@@ -45,9 +45,9 @@ class Plugin implements PluginInterface
         // other words is the WEB interface.
         switch (array_shift($urlParams))
         {
-            case $conf->admin : Event::signal('request.admin', $eventData);
-            case $conf->api   : Event::signal('request.api',   $eventData);
-            default           : Event::signal('request.web',   $eventData);
+            case $conf->admin : pixelpost\Event::signal('request.admin', $eventData);
+            case $conf->api   : pixelpost\Event::signal('request.api',   $eventData);
+            default           : pixelpost\Event::signal('request.web',   $eventData);
         }
 
         // we order to stop processing of the event request.new by returning 
@@ -77,6 +77,6 @@ class Plugin implements PluginInterface
     
     public static function register()
     {
-        Event::register('request.new', __NAMESPACE__ . '::on_request');
+        pixelpost\Event::register('request.new', __NAMESPACE__ . '::on_request');
     }
 }
