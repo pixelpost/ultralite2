@@ -6,3 +6,4 @@ application/config.php
 .DS_Store
 *.tmproj
 *.sqlite3
+*.un~

@@ -1,0 +1,61 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine on
+    RewriteRule ^.*\.(css|js|gif|png|jpe?g|ico|swf|flv|txt)$ - [L]
+    RewriteRule index.php$ - [L]
+    RewriteRule ^.*$ index.php [L]
+</IfModule>
+
+#ErrorDocument 404 /index.php
+
+<Directory ./>
+    Options +FollowSymLinks
+    Options -Indexes
+    Options -ExecCGI
+    Options -Includes
+    Options -MultiViews
+    Options -SymLinksIfOwnerMatch
+    AllowOverride All
+    Order Allow,Deny
+    Allow from all
+</Directory>
+
+# javascript compression need to be checked
+<IfModule deflate_module>
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/x-javascript
+</IfModule>
+
+
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresDefault A0
+
+    <FilesMatch "\.(gif|jpe?g|png|js|css|ico)$">
+        ExpiresDefault A3600
+    </FilesMatch>
+</IfModule>
+
+<IfModule mod_php5.c>
+    php_admin_value upload_tmp_dir    /home/nobody/weebio/www/tmp
+    php_admin_value memory_limit               128M
+    php_admin_value post_max_size              1M
+    php_admin_value upload_max_filesize        2M
+    php_admin_value date.timezone              Europe/Paris
+    php_admin_value default_socket_timeout     10
+    php_admin_value default_mimetype           text/html
+    php_admin_value default_charset            UTF-8
+    php_admin_value mbstring.internal_encoding UTF-8
+    php_admin_value mbstring.http_input        UTF-8
+    php_admin_value mbstring.http_output       UTF-8
+    php_admin_value mbstring.func_overload     7
+    php_admin_flag mbstring.encoding_translation on
+    php_admin_flag asp_tags                      off
+    php_admin_flag allow_url_fopen               off
+    php_admin_flag allow_url_finclude            off
+    php_admin_flag file_uploads                  off
+    php_admin_flag register_argc_argv            off
+    php_admin_flag register_long_arrays          off
+    php_admin_flag safe_mode                     off
+    php_admin_flag short_open_tag                off
+    php_admin_flag magic_quotes_gpc              off
+</IfModule>
+

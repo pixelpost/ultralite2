@@ -1,0 +1,11 @@
+{
+    "debug"   : true,
+    "url"     : "http://www.something.com/",
+    "userdir" : "",
+    "api"     : "api",
+    "admin"   : "admin",
+    "plugins" : 
+    {
+        "router" : "active"
+    }
+}
