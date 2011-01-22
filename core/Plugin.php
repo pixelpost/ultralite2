@@ -16,7 +16,7 @@ class Plugin
     const NS         = 'plugins';
     const PLUG_CLASS = 'plugin';
     const PLUG_FILE  = 'plugin.php';
-    const PLUG_IFACE = '\pixelpost\pluginInterface';
+    const PLUG_IFACE = '\pixelpost\PluginInterface';
 
     const STATE_UNINSTALLED = 'uninstalled';
     const STATE_INACTIVE    = 'inactive';

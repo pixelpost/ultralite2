@@ -10,9 +10,9 @@ namespace 'pixelpost';
  * @version    0.0.1
  * @since      File available since Release 2.0.0
  */
-final class Event extends \ArrayObject
+class Event extends \ArrayObject
 {
-    private static $_listen = array();
+    protected static $_listen = array();
 
     /**
      * Create a new Event instance
