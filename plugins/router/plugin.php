@@ -24,7 +24,7 @@ use pixelpost;
  */
 class Plugin implements pixelpost\PluginInterface
 {
-    public static function on_request(Event $event)
+    public static function on_request(pixelpost\Event $event)
     {
         // retreive the configuration
         $conf = Config::create();
@@ -45,9 +45,9 @@ class Plugin implements pixelpost\PluginInterface
         // other words is the WEB interface.
         switch (array_shift($urlParams))
         {
-            case $conf->admin : pixelpost\Event::signal('request.admin', $eventData);
-            case $conf->api   : pixelpost\Event::signal('request.api',   $eventData);
-            default           : pixelpost\Event::signal('request.web',   $eventData);
+            case $conf->admin : pixelpost\Event::signal('request.admin', $eventData); break;
+            case $conf->api   : pixelpost\Event::signal('request.api',   $eventData); break;
+            default           : pixelpost\Event::signal('request.web',   $eventData); break;
         }
 
         // we order to stop processing of the event request.new by returning 

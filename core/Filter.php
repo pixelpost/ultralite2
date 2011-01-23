@@ -297,7 +297,7 @@ class Filter
      * @param string $str
      * @param string $toEncoding
      */
-    public static function checkEncoding(&$str, $toEncoding = 'UTF-8')
+    public static function check_encoding(&$str, $toEncoding = 'UTF-8')
     {
         if (mb_check_encoding($str, $toEncoding) == false)
         {

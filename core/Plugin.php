@@ -220,6 +220,8 @@ class Plugin
      */
     public static function register($plugin)
     {
+        require_once self::get_file($plugin);
+
         return call_user_func(self::get_method($plugin, 'register'));
     }
 

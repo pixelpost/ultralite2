@@ -7,6 +7,8 @@
     "admin"   : "admin",
     "plugins" : 
     {
-        "router" : "active"
+        "router"   : "active",
+        "api"      : "active",
+        "api_json" : "active"
     }
 }
