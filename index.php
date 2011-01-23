@@ -27,7 +27,7 @@ ini_set('magic_quotes_gpc',              'off');
 
 // Step 2. A little of constant creation
 defined('SEP')       or define('SEP',       DIRECTORY_SEPARATOR,         true);
-defined('ROOT_PATH') or define('ROOT_PATH', dirname(__FILE__),           true);
+defined('ROOT_PATH') or define('ROOT_PATH', __DIR__,                     true);
 defined('CORE_PATH') or define('CORE_PATH', ROOT_PATH . SEP . 'core',    true);
 defined('SHOT_PATH') or define('SHOT_PATH', ROOT_PATH . SEP . 'photos',  true);
 defined('PLUG_PATH') or define('PLUG_PATH', ROOT_PATH . SEP . 'plugins', true);

@@ -12,6 +12,6 @@ namespace pixelpost;
  */
 class Photo
 {
-}
 
+}
 

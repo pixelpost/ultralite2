@@ -12,5 +12,6 @@ namespace pixelpost;
  */
 class Db
 {
+
 }
 

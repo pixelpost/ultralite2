@@ -3,7 +3,7 @@
 namespace pixelpost;
 
 /**
- * Error support 
+ * Error support
  *
  * @copyright  2011 Alban LEROUX <seza@paradoxal.org>
  * @license    http://creativecommons.org/licenses/by-sa/2.0/fr/ Creative Commons
@@ -12,110 +12,115 @@ namespace pixelpost;
  */
 class Error extends \Exception
 {
-    /**
-     * Create a new instance of the Error class
-     *
-     * @param int   $code The error code (see: get_message_by_code())
-     * @param array $args The optionnals args (array of string)
-     */
-    public function __construct($code = 0, array $args = array())
-    {
-        // check code is a int
-        \is_int($code) or $code = $this->get_default_code();
 
-        // get the error message
-        $message = $this->get_message_by_code($code);
+	/**
+	 * Create a new instance of the Error class
+	 *
+	 * @param int   $code The error code (see: get_message_by_code())
+	 * @param array $args The optionnals args (array of string)
+	 */
+	public function __construct($code = 0, array $args = array())
+	{
+		// check code is a int
+		\is_int($code) or $code = $this->get_default_code();
 
-        \is_string($message) or $message = $this->get_default_message();
+		// get the error message
+		$message = $this->get_message_by_code($code);
 
-        // if there are some arguments, format them
-        if (empty($args) == false && $message !== false)
-        {
-            $message = $this->_sprintf_message($message, $args);
-        }
+		\is_string($message) or $message = $this->get_default_message();
 
-        // construct the exception
-        parent::__construct($message, $code);
-    }
+		// if there are some arguments, format them
+		if (empty($args) == false && $message !== false)
+		{
+			$message = $this->_sprintf_message($message, $args);
+		}
 
-    /**
-     * Create a new Error instance and return it
-     *
-     * @param int   $code The error code (see: get_message_by_code())
-     * @param array $args The optionnals args (array of string)
-     * @return Error
-     */
-    public static function create($code = 0, array $args = array())
-    {
-        return new static($code, $args);
-    }
+		// construct the exception
+		parent::__construct($message, $code);
+	}
 
-    /**
-     * Return an explicit message.
-     *
-     * @final
-     * @return string
-     */
-    public final function __toString()
-    {
-        return sprintf('[%s][%d] : %s', get_class($this), $this->code, $this->message);
-    }
+	/**
+	 * Create a new Error instance and return it
+	 *
+	 * @param int   $code The error code (see: get_message_by_code())
+	 * @param array $args The optionnals args (array of string)
+	 * @return Error
+	 */
+	public static function create($code = 0, array $args = array())
+	{
+		return new static($code, $args);
+	}
 
-    /**
-     * Complete the error message with the args.
-     *
-     * This methods process like the sprintf() function in PHP core, just more 
-     * handy (error should not be generate error of formating).
-     *
-     * @param  string $message Message without formating
-     * @param  array  $args    Arguments, data to add in the message
-     * @return string          
-     */
-    private function _sprintf_message($message, array $args)
-    {
-        // create a range(1..X) where X is exactly the number of arguments we 
-        // have.
-        $search = range(1, sizeof($args));
+	/**
+	 * Return an explicit message.
+	 *
+	 * @final
+	 * @return string
+	 */
+	public final function __toString()
+	{
+		return sprintf('[%s][%d] : %s', get_class($this), $this->code, $this->message);
+	}
 
-        // change $search range(1..NumARgs) to range(%s1..%sNumARgs)
-        array_walk($search, function (&$value, $key) { $value = '%s'.$value; });
+	/**
+	 * Complete the error message with the args.
+	 *
+	 * This methods process like the sprintf() function in PHP core, just more
+	 * handy (error should not be generate error of formating).
+	 *
+	 * @param  string $message Message without formating
+	 * @param  array  $args    Arguments, data to add in the message
+	 * @return string
+	 */
+	protected function _sprintf_message($message, array $args)
+	{
+		// create a range(1..X) where X is exactly the number of arguments we
+		// have.
+		$search = range(1, sizeof($args));
 
-        // replace each %sX by its arguments 
-        return str_replace($search, $args, $message);
-    }
+		// change $search range(1..NumARgs) to range(%s1..%sNumARgs)
+		array_walk($search, function (&$value, $key)
+				{
+					$value = '%s' . $value;
+				});
 
-    /**
-     * Return the default error code
-     *
-     * @return int
-     */
-    public function get_default_code()
-    {
-        return 0;
-    }
+		// replace each %sX by its arguments
+		return str_replace($search, $args, $message);
+	}
 
-    /**
-     * Return the default error message
-     *
-     * @return string
-     */
-    public function get_default_message()
-    {
-        return 'Unknow Exception.';
-    }
+	/**
+	 * Return the default error code
+	 *
+	 * @return int
+	 */
+	public function get_default_code()
+	{
+		return 0;
+	}
 
-    /**
-     * Return the message corresponding to a code number
-     *
-     * @param int $code code number
-     * @return string
-     */
-    public function get_message_by_code($code)
-    {
-        switch($code)
-        {
-            case 1 :    return 'Filter : Parameter is not a "%s1".';
-        }
-    }
+	/**
+	 * Return the default error message
+	 *
+	 * @return string
+	 */
+	public function get_default_message()
+	{
+		return 'Unknow Exception.';
+	}
+
+	/**
+	 * Return the message corresponding to a code number
+	 *
+	 * @param int $code code number
+	 * @return string
+	 */
+	public function get_message_by_code($code)
+	{
+		switch ($code)
+		{
+			case 1 : return 'Filter : Parameter is not a "%s1".';
+		}
+	}
+
 }
 

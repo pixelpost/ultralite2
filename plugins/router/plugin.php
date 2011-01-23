@@ -5,7 +5,7 @@ namespace pixelpost\plugins\router;
 use pixelpost;
 
 /**
- * Base router for utltralite2. 
+ * Base router for utltralite2.
  *
  * Tracks Event :
  *
@@ -15,7 +15,7 @@ use pixelpost;
  *
  * request.api
  * request.admin
- * request.web 
+ * request.web
  *
  * @copyright  2011 Alban LEROUX <seza@paradoxal.org>
  * @license    http://creativecommons.org/licenses/by-sa/2.0/fr/ Creative Commons
@@ -24,59 +24,67 @@ use pixelpost;
  */
 class Plugin implements pixelpost\PluginInterface
 {
-    public static function on_request(pixelpost\Event $event)
-    {
-        // retreive the configuration
-        $conf = Config::create();
 
-        // get the url paramters, the Request class already split the url (using 
-        // slashes) and get_params() is the array result of the split. 
-        $urlParams = $event->request->get_params();
+	public static function on_request(pixelpost\Event $event)
+	{
+		// retreive the configuration
+		$conf = Config::create();
 
-        // no parameter in the url, we add a virtual one
-        if (count($urlParams) == 0) $urlParams[] = 'index';
+		// get the url paramters, the Request class already split the url (using
+		// slashes) and get_params() is the array result of the split.
+		$urlParams = $event->request->get_params();
 
-        // prepare the event data (we just continu to pass the request class 
-        // send by the 'request.new' event).
-        $eventData = array('request' => $event->request);
+		// no parameter in the url, we add a virtual one
+		if (count($urlParams) == 0) $urlParams[] = 'index';
 
-        // make a choice between ADMIN, API, WEB. 
-        // ADMIN and API base url are sent in the configuration file
-        // other words is the WEB interface.
-        switch (array_shift($urlParams))
-        {
-            case $conf->admin : pixelpost\Event::signal('request.admin', $eventData); break;
-            case $conf->api   : pixelpost\Event::signal('request.api',   $eventData); break;
-            default           : pixelpost\Event::signal('request.web',   $eventData); break;
-        }
+		// prepare the event data (we just continu to pass the request class
+		// send by the 'request.new' event).
+		$eventData = array('request' => $event->request);
 
-        // we order to stop processing of the event request.new by returning 
-        // false
-        return false;
-    }
+		// make a choice between ADMIN, API, WEB.
+		// ADMIN and API base url are sent in the configuration file
+		// other words is the WEB interface.
+		switch (array_shift($urlParams))
+		{
+			case $conf->admin :
+				pixelpost\Event::signal('request.admin', $eventData);
+				break;
+			case $conf->api :
+				pixelpost\Event::signal('request.api', $eventData);
+				break;
+			default :
+				pixelpost\Event::signal('request.web', $eventData);
+				break;
+		}
 
-    public static function version()
-    {
-        return '0.0.1';
-    }
+		// we order to stop processing of the event request.new by returning
+		// false
+		return false;
+	}
 
-    public static function install()
-    {
-        return true;
-    }
+	public static function version()
+	{
+		return '0.0.1';
+	}
 
-    public static function uninstall()
-    {
-        return true;
-    }
+	public static function install()
+	{
+		return true;
+	}
 
-    public static function update()
-    {
-        return true;
-    }    
-    
-    public static function register()
-    {
-        pixelpost\Event::register('request.new', __NAMESPACE__ . '::on_request');
-    }
+	public static function uninstall()
+	{
+		return true;
+	}
+
+	public static function update()
+	{
+		return true;
+	}
+
+	public static function register()
+	{
+		pixelpost\Event::register('request.new', __NAMESPACE__ . '::on_request');
+	}
+
 }

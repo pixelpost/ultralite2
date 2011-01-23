@@ -3,7 +3,7 @@
 namespace pixelpost;
 
 /**
- * Plugin support 
+ * Plugin support
  *
  * @copyright  2011 Alban LEROUX <seza@paradoxal.org>
  * @license    http://creativecommons.org/licenses/by-sa/2.0/fr/ Creative Commons
@@ -12,9 +12,13 @@ namespace pixelpost;
  */
 interface PluginInterface
 {
-    public static function register();
-    public static function install();
-    public static function uninstall();
-    public static function version();
-    public static function update();
+	public static function register();
+
+	public static function install();
+
+	public static function uninstall();
+
+	public static function version();
+
+	public static function update();
 }
