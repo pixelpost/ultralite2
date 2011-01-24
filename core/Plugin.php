@@ -47,6 +47,7 @@ class Plugin
 	 * Change the state of a plugin, the configuration file is directly written,
 	 * return TRUE if writing the config file is a success else FALSE.
 	 *
+	 * @throws Error
 	 * @param string $plugin The plugin name
 	 * @param string $state  The new state of the plugin
 	 * @return bool
@@ -59,9 +60,9 @@ class Plugin
 		switch ($state)
 		{
 			case self::STATE_UNINSTALLED : break;
-			case self::STATE_INACTIVE : break;
-			case self::STATE_ACTIVE : break;
-			default : throw new Error();
+			case self::STATE_INACTIVE    : break;
+			case self::STATE_ACTIVE      : break;
+			default : throw new Error(6, array($state));
 		}
 
 		$conf = Config::create();
@@ -128,12 +129,12 @@ class Plugin
 
 		if (!class_exists($class))
 		{
-			throw new Error();
+			throw new Error(7, array($plugin, self::PLUG_CLASS, $class));
 		}
 
 		if (!array_key_exists(self::PLUG_IFACE, class_implements($class)))
 		{
-			throw new Error();
+			throw new Error(8, array($plugin, self::PLUG_CLASS, self::PLUG_IFACE));
 		}
 	}
 
@@ -141,6 +142,7 @@ class Plugin
 	 * Check if new plugins are present in the plugin folder. If yes, the
 	 * plugins is added to list in state 'uninstalled'.
 	 *
+	 * @throws Error
 	 * @return bool
 	 */
 	public static function detect()
@@ -151,7 +153,7 @@ class Plugin
 
 		if (false === $rd = opendir(PLUG_PATH))
 		{
-			throw new Error();
+			throw new Error(9, array(PLUG_PATH));
 		}
 
 		while (false !== $file = readdir($rd))
@@ -176,6 +178,7 @@ class Plugin
 	 * Totaly remove a plugin (this method can be dangerous). Uninstall the
 	 * plugins before delete it if it is installed.
 	 *
+	 * @throws Error
 	 * @param string $plugin The plugin name
 	 * @return bool
 	 */
@@ -200,7 +203,7 @@ class Plugin
 			}
 			else
 			{
-				if (false === $rd = opendir($f)) throw new Error();
+				if (false === $rd = opendir($f)) throw new Error(9, array($f));
 
 				while (false !== $file = readdir($rd)) $rmrf($file);
 

@@ -60,7 +60,7 @@ class Event extends \ArrayObject
 			self::$_listen[$eventName] = array();
 		}
 
-		self::$_listen[$eventName] = $callback;
+		self::$_listen[$eventName][] = $callback;
 	}
 
 	/**
@@ -88,8 +88,7 @@ class Event extends \ArrayObject
 
 		foreach (self::$_listen[$eventName] as $callback)
 		{
-			if (!call_user_func($callback, $event))
-				break;
+			if (!call_user_func($callback, $event)) break;
 		}
 
 		return $event;

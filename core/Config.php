@@ -31,7 +31,7 @@ class Config extends \ArrayObject
 	{
 		if (!is_null(self::$_instance))
 		{
-			throw Error::create();
+			throw Error::create(2);
 		}
 
 		parent::__construct(array(), \ArrayObject::ARRAY_AS_PROPS);
@@ -65,19 +65,27 @@ class Config extends \ArrayObject
 
 		if (!file_exists($filename))
 		{
-			throw Error::create();
+			throw Error::create(3, array($filename));
 		}
 
 		if (false == $content = file_get_contents($filename))
 		{
-			throw Error::create();
+			throw Error::create(4, array($filename));
 		}
 
 		$conf = json_decode($content, true);
 
 		if (json_last_error() != \JSON_ERROR_NONE)
 		{
-			throw Error::create();
+			$errormsg = '';
+			switch (json_last_error())
+			{
+				default                   : $errormsg = 'Unkown error';
+				case JSON_ERROR_DEPTH     : $errormsg = 'Max depth.';
+				case JSON_ERROR_CTRL_CHAR : $errormsg = 'Bad characters.';
+				case JSON_ERROR_SYNTAX    : $errormsg = 'Bad syntax.';
+			}
+			throw Error::create(5, array($filename, $errormsg));
 		}
 
 		static::create()->exchangeArray($conf);

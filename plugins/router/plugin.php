@@ -5,7 +5,7 @@ namespace pixelpost\plugins\router;
 use pixelpost;
 
 /**
- * Base router for utltralite2.
+ * Base router for pixelpost.
  *
  * Tracks Event :
  *
@@ -28,7 +28,7 @@ class Plugin implements pixelpost\PluginInterface
 	public static function on_request(pixelpost\Event $event)
 	{
 		// retreive the configuration
-		$conf = Config::create();
+		$conf = pixelpost\Config::create();
 
 		// get the url paramters, the Request class already split the url (using
 		// slashes) and get_params() is the array result of the split.
@@ -84,7 +84,7 @@ class Plugin implements pixelpost\PluginInterface
 
 	public static function register()
 	{
-		pixelpost\Event::register('request.new', __NAMESPACE__ . '::on_request');
+		pixelpost\Event::register('request.new',  '\\' . __CLASS__ . '::on_request');
 	}
 
 }

@@ -80,9 +80,9 @@ class Error extends \Exception
 
 		// change $search range(1..NumARgs) to range(%s1..%sNumARgs)
 		array_walk($search, function (&$value, $key)
-				{
-					$value = '%s' . $value;
-				});
+		{
+			$value = '%s' . $value;
+		});
 
 		// replace each %sX by its arguments
 		return str_replace($search, $args, $message);
@@ -118,7 +118,15 @@ class Error extends \Exception
 	{
 		switch ($code)
 		{
-			case 1 : return 'Filter : Parameter is not a "%s1".';
+			case 1 : return 'Filter: Parameter is not a "%s1".';
+			case 2 : return 'Config: This is a singleton, use create() method instead of __construct().';
+			case 3 : return 'Config: Config file "%s1" not exists.';
+			case 4 : return 'Config: Couldn\'t retreive "%s1" config file content.';
+			case 5 : return 'Config: Couldn\'t decode "%s1" config file (JSON error: %s2).';
+			case 6 : return 'Plugin: Bad state code "%s1" for set_state() method.';
+			case 7 : return 'Plugin: plugin "%s1" should provide a "%s2" class (fullname: "%s3").';
+			case 8 : return 'Plugin: plugin "%s1" should provide a "%s2" class that implements "%s3".';
+			case 9 : return 'Plugin: Could not open the directory "%s1".';
 		}
 	}
 

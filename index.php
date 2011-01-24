@@ -33,22 +33,22 @@ defined('SHOT_PATH') or define('SHOT_PATH', ROOT_PATH . SEP . 'photos',  true);
 defined('PLUG_PATH') or define('PLUG_PATH', ROOT_PATH . SEP . 'plugins', true);
 
 // Step 3. A little of error handling
-// set_error_handler(function ($errno, $errstr, $errfile, $errline)
-// {
-//     throw new \ErrorException($errstr, 0, $errno, $errfile, $errline);
-// });
-// 
-// set_exception_handler(function ($exception)
-// {
-//     if (class_exists('\pixelpost\Event'))
-//     {
-//         \pixelpost\Event::signal('error.new', array($exception));
-//     }
-//     elseif (DEBUG)
-//     {
-//         echo $exception;
-//     }
-// });
+set_error_handler(function ($errno, $errstr, $errfile, $errline)
+{
+	throw new \ErrorException($errstr, 0, $errno, $errfile, $errline);
+});
+
+set_exception_handler(function ($exception)
+{
+	if (class_exists('\pixelpost\Event'))
+	{
+		 \pixelpost\Event::signal('error.new', array('exception' => $exception));
+	}
+	elseif (DEBUG)
+	{
+		 echo $exception;
+	}
+});
 
 // Step 4. We need to load the minimum to work
 require_once CORE_PATH . SEP . 'Error.php';
@@ -62,7 +62,7 @@ require_once CORE_PATH . SEP . 'Photo.php';
 require_once CORE_PATH . SEP . 'PluginInterface.php';
 
 // Step 5. We need to parse the config file and set properly the environnement
-$conf = Config::load(ROOT_PATH . SEP . 'config');
+$conf = Config::load(ROOT_PATH . SEP . 'config.json');
 
 defined('DEBUG')   or define('DEBUG',   $conf->debug, true);
 defined('WEB_URL') or define('WEB_URL', $conf->url,   true);

@@ -5,7 +5,7 @@ namespace pixelpost\plugins\api;
 use pixelpost;
 
 /**
- * Base router for utltralite2 api urls.
+ * Base router for pixelpost api urls.
  *
  * Tracks Event :
  *
@@ -48,7 +48,7 @@ class Plugin implements pixelpost\PluginInterface
 		{
 			case 'json' : pixelpost\Event::signal('request.api.json', $eventData);
 				break;
-			case 'xml' : pixelpost\Event::signal('request.api.xml', $eventData);
+			case 'xml'  : pixelpost\Event::signal('request.api.xml', $eventData);
 				break;
 			default :
 				// how to deal with bad request ?
@@ -85,7 +85,7 @@ class Plugin implements pixelpost\PluginInterface
 
 	public static function register()
 	{
-		pixelpost\Event::register('request.api', __NAMESPACE__ . '::on_api_request');
+		pixelpost\Event::register('request.api',  '\\' . __CLASS__ . '::on_api_request');
 	}
 
 }

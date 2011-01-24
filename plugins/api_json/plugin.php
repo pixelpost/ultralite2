@@ -65,7 +65,7 @@ class Plugin implements pixelpost\PluginInterface
 	 */
 	public static function get_json_decode_error()
 	{
-		switch (json_last_error ())
+		switch (json_last_error())
 		{
 			default                   : return 'Unkown error';
 			case JSON_ERROR_DEPTH     : return 'Max depth.';
@@ -108,7 +108,7 @@ class Plugin implements pixelpost\PluginInterface
 		// check if the request is well decoded
 		if ('' == $errorMsg = self::get_json_decode_error())
 		{
-			if (DEBUG)
+			if (pixelpost\DEBUG)
 			{
 				return self::json_error('bad_encoding',
 						'The JSON request seems invalid format. Debug: ' . $errorMsg);
@@ -188,7 +188,7 @@ class Plugin implements pixelpost\PluginInterface
 
 	public static function register()
 	{
-		pixelpost\Event::register('request.api.json', __NAMESPACE__ . '::on_api_json_request');
+		pixelpost\Event::register('request.api.json',  '\\' . __CLASS__ . '::on_api_json_request');
 	}
 
 }
