@@ -80,7 +80,7 @@ class Config extends \ArrayObject
 			$errormsg = '';
 			switch (json_last_error())
 			{
-				default                   : $errormsg = 'Unkown error';
+				default                   : $errormsg = 'Unknown error';
 				case JSON_ERROR_DEPTH     : $errormsg = 'Max depth.';
 				case JSON_ERROR_CTRL_CHAR : $errormsg = 'Bad characters.';
 				case JSON_ERROR_SYNTAX    : $errormsg = 'Bad syntax.';

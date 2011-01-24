@@ -67,7 +67,7 @@ class Plugin implements pixelpost\PluginInterface
 	{
 		switch (json_last_error())
 		{
-			default                   : return 'Unkown error';
+			default                   : return 'Unknown error';
 			case JSON_ERROR_DEPTH     : return 'Max depth.';
 			case JSON_ERROR_CTRL_CHAR : return 'Bad characters.';
 			case JSON_ERROR_SYNTAX    : return 'Bad syntax.';

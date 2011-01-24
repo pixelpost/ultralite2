@@ -105,7 +105,7 @@ class Error extends \Exception
 	 */
 	public function get_default_message()
 	{
-		return 'Unknow Exception.';
+		return 'Unknown Exception.';
 	}
 
 	/**
@@ -121,7 +121,7 @@ class Error extends \Exception
 			case 1 : return 'Filter: Parameter is not a "%s1".';
 			case 2 : return 'Config: This is a singleton, use create() method instead of __construct().';
 			case 3 : return 'Config: Config file "%s1" not exists.';
-			case 4 : return 'Config: Couldn\'t retreive "%s1" config file content.';
+			case 4 : return 'Config: Couldn\'t retrieve "%s1" config file content.';
 			case 5 : return 'Config: Couldn\'t decode "%s1" config file (JSON error: %s2).';
 			case 6 : return 'Plugin: Bad state code "%s1" for set_state() method.';
 			case 7 : return 'Plugin: plugin "%s1" should provide a "%s2" class (fullname: "%s3").';
