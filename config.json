@@ -9,7 +9,6 @@
     {
         "error"    : "active",
         "router"   : "active",
-        "api"      : "active",
-        "api_json" : "active"
+        "api"      : "active"
     }
 }
