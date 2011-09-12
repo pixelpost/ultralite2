@@ -8,7 +8,7 @@ namespace pixelpost;
  * @copyright  2011 Alban LEROUX <seza@paradoxal.org>
  * @license    http://creativecommons.org/licenses/by-sa/2.0/fr/ Creative Commons
  * @version    0.0.1
- * @since      File available since Release 2.0.0
+ * @since      File available since Release 1.0.0
  */
 class Error extends \Exception
 {
@@ -80,9 +80,9 @@ class Error extends \Exception
 
 		// change $search range(1..NumARgs) to range(%s1..%sNumARgs)
 		array_walk($search, function (&$value, $key)
-		{
-			$value = '%s' . $value;
-		});
+				{
+					$value = '%s' . $value;
+				});
 
 		// replace each %sX by its arguments
 		return str_replace($search, $args, $message);
@@ -127,6 +127,7 @@ class Error extends \Exception
 			case 7 : return 'Plugin: plugin "%s1" should provide a "%s2" class (fullname: "%s3").';
 			case 8 : return 'Plugin: plugin "%s1" should provide a "%s2" class that implements "%s3".';
 			case 9 : return 'Plugin: Could not open the directory "%s1".';
+			case 10: return 'Db: This is a singleton, use create() method instead of __construct().';
 		}
 	}
 

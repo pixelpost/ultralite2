@@ -4,13 +4,22 @@ namespace pixelpost\plugins\api;
 
 use pixelpost;
 
+require_once __DIR__ . SEP . 'CodecInterface.php';
+require_once __DIR__ . SEP . 'Exception.php';
+
 /**
  * Provide a JSON codec for the plugin 'api'
  *
  * For more information about codec see: CodecInterface
+ *
+ * @copyright  2011 Alban LEROUX <seza@paradoxal.org>
+ * @license    http://creativecommons.org/licenses/by-sa/2.0/fr/ Creative Commons
+ * @version    0.0.1
+ * @since      File available since Release 1.0.0
  */
 class CodecJson implements CodecInterface
 {
+
 	/**
 	 * Decode the request and return an PHP stdClass containing the requested
 	 * data.
@@ -32,12 +41,12 @@ class CodecJson implements CodecInterface
 			if (pixelpost\DEBUG)
 			{
 				throw new Exception('bad_encoding',
-					'The JSON request seems invalid format. Debug: ' . $errorMsg);
+						'The JSON request seems invalid format. Debug: ' . $errorMsg);
 			}
 			else
 			{
 				throw new Exception('bad_encoding',
-					'The JSON request seems invalid format.');
+						'The JSON request seems invalid format.');
 			}
 		}
 
@@ -73,6 +82,7 @@ class CodecJson implements CodecInterface
 			case JSON_ERROR_NONE      : return '';
 		}
 	}
+
 }
 
 /**
@@ -83,7 +93,6 @@ class CodecJson implements CodecInterface
  */
 function json_encode($data)
 {
-	return json_encode($data, \JSON_FORCE_OBJECT | \JSON_HEX_TAG  |
-			                  \JSON_HEX_APOS     | \JSON_HEX_QUOT |
-			                  \JSON_HEX_AMP);
+	return json_encode($data, \JSON_FORCE_OBJECT | \JSON_HEX_TAG  | \JSON_HEX_APOS 
+			                | \JSON_HEX_QUOT     | \JSON_HEX_AMP);
 }

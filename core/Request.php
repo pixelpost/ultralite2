@@ -8,7 +8,7 @@ namespace pixelpost;
  * @copyright  2011 Alban LEROUX <seza@paradoxal.org>
  * @license    http://creativecommons.org/licenses/by-sa/2.0/fr/ Creative Commons
  * @version    0.0.1
- * @since      File available since Release 2.0.0
+ * @since      File available since Release 1.0.0
  */
 class Request
 {
@@ -354,14 +354,10 @@ class Request
 	{
 		$url = $this->get_base_url();
 
-		if ($this->is_path())
-			$url .= $this->get_path();
-		if ($this->_isTrailingSlash)
-			$url .= '/';
-		if ($this->is_query())
-			$url .= '?' . http_build_query($this->_query);
-		if ($this->is_fragment())
-			$url .= '#' . $this->get_fragment();
+		$this->is_path()        and $url .= $this->get_path();
+		$this->_isTrailingSlash and $url .= '/';
+		$this->is_query()       and $url .= '?' . http_build_query($this->_query);
+		$this->is_fragment()    and $url .= '#' . $this->get_fragment();
 
 		return $url;
 	}
@@ -500,14 +496,7 @@ class Request
 	 */
 	public function is_std_port()
 	{
-		if ($this->is_https())
-		{
-			return ($this->_port == 443);
-		}
-		else
-		{
-			return ($this->_port == 80);
-		}
+		return ($this->is_https() ? ($this->_port == 443) : ($this->_port == 80));
 	}
 
 	/**

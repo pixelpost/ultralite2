@@ -8,7 +8,7 @@ namespace pixelpost;
  * @copyright  2011 Alban LEROUX <seza@paradoxal.org>
  * @license    http://creativecommons.org/licenses/by-sa/2.0/fr/ Creative Commons
  * @version    0.0.1
- * @since      File available since Release 2.0.0
+ * @since      File available since Release 1.0.0
  */
 class Config extends \ArrayObject
 {
@@ -17,6 +17,7 @@ class Config extends \ArrayObject
 	 * @var Config The singleton of that class is stored here
 	 */
 	protected static $_instance;
+
 	/**
 	 * @var string The filename where the configuration is read to.
 	 */
@@ -35,6 +36,7 @@ class Config extends \ArrayObject
 		}
 
 		parent::__construct(array(), \ArrayObject::ARRAY_AS_PROPS);
+		self::$_instance = self;
 	}
 
 	/**
@@ -44,16 +46,14 @@ class Config extends \ArrayObject
 	 */
 	public static function create()
 	{
-		self::$_instance = self::$_instance ? : new static;
-
-		return self::$_instance;
+		return self::$_instance ?: new static;
 	}
 
 	/**
 	 * Load the $filename as a json encoded configuration file. All data in the
 	 * configuration file can be accessed by getting the instance of Config
 	 * class.
-	 * Keep in memory the filename in $_file private static var.
+	 * Keep in memory the filename in $_file protected static var.
 	 *
 	 * @throws Error
 	 *
@@ -103,7 +103,7 @@ class Config extends \ArrayObject
 	public function save()
 	{
 		$data = json_encode($this, JSON_FORCE_OBJECT | JSON_HEX_TAG |
-						JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP);
+				JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP);
 
 		return (bool) file_put_contents(self::$_file, $data, LOCK_EX);
 	}

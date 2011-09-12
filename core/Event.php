@@ -8,7 +8,7 @@ namespace pixelpost;
  * @copyright  2011 Alban LEROUX <seza@paradoxal.org>
  * @license    http://creativecommons.org/licenses/by-sa/2.0/fr/ Creative Commons
  * @version    0.0.1
- * @since      File available since Release 2.0.0
+ * @since      File available since Release 1.0.0
  */
 class Event extends \ArrayObject
 {
@@ -17,6 +17,7 @@ class Event extends \ArrayObject
 	 * @var array containts the list of callback indexed by event name.
 	 */
 	protected static $_listen = array();
+
 	/**
 	 * @var bool the event is processed or not
 	 */
@@ -68,6 +69,9 @@ class Event extends \ArrayObject
 	 * content or modified content.
 	 * By default if the event have at least one listener, it's state is set to
 	 * processed. A listener can still change this state.
+	 * 
+	 * A listener may explicitly return false to stop the propagation of the 
+	 * event to other listeners.
 	 *
 	 * @param array $datas The datas loaded in the Event class.
 	 * @return Event
@@ -88,7 +92,7 @@ class Event extends \ArrayObject
 
 		foreach (self::$_listen[$eventName] as $callback)
 		{
-			if (!call_user_func($callback, $event)) break;
+			if (call_user_func($callback, $event) === false) break;
 		}
 
 		return $event;

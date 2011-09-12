@@ -14,7 +14,7 @@ use pixelpost;
  * @copyright  2011 Alban LEROUX <seza@paradoxal.org>
  * @license    http://creativecommons.org/licenses/by-sa/2.0/fr/ Creative Commons
  * @version    0.0.1
- * @since      File available since Release 2.0.0
+ * @since      File available since Release 1.0.0
  */
 class Plugin implements pixelpost\PluginInterface
 {
@@ -67,4 +67,5 @@ class Plugin implements pixelpost\PluginInterface
 		// line 0
 		exit();
 	}
+
 }

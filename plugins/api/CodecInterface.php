@@ -9,9 +9,15 @@ use pixelpost;
  *
  * A codec can decode request and encode request in a specific format like
  * xml, xml-rpc, json, soap etc...
+ *
+ * @copyright  2011 Alban LEROUX <seza@paradoxal.org>
+ * @license    http://creativecommons.org/licenses/by-sa/2.0/fr/ Creative Commons
+ * @version    0.0.1
+ * @since      File available since Release 1.0.0
  */
 interface CodecInterface
 {
+
 	/**
 	 * Decode the request and return an PHP stdClass containing the requested
 	 * data.

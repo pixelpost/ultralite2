@@ -1,14 +1,16 @@
 {
-    "debug"   : true,
-    "url"     : "http://www.something.com/",
-    "timezone": "America/Chicago",
-    "userdir" : "",
-    "api"     : "api",
-    "admin"   : "admin",
-    "plugins" : 
-    {
-        "error"    : "active",
-        "router"   : "active",
-        "api"      : "active"
-    }
+	"debug"   : true,
+	"url"     : "http://www.something.com/",
+	"timezone": "America/Chicago",
+	"userdir" : "",
+	"api"     : "api",
+	"admin"   : "admin",
+	"photos"  : "photos",
+	"plugins" : 
+	{
+		"error"    : "active",
+		"router"   : "active",
+		"api"      : "active",
+		"admin"    : "active"
+	}
 }

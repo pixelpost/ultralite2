@@ -17,11 +17,7 @@
 		</p>
 		<h1>Error Message:</h1>
 		<p>
-			<?php echo $error ?>
-		</p>
-		<h1>Backtrace:</h1>
-		<p>
-			<?php echo nl2br($error->getTraceAsString()); ?>
+			<?php echo nl2br($error); ?>
 		</p>
 	</body>
 </html>

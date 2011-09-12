@@ -8,17 +8,45 @@ namespace pixelpost;
  * @copyright  2011 Alban LEROUX <seza@paradoxal.org>
  * @license    http://creativecommons.org/licenses/by-sa/2.0/fr/ Creative Commons
  * @version    0.0.1
- * @since      File available since Release 2.0.0
+ * @since      File available since Release 1.0.0
  */
 interface PluginInterface
 {
-	public static function register();
 
-	public static function install();
-
-	public static function uninstall();
-
+	/**
+	 * This method provide the actual plugin version number in a string
+	 * 
+	 * @return string
+	 */
 	public static function version();
 
+	/**
+	 * This action is executed each time when a request is executed on the 
+	 * entire application and the plugin is in active state, so keep simple.
+	 * 
+	 * @return NULL
+	 */
+	public static function register();
+
+	/**
+	 * This action is executed once when the plugins is actived.
+	 * 
+	 * @return bool
+	 */
+	public static function install();
+
+	/**
+	 * This action is executed once when the plugins is inactived.
+	 * 
+	 * @return bool
+	 */
+	public static function uninstall();
+
+	/**
+	 * This action is executed once when the plugins is updated.
+	 * 
+	 * @return bool
+	 */
 	public static function update();
+	
 }

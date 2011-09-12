@@ -4,6 +4,8 @@ namespace pixelpost\plugins\api;
 
 use pixelpost;
 
+require_once __DIR__ . SEP . 'Exception.php';
+
 /**
  * API router for pixelpost api urls.
  *
@@ -16,10 +18,11 @@ use pixelpost;
  * @copyright  2011 Alban LEROUX <seza@paradoxal.org>
  * @license    http://creativecommons.org/licenses/by-sa/2.0/fr/ Creative Commons
  * @version    0.0.1
- * @since      File available since Release 2.0.0
+ * @since      File available since Release 1.0.0
  */
 class Plugin implements pixelpost\PluginInterface
 {
+
 	public static function version()
 	{
 		return '0.0.1';
@@ -42,7 +45,7 @@ class Plugin implements pixelpost\PluginInterface
 
 	public static function register()
 	{
-		pixelpost\Event::register('request.api',  '\\' . __CLASS__ . '::on_api_request');
+		pixelpost\Event::register('request.api', '\\' . __CLASS__ . '::on_api_request');		
 	}
 
 	/**
@@ -72,12 +75,12 @@ class Plugin implements pixelpost\PluginInterface
 		// we work on the second url param
 		$format = array_shift($urlParams);
 
-		// validate the format or raise an error		
+		// validate the format or raise an error
 		if (self::is_valid_format($format) == false)
 		{
 			echo 'ERROR: Bad url format, please use:', "\n",
-				 '- ', WEB_URL . API_URL . '/json/', "\n",
-				 '- ', WEB_URL . API_URL . '/xml/', "\n";
+			'- ', WEB_URL . API_URL . '/json/', "\n",
+			'- ', WEB_URL . API_URL . '/xml/', "\n";
 			return false;
 		}
 
@@ -97,7 +100,7 @@ class Plugin implements pixelpost\PluginInterface
 			$response = self::format_valid($response);
 		}
 		// tracks API Exception
- 		catch (Exception $error)
+		catch (Exception $error)
 		{
 			$response = self::format_error($error);
 		}
@@ -146,7 +149,7 @@ class Plugin implements pixelpost\PluginInterface
 		// change word like 'xml-rpc' in camelcase: 'CodecXmlRpc'
 		$className = 'Codec' . str_replace(' ', '', ucwords(str_replace('-', ' ', $format)));
 
-		require_once $className . '.php';
+		require_once __DIR__ . SEP . $className . '.php';
 
 		return new $className();
 	}
@@ -176,8 +179,8 @@ class Plugin implements pixelpost\PluginInterface
 	public static function format_valid($response)
 	{
 		return array(
-			'Status' => 'valid',
-			'Data'   => $response,
+			'status' => 'valid',
+			'datas'  => $response,
 		);
 	}
 
@@ -192,12 +195,12 @@ class Plugin implements pixelpost\PluginInterface
 	public static function process(\stdClass $request)
 	{
 		// check the request is well formated
-		if ( ! property_exists($request, 'method') )
+		if (!property_exists($request, 'method'))
 		{
 			throw new Exception('bad_format', 'The request need to provide a \'method\’ property');
 		}
 
-		if ( ! property_exists($request, 'datas') )
+		if (!property_exists($request, 'datas'))
 		{
 			throw new Exception('bad_format', 'The request need to provide a \'datas\’ property');
 		}
@@ -212,18 +215,19 @@ class Plugin implements pixelpost\PluginInterface
 		$event = pixelpost\Event::signal('api.' . $method, array('datas' => $request->datas));
 
 		// check if the event is processed (no '404' request)
-		if ( ! $event->is_processed() )
+		if (!$event->is_processed())
 		{
 			throw new Exception('bad_method', "The '$method' requested method is unsupported.");
 		}
 
 		// check if there is a response data in the event
-		if ( ! property_exists($event, 'response') )
+		if (!property_exists($event, 'response'))
 		{
 			throw new Exception('internal_error', "Oops ! there is actually a problem.");
 		}
 
 		return $event->response;
 	}
+
 }
 

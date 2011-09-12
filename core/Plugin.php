@@ -8,7 +8,7 @@ namespace pixelpost;
  * @copyright  2011 Alban LEROUX <seza@paradoxal.org>
  * @license    http://creativecommons.org/licenses/by-sa/2.0/fr/ Creative Commons
  * @version    0.0.1
- * @since      File available since Release 2.0.0
+ * @since      File available since Release 1.0.0
  */
 class Plugin
 {
@@ -62,7 +62,7 @@ class Plugin
 			case self::STATE_UNINSTALLED : break;
 			case self::STATE_INACTIVE    : break;
 			case self::STATE_ACTIVE      : break;
-			default : throw new Error(6, array($state));
+			default                      : throw new Error(6, array($state));
 		}
 
 		$conf = Config::create();
@@ -94,9 +94,9 @@ class Plugin
 	{
 		Filter::is_string($plugin);
 
-		return __NAMESPACE__ . self::NS_SEP . self::NS 
-		                     . self::NS_SEP . $plugin
-		                     . self::NS_SEP . self::PLUG_CLASS;
+		return __NAMESPACE__ . self::NS_SEP . self::NS
+				             . self::NS_SEP . $plugin
+				             . self::NS_SEP . self::PLUG_CLASS;
 	}
 
 	/**
@@ -158,8 +158,7 @@ class Plugin
 
 		while (false !== $file = readdir($rd))
 		{
-			if (!is_dir($file) || $file == '.' || $file == '..')
-				continue;
+			if (!is_dir($file) || $file == '.' || $file == '..') continue;
 
 			if (!isset($conf->plugins[$file]) && self::validate($plugin))
 			{
@@ -193,28 +192,14 @@ class Plugin
 
 		$conf->save();
 
-		$rmrf = function($f) use (&$rmrf)
+		foreach(new \RecursiveIteratorIterator(
+					new \RecursiveDirectoryIterator(PLUG_PATH . SEP . $plugin), 
+					\RecursiveIteratorIterator::CHILD_FIRST) as $file)
 		{
-			if (! file_exists($f))       return;
-			if ($f == '.' || $f == '..') return;
-			if (! is_dir($f))
-			{
-				unlink($f);
-			}
-			else
-			{
-				if (false === $rd = opendir($f)) throw new Error(9, array($f));
-
-				while (false !== $file = readdir($rd)) $rmrf($file);
-
-				closedir($rd);
-
-				rmdir($f);
-			}
-		};
-
-		$rmrf(PLUG_PATH . SEP . $plugin);
-
+			$method = $file->isDir() ? "rmdir" : 'unlink';			
+			$medhod($file->getPathName());
+		}
+		
 		return true;
 	}
 
@@ -391,8 +376,7 @@ class Plugin
 	{
 		foreach (Config::create()->plugins as $plugin => $status)
 		{
-			if ($status != self::STATE_ACTIVE)
-				continue;
+			if ($status != self::STATE_ACTIVE) continue;
 
 			self::register($plugin);
 		}

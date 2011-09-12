@@ -4,7 +4,7 @@
 namespace pixelpost;
 
 // Step 1. A little of PHP conf
-error_reporting(E_ALL|E_STRICT);
+error_reporting(E_ALL | E_STRICT);
 
 ini_set('date.timezone',                 'GMT');
 ini_set('default_socket_timeout',        '10');
@@ -29,8 +29,8 @@ ini_set('magic_quotes_gpc',              'off');
 defined('SEP')       or define('SEP',       DIRECTORY_SEPARATOR,         true);
 defined('ROOT_PATH') or define('ROOT_PATH', __DIR__,                     true);
 defined('CORE_PATH') or define('CORE_PATH', ROOT_PATH . SEP . 'core',    true);
-defined('SHOT_PATH') or define('SHOT_PATH', ROOT_PATH . SEP . 'photos',  true);
 defined('PLUG_PATH') or define('PLUG_PATH', ROOT_PATH . SEP . 'plugins', true);
+defined('PRIV_PATH') or define('PRIV_PATH', ROOT_PATH . SEP . 'private', true);
 
 // Step 3. A little of error handling
 set_error_handler(function ($errno, $errstr, $errfile, $errline)
@@ -42,11 +42,11 @@ set_exception_handler(function ($exception)
 {
 	if (class_exists('\pixelpost\Event'))
 	{
-		 \pixelpost\Event::signal('error.new', array('exception' => $exception));
+		\pixelpost\Event::signal('error.new', array('exception' => $exception));
 	}
 	elseif (DEBUG)
 	{
-		 echo $exception;
+		echo $exception;
 	}
 });
 
@@ -64,10 +64,11 @@ require_once CORE_PATH . SEP . 'PluginInterface.php';
 // Step 5. We need to parse the config file and set properly the environnement
 $conf = Config::load(ROOT_PATH . SEP . 'config.json');
 
-defined('DEBUG')   or define('DEBUG',   $conf->debug, true);
-defined('WEB_URL') or define('WEB_URL', $conf->url,   true);
-defined('API_URL') or define('API_URL', $conf->api,   true);
-defined('ADM_URL') or define('ADM_URL', $conf->admin, true);
+defined('DEBUG')     or define('DEBUG',     $conf->debug,                  true);
+defined('WEB_URL')   or define('WEB_URL',   $conf->url,                    true);
+defined('API_URL')   or define('API_URL',   WEB_URL . $conf->api . '/',    true);
+defined('ADMIN_URL') or define('ADMIN_URL', WEB_URL . $conf->admin . '/',  true);
+defined('SHOT_URL')  or define('SHOT_URL',  WEB_URL . $conf->photos . '/', true);
 
 DEBUG or error_reporting(0);
 
@@ -80,7 +81,4 @@ Plugin::make_registration();
 $request = Request::create()->set_userdir($conf->userdir)->auto();
 
 // Step 8. We just said we have a new request ! Enjoy :)
-$event = Event::signal('request.new', array('request' => $request)); 
-
-
-
+$event = Event::signal('request.new', array('request' => $request));
