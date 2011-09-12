@@ -59,4 +59,4 @@ catch(ApiException $e)
 $filename = $call->response['filename'];
 
 // send in response the path of the photo
-$event->response = self::_photo_get_image_location($filename, $size, true);
+$event->response = array('path' => self::_photo_get_image_location($filename, $size, true));

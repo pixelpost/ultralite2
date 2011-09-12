@@ -98,14 +98,16 @@ class CodecXml implements CodecInterface
 
 			$key = pixelpost\Filter::format_for_xml($key);
 
-			if (pixelpost\Filter::format_for_url($value) != $value)
+			if (is_bool($value))
 			{
-				$xml .= sprintf('<%s><![CDATA[%s]]></%s>', $key, $value, $key);
+				$value = strval(intval($value)); // cast boolean to '0' or '1'
 			}
-			else
-			{				
-				$xml .= sprintf('<%s>%s</%s>', $key, $value, $key);
+			elseif (pixelpost\Filter::format_for_url($value) != $value)
+			{
+				$value = sprintf('<![CDATA[%s]]>', $value);
 			}
+			
+			$xml .= sprintf('<%s>%s</%s>', $key, $value, $key);			
 		}
 
 		return $xml;

@@ -151,7 +151,7 @@ class Plugin implements pixelpost\PluginInterface
 	 * No data need to be provided
 	 * 
 	 * ---------
-	 * Response: { "0.0.1" }
+	 * Response: { "version" : "0.0.1" }
 	 * ---------
 	 * 
 	 * The string repesentating the version number of the plugin
@@ -160,7 +160,7 @@ class Plugin implements pixelpost\PluginInterface
 	 */
 	public static function photo_version(pixelpost\Event $event)
 	{
-		$event->response = self::version();
+		$event->response = array('version' => self::version());
 	}
 
 	/**
@@ -173,7 +173,7 @@ class Plugin implements pixelpost\PluginInterface
 	 * The photo file, this file will be moved in his final folder.
 	 * 
 	 * ---------
-	 * Response: { 1234 }
+	 * Response: { 'id' : 1234 }
 	 * ---------
 	 * 
 	 * The photo id created.
@@ -195,7 +195,7 @@ class Plugin implements pixelpost\PluginInterface
 	 * The photo id to be deleted.
 	 * 
 	 * ---------
-	 * Response: { "Photo is deleted" }
+	 * Response: { "message" : "Photo is deleted" }
 	 * ---------
 	 * 
 	 * Confirmation Message.
@@ -228,7 +228,7 @@ class Plugin implements pixelpost\PluginInterface
 	 * visible:      boolean
 	 * 
 	 * ---------
-	 * Response: { "Photo is updated" }
+	 * Response: { "message" : "Photo is updated" }
 	 * ---------
 	 * 
 	 * Confirmation Message.
@@ -303,7 +303,7 @@ class Plugin implements pixelpost\PluginInterface
 	 * Possible sizes are: original | resized | thumb
 	 * 
 	 * ---------
-	 * Response: { "/var/www/photoblog/photos/thumb/AHkx3Fgke23.jpg" }
+	 * Response: { "path" : "/var/www/photoblog/photos/thumb/AHkx3Fgke23.jpg" }
 	 * ---------
 	 * 
 	 * Where located the photo on the local storage

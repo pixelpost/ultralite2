@@ -35,4 +35,4 @@ if ($changes <= 0)
 	throw new ApiException('no_result', "There no photo corresponding to the 'id' : {$event->datas->id}");			
 }
 
-$event->response = 'Photo is updated';
+$event->response = array('message' => 'photo updated');

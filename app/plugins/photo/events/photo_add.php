@@ -100,7 +100,7 @@ try
 
 	try
 	{
-		$event->response = Model::photo_add($original);
+		$event->response = array('id' => Model::photo_add($original));
 	}
 	catch(ModelExceptionSqlError $e)
 	{

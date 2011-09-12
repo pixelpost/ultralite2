@@ -26,7 +26,7 @@ try
 	unlink(self::_photo_get_image_location($filename, 'resized',  true));
 	unlink(self::_photo_get_image_location($filename, 'thumb',    true));
 
-	$event->response = 'Photo is deleted';
+	$event->response = array('message' => 'photo deleted');
 }
 catch(ModelExceptionNoResult $e)
 {
