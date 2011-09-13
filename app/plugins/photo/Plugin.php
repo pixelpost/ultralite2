@@ -264,7 +264,7 @@ class Plugin implements pixelpost\PluginInterface
 	 *    "thumb-url":   "http://something.com/photos/thumb/kGj123elakjz32.jpeg" 
 	 * }
 	 * 
-	 * The datas which are asked for:
+	 * The data which are asked for:
 	 * 
 	 * id:           int
 	 * filename:     string

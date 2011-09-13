@@ -69,10 +69,10 @@ class Plugin implements pixelpost\PluginInterface
 		$page = $urlParams[1];
 
 		// the data send with the event
-		$eventDatas = array('request' => $event->request);
+		$eventData = array('request' => $event->request);
 
 		// send the signal that an ADMIN method is requested
-		$reponseEvent = pixelpost\Event::signal('admin.' . $page, $eventDatas);
+		$reponseEvent = pixelpost\Event::signal('admin.' . $page, $eventData);
 
 		// check if there is a response or send a 404 webpage
 		if (!$reponseEvent->is_processed())

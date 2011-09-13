@@ -54,7 +54,7 @@ class CodecJson implements CodecInterface
 	}
 
 	/**
-	 * Encode a reponse, an array containing all the client datas, in the client
+	 * Encode a reponse, an array containing all the client data, in the client
 	 * format.
 	 *
 	 * @param array

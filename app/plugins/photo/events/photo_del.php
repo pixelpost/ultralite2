@@ -3,7 +3,7 @@
 require_once __DIR__ . SEP . 'Model.php';
 
 // check if the request is correct
-if (!isset($event->datas->id))
+if (!isset($event->data->id))
 {
 	throw new ApiException('bad_request', "'api.photo.del' method need a 
 		specified 'id' field.");
@@ -16,11 +16,11 @@ if (!isset($event->datas->id))
 try
 {
 	// retreive the photo filemane
-	$infos    = Model::photo_get($event->datas->id, array('filename'));
+	$infos    = Model::photo_get($event->data->id, array('filename'));
 	$filename = $infos['filename'];
 
 	// delete the photo in database
-	Model::photo_del($event->datas->id);
+	Model::photo_del($event->data->id);
 
 	unlink(self::_photo_get_image_location($filename, 'original', true));
 	unlink(self::_photo_get_image_location($filename, 'resized',  true));
@@ -30,5 +30,5 @@ try
 }
 catch(ModelExceptionNoResult $e)
 {
-	throw new ApiException('no_result', "There no photo corresponding to the 'id' : {$event->datas->id}");
+	throw new ApiException('no_result', "There no photo corresponding to the 'id' : {$event->data->id}");
 }		

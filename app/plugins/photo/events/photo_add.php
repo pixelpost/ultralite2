@@ -4,12 +4,12 @@ require_once __DIR__ . SEP . 'Model.php';
 require_once __DIR__ . SEP . 'Image.php';
 
 // check if the request is correct
-if (!isset($event->datas->file))
+if (!isset($event->data->file))
 {
 	throw new ApiException('bad_request', "'api.photo.add' method need a specified 'file' field.");
 }
 
-$filename = $event->datas->file;
+$filename = $event->data->file;
 
 $uid      = md5($filename . date() . time() . rand(0, 200));
 

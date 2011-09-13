@@ -95,7 +95,7 @@ class Request
 		// about the method and format of all element.
 		$this->set_url($scheme . '://' . $serverName . ':' . $serverPort . $serverPath);
 
-		// load post datas id they exists
+		// load post data id they exists
 		$this->set_post($_POST);
 
 		// check if data exists on the input
@@ -423,7 +423,7 @@ class Request
 	}
 
 	/**
-	 * Return the GET datas
+	 * Return the GET data
 	 *
 	 * @return array
 	 */

@@ -26,22 +26,22 @@ class Event extends \ArrayObject
 	/**
 	 * Create a new Event instance
 	 *
-	 * @param array $datas
+	 * @param array $data
 	 */
-	public function __construct(array $datas = array())
+	public function __construct(array $data = array())
 	{
-		parent::__construct($datas, \ArrayObject::ARRAY_AS_PROPS);
+		parent::__construct($data, \ArrayObject::ARRAY_AS_PROPS);
 	}
 
 	/**
 	 * Returns an instance of Event class
 	 *
-	 * @param array $datas
+	 * @param array $data
 	 * @return Event
 	 */
-	public static function create(array $datas = array())
+	public static function create(array $data = array())
 	{
-		return new static($datas);
+		return new static($data);
 	}
 
 	/**
@@ -73,14 +73,14 @@ class Event extends \ArrayObject
 	 * A listener may explicitly return false to stop the propagation of the 
 	 * event to other listeners.
 	 *
-	 * @param array $datas The datas loaded in the Event class.
+	 * @param  array $data The data loaded in the Event class.
 	 * @return Event
 	 */
-	public static function signal($eventName, array $datas = array())
+	public static function signal($eventName, array $data = array())
 	{
 		Filter::assume_string($eventName);
 
-		$event = self::create($datas);
+		$event = self::create($data);
 
 		if (!isset(self::$_listen[$eventName]))
 			return $event;

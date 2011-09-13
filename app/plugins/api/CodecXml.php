@@ -24,7 +24,7 @@ class CodecXml implements CodecInterface
 	 * Decode the request and return an PHP stdClass containing the requested
 	 * data.
 	 *
-	 * @param string
+	 * @param  string
 	 * @return stdClass
 	 */
 	public function decode($request)
@@ -66,10 +66,10 @@ class CodecXml implements CodecInterface
 	}
 
 	/**
-	 * Encode a reponse, an array containing all the client datas, in the client
+	 * Encode a reponse, an array containing all the client data, in the client
 	 * format.
 	 *
-	 * @param array
+	 * @param  array
 	 * @return string
 	 */
 	public function encode(array $response)
@@ -83,7 +83,7 @@ class CodecXml implements CodecInterface
 	/**
 	 * transform an array to an XML string
 	 * 
-	 * @param array $data
+	 * @param  array $data
 	 * @return string
 	 */
 	public function array_to_xml(array $data)
