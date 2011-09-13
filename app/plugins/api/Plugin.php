@@ -179,8 +179,8 @@ class Plugin implements pixelpost\PluginInterface
 	public static function format_valid($response)
 	{
 		return array(
-			'status' => 'valid',
-			'data'   => $response,
+			'status'   => 'valid',
+			'response' => $response,
 		);
 	}
 
@@ -200,9 +200,9 @@ class Plugin implements pixelpost\PluginInterface
 			throw new Exception('bad_format', 'The request need to provide a \'method\’ property');
 		}
 
-		if (!property_exists($request, 'data'))
+		if (!property_exists($request, 'request'))
 		{
-			throw new Exception('bad_format', 'The request need to provide a \'data\’ property');
+			throw new Exception('bad_format', 'The request need to provide a \'request’ property');
 		}
 
 		// get the requested api method
@@ -212,7 +212,7 @@ class Plugin implements pixelpost\PluginInterface
 		}
 
 		// send the signal that an API method is requested
-		$event = pixelpost\Event::signal('api.' . $method, array('data' => $request->data));
+		$event = pixelpost\Event::signal('api.' . $method, array('request' => $request->request));
 
 		// check if the event is processed (no '404' request)
 		if (!$event->is_processed())

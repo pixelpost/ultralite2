@@ -3,12 +3,12 @@
 require_once __DIR__ . SEP . 'Model.php';
 
 // check if the request is correct
-if (!isset($event->data->id))
+if (!isset($event->request->id))
 {
 	throw new ApiException('bad_request', "'api.photo.get' method need a specified 'id' field.");
 }
 
-if (!isset($event->data->fields))
+if (!isset($event->request->fields))
 {
 	throw new ApiException('bad_request', "'api.photo.get' method need a specified 'fields' field.");
 }
@@ -20,7 +20,7 @@ if (!isset($event->data->fields))
 try
 {
 	// the requested fields
-	$fields = $event->data->fields;
+	$fields = $event->request->fields;
 
 	// some flags needed because photos urls are not stored in database
 	$urlThumb    = false;
@@ -44,7 +44,7 @@ try
 	if (!$isFilename && $needUrl) $fields[] = 'filename';
 
 	// retrieve requested fields and send them in the response
-	$reply = Model::photo_get($event->data->id, $fields);
+	$reply = Model::photo_get($event->request->id, $fields);
 
 	// we terminate the response by adding the specified url
 	if ($needUrl)
@@ -72,5 +72,5 @@ try
 }
 catch(ModelExceptionNoResult $e)
 {
-	throw new ApiException('no_result', "There is no photo corresponding to the 'id' : {$event->data->id}");
+	throw new ApiException('no_result', "There is no photo corresponding to the 'id' : {$event->request->id}");
 }

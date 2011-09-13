@@ -1,18 +1,18 @@
 <?php
 
 // check if the request is correct
-if (!isset($event->data->id))
+if (!isset($event->request->id))
 {
 	throw new ApiException('bad_request', "'api.photo.path' method need a specified 'id' field.");
 }
 
-if (!isset($event->data->size))
+if (!isset($event->request->size))
 {
 	throw new ApiException('bad_request', "'api.photo.path' method need a specified 'size' field.");
 }
 
-$id   = $event->data->id;
-$size = $event->data->size;
+$id   = $event->request->id;
+$size = $event->request->size;
 
 pixelpost\Filter::assume_int($id);
 
@@ -27,7 +27,7 @@ switch($size)
 /***** how to properly call an event... *****/
 
 // prepare your request data
-$request = array('data' => array('id'=> $id, 'fields' => array('filename')));
+$request = array('request' => array('id'=> $id, 'fields' => array('filename')));
 
 // make a try..catch
 try
