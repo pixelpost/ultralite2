@@ -27,7 +27,7 @@ if (isset($event->data->fields['publish-date']))
 	else                  $event->data->fields['publish-date'] = $date;	
 }
 
-// retreive requested fields and send them in the response
+// retrieve requested fields and send them in the response
 $changes = Model::photo_set($event->data->id, $event->data->fields);
 
 if ($changes <= 0)

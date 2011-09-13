@@ -62,10 +62,10 @@ class Plugin implements pixelpost\PluginInterface
 	 */
 	public static function on_request(pixelpost\Event $event)
 	{
-		// retreive the urls params and assume the two first exists
+		// retrieve the urls params and assume the two first exists
 		$urlParams = $event->request->get_params() + array('admin', 'index');
 
-		// retreive the requested admin page
+		// retrieve the requested admin page
 		$page = $urlParams[1];
 
 		// the data send with the event

@@ -40,10 +40,10 @@ try
 	// if we need to send an photo url
 	$needUrl = $urlThumb || $urlResized || $urlOriginal;
 
-	// if we need to send an url we need to retreive the photo filename
+	// if we need to send an url we need to retrieve the photo filename
 	if (!$isFilename && $needUrl) $fields[] = 'filename';
 
-	// retreive requested fields and send them in the response
+	// retrieve requested fields and send them in the response
 	$reply = Model::photo_get($event->data->id, $fields);
 
 	// we terminate the response by adding the specified url

@@ -55,7 +55,7 @@ catch(ApiException $e)
 
 /***** your done... *****/
 
-// retreive the photoId filename
+// retrieve the photoId filename
 $filename = $call->response['filename'];
 
 // send in response the path of the photo

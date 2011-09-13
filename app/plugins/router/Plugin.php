@@ -27,7 +27,7 @@ class Plugin implements pixelpost\PluginInterface
 
 	public static function on_request(pixelpost\Event $event)
 	{
-		// retreive the configuration
+		// retrieve the configuration
 		$conf = pixelpost\Config::create();
 
 		// get the url paramters, the Request class already split the url (using

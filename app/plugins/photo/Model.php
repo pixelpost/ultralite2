@@ -26,7 +26,7 @@ class ModelException extends \Exception {}
 class ModelExceptionNoResult extends ModelException {} 
 
 /**
- * Exception thrown when a SQL error is raise, this exception retreive 
+ * Exception thrown when a SQL error is raise, this exception retrieve 
  * automatically the last SQL error message and error code.
  *
  * @copyright  2011 Alban LEROUX <seza@paradoxal.org>
@@ -45,7 +45,7 @@ class ModelExceptionSqlError extends ModelException
 }
 
 /**
- * This class Store and retreive the photo data
+ * This class Store and retrieve the photo data
  *
  * @copyright  2011 Alban LEROUX <seza@paradoxal.org>
  * @license    http://creativecommons.org/licenses/by-sa/2.0/fr/ Creative Commons
@@ -151,8 +151,8 @@ class Model
 	}
 	
 	/**
-	 * Retreive $fields of $photoId to the photos tables in databse. 
-	 * $fields is a list of data needed to be retreived.
+	 * Retrieve $fields of $photoId to the photos tables in databse. 
+	 * $fields is a list of data needed to be retrieved.
 	 * This return an associated array field => value
 	 * The $todo closure permit to manipulate the resultset like:
 	 * 

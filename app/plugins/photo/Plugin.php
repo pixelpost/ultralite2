@@ -241,7 +241,7 @@ class Plugin implements pixelpost\PluginInterface
 	}
 
 	/**
-	 * Retreive photo infos from database, the possible infos are: 
+	 * Retrieve photo infos from database, the possible infos are: 
 	 * 
 	 * --------
 	 * Request: 
@@ -252,7 +252,7 @@ class Plugin implements pixelpost\PluginInterface
 	 * }
 	 * 
 	 * The photo id.
-	 * The photo fields to be retreived like: id | filename | title | description | 
+	 * The photo fields to be retrieved like: id | filename | title | description | 
 	 * publish-date | visible | thumb-url | resized-url | original-url
 	 * 
 	 * ---------

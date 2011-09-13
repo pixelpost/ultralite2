@@ -15,7 +15,7 @@ if (!isset($event->data->id))
 // unless it send a classic unknow error
 try
 {
-	// retreive the photo filemane
+	// retrieve the photo filemane
 	$infos    = Model::photo_get($event->data->id, array('filename'));
 	$filename = $infos['filename'];
 
