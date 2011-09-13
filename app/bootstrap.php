@@ -59,7 +59,6 @@ require_once CORE_PATH . SEP . 'Request.php';
 require_once CORE_PATH . SEP . 'Plugin.php';
 require_once CORE_PATH . SEP . 'Db.php';
 require_once CORE_PATH . SEP . 'Filter.php';
-require_once CORE_PATH . SEP . 'Photo.php';
 require_once CORE_PATH . SEP . 'PluginInterface.php';
 
 // Step 5. We need to parse the config file and set properly the environnement
