@@ -9,101 +9,65 @@ if (!isset($event->request->file))
 	throw new ApiException('bad_request', "'api.photo.add' method need a specified 'file' field.");
 }
 
-$filename = $event->request->file;
-
-$uid      = md5($filename . date() . time() . rand(0, 200));
-
-$original = self::_photo_get_image_location($uid, 'original');
-$resized  = self::_photo_get_image_location($uid, 'resized');
-$thumb    = self::_photo_get_image_location($uid, 'thumb');
-
-if (!file_exists($filename))
+if (!file_exists($event->request->file))
 {
 	throw new ApiException('bad_data', "the specified 'file' not exists.");
 }
 
 try
 {
-	if (!rename($filename, $original))
-	{
-		throw new ApiException('internal_error', "can't move file image in final directory.");		
-	}
+	// the temp image file (uploaded)
+	$filename = $event->request->file;
+
+	// create a uniq image filename width jpeg ext
+	$uid      = md5($filename . date() . time() . rand(0, 200)) . '.jpg';
+
+	// generate the location of the three image format : original, resized, thumb
+	$pathGenerator  = self::_photo_location_generator(true);
+	// generate the resized and thumb file
+	$thumbGenerator = self::_photo_size_generator();
+
+	$original = $pathGenerator($uid, 'original');
+	$resized  = $pathGenerator($uid, 'resized');
+	$thumb    = $pathGenerator($uid, 'thumb');
+
+	// load the temp image (uploaded) in GD2
+	$image = new Image($filename, $conf->photo_plugin->quality);
 	
-	$image = new Image($original, $conf->photo_plugin->quality);
-
-	$result = false;
-
-	switch($conf->photo_plugin->sizes->resized->type)
+	// store the original size in jpg to it's final path
+	if ($image->convert_to_jpeg($original))
 	{
-		case 'larger-border':
-			$size   = $conf->photo_plugin->sizes->resized->size;
-			$result = $image->resize_larger_border($resized, $size);
-			break;
-		case 'fixed-width'  :
-			$size   = $conf->photo_plugin->sizes->resized->size;
-			$result = $image->resize_fixed_width($resized, $size);
-			break;
-		case 'fixed-height' :
-			$size   = $conf->photo_plugin->sizes->resized->size;
-			$result = $image->resize_fixed_height($resized, $size);
-			break;
-		case 'fixed'        :
-			$width  = $conf->photo_plugin->sizes->resized->width;
-			$height = $conf->photo_plugin->sizes->resized->height;
-			$result = $image->resize_fixed($resized, $width, $height);
-			break;
-		case 'square'       :
-			$size   = $conf->photo_plugin->sizes->resized->size;
-			$result = $image->resize_square($resized, $size);
-			break;
+		unlink($filename);
+		throw new ApiException('internal_error', "can't generate original image.");		
 	}
 
-	if (!$result)
+	// store the resized size in jpg to it's final path in regards of user conf
+	if (!$thumbGenerator($image, $resized, 'resized'))
 	{
+		unlink($filename);
 		unlink($original);
 		throw new ApiException('internal_error', "can't generate resized image.");
 	}
 
-	$result = false;
-
-	switch($conf->photo_plugin->sizes->thumb->type)
+	// store the thumb size in jpg to it's final path in regards of user conf
+	if (!$thumbGenerator($image, $resized, 'thumb'))
 	{
-		case 'larger-border':
-			$size   = $conf->photo_plugin->sizes->thumb->size;
-			$result = $image->resize_larger_border($thumb, $size);
-			break;
-		case 'fixed-width'  :
-			$size   = $conf->photo_plugin->sizes->thumb->size;
-			$result = $image->resize_fixed_width($thumb, $size);
-			break;
-		case 'fixed-height' :
-			$size   = $conf->photo_plugin->sizes->thumb->size;
-			$result = $image->resize_fixed_height($thumb, $size);
-			break;
-		case 'fixed'        :
-			$width  = $conf->photo_plugin->sizes->thumb->width;
-			$height = $conf->photo_plugin->sizes->thumb->height;
-			$result = $image->resize_fixed($thumb, $width, $height);
-			break;
-		case 'square'       :
-			$size   = $conf->photo_plugin->sizes->thumb->size;
-			$result = $image->resize_square($thumb, $size);
-			break;
-	}
-
-	if (!$result)
-	{
+		unlink($filename);
 		unlink($original);
 		unlink($resized);
-		throw new ApiException('internal_error', "can't generate resized image.");
+		throw new ApiException('internal_error', "can't generate thumb image.");
 	}
 
 	try
 	{
-		$event->response = array('id' => Model::photo_add($original));
+		// store the Image in database and put the photo id in the event response
+		$event->response = array('id' => Model::photo_add($uid));
+		// delete the uploaded file
+		unlink($filename);
 	}
 	catch(ModelExceptionSqlError $e)
 	{
+		unlink($filename);
 		unlink($original);
 		unlink($resized);
 		unlink($thumb);

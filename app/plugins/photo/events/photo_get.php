@@ -21,51 +21,11 @@ try
 {
 	// the requested fields
 	$fields = $event->request->fields;
-
-	// some flags needed because photos urls are not stored in database
-	$urlThumb    = false;
-	$urlResized  = false;
-	$urlOriginal = false;
-	$isFilename  = false;
-	$idPubDate   = false;
-	$needUrl     = false;
-
-	// we inspect the request and set our flags
-	if (in_array('thumb-url',    $fields)) $urlThumb    = true;
-	if (in_array('resized-url',  $fields)) $urlResized  = true;
-	if (in_array('original-url', $fields)) $urlOriginal = true;
-	if (in_array('publish-date', $fields)) $isPubDate   = true;
-	if (in_array('filename',     $fields)) $isFilename  = true;
-
-	// if we need to send an photo url
-	$needUrl = $urlThumb || $urlResized || $urlOriginal;
-
-	// if we need to send an url we need to retrieve the photo filename
-	if (!$isFilename && $needUrl) $fields[] = 'filename';
+	
+	$toDo = self::_photo_fecther_generator($fields);
 
 	// retrieve requested fields and send them in the response
-	$reply = Model::photo_get($event->request->id, $fields);
-
-	// we terminate the response by adding the specified url
-	if ($needUrl)
-	{
-		$url = function($s) use ($reply) 
-		{ 
-			return self::_photo_get_image_location($reply['filename'], $size);
-		};
-
-		if ($urlThumb)    $reply['thumb-url']    = $url('thumb');
-		if ($urlResized)  $reply['resized-url']  = $url('resized');
-		if ($urlOriginal) $reply['original-url'] = $url('original');				
-
-		if (!$isFilename) unset($reply['filename']);							
-	}
-	
-	// format the date in RFC3339 if user asked for
-	if ($idPubDate)
-	{
-		$reply['publish-date'] = $reply['publish-date']->format(\DateTime::RFC3339);
-	}
+	$reply = Model::photo_get($event->request->id, $fields, $toDo);
 
 	// send the reply
 	$event->response = $reply;

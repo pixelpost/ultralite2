@@ -21,10 +21,12 @@ try
 
 	// delete the photo in database
 	Model::photo_del($event->request->id);
+	
+	$pathGenerator = self::_photo_location_generator(true);
 
-	unlink(self::_photo_get_image_location($filename, 'original', true));
-	unlink(self::_photo_get_image_location($filename, 'resized',  true));
-	unlink(self::_photo_get_image_location($filename, 'thumb',    true));
+	unlink($pathGenerator($filename, 'original'));
+	unlink($pathGenerator($filename, 'resized'));
+	unlink($pathGenerator($filename, 'thumb'));
 
 	$event->response = array('message' => 'photo deleted');
 }

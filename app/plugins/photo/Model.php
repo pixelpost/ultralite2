@@ -151,7 +151,48 @@ class Model
 	}
 	
 	/**
-	 * Retrieve $fields of $photoId to the photos tables in databse. 
+	 * Retrieve $fields to the photos tables in database. 
+	 * $fields is a list of data needed to be retrieved.
+	 * This return an array of associated array field => value
+	 * The $todo closure permit to manipulate EACH resultset like:
+	 * 
+	 * $todo = function(&$result) 
+	 * { 
+	 *     $result['url'] = 'http://something.com/photos/' . $result['file']; 
+	 * }
+	 * 
+	 * In case of error this method raise an ModelExceptionSqlError exception
+	 * In case of no result this method raise an ModelExceptionNoResult exception
+	 * 
+	 * @param  int     $photoId
+	 * @param  array   $fields
+	 * @param  Closure $todo
+	 * @return array
+	 */
+	public static function photo_list(array $fields, \Closure $todo = null)
+	{
+		$fields = self::_getMapper()->genSqlSelectList($fields);
+		
+		$query = 'SELECT %s FROM photos;';
+		$query = sprintf($sql, $fields);
+		
+		$result = pixelpost\Db::create()->query($query);		
+		
+		if ($result === true)  throw new ModelExceptionNoResult();		
+		if ($result === false) throw new ModelExceptionSqlError();		
+		
+		$list = array();
+		
+		while(false !== $fetched = $result->fetchArray(\SQLITE3_ASSOC))
+		{
+			$list[] = self::_getMapper()->genArrayResult($fetched, $todo);
+		}
+		
+		return $list; 
+	}
+	
+	/**
+	 * Retrieve $fields of $photoId to the photos tables in database. 
 	 * $fields is a list of data needed to be retrieved.
 	 * This return an associated array field => value
 	 * The $todo closure permit to manipulate the resultset like:

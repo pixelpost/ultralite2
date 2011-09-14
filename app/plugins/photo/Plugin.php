@@ -110,35 +110,134 @@ class Plugin implements pixelpost\PluginInterface
 	}
 
 	/**
-	 * Provide the photo web or local URI 
+	 * Provide a closure which accepts two arguments: 
+	 * - $filename (string) The filename 
+	 * - $size     (string) The size format needed (original, resized, thumb)
 	 * 
-	 * @param  string $filename
-	 * @param  string $size
-	 * @param  bool   $local
-	 * @return string 
+	 * @param  bool     $local generate a photo path or a photo url
+	 * @return \Closure 
 	 */
-	protected static function _photo_get_image_location($filename, $size, $local = false)
+	protected static function _photo_location_generator($local = false)
 	{
-		$conf = pixelpost\Config::create();
+		$conf   = pixelpost\Config::create();
+		$sizes  = $conf->photo_plugin;
+		 
+		$format = ($local)
+				? ROOT_PATH . SEP . $conf->photos . SEP . '%s' . SEP . '%s'
+				: SHOT_URL . '%s/%s';
+		
+		return function($filename, $size) use ($sizes, $format)
+		{
+			switch ($size)
+			{
+				case 'original' : $size = $sizes->original; break;
+				case 'resized'  : $size = $sizes->resized;  break;
+				case 'thumb'    : $size = $sizes->thumb;    break;
+				default         : $size = $sizes->resized;  break;
+			}
+			
+			return sprintf($format, $size, $filename);
+		};
+	}
+	
+	/**
+	 * Provide a closure which accepts three arguments:
+	 * - $Image (pixelpost\plugins\photo\Image) The file 
+	 * - $path  (string) Where to register the new file
+	 * - $size  (string) The size format needed (resized, thumb)
+	 * 
+	 * @return \Closure 
+	 */
+	protected static function _photo_thumbnail_generator()
+	{
+		$conf   = pixelpost\Config::create();		
+		
+		return function(\pixelpost\plugins\photo\Image $image, $path, $size) use ($conf)
+		{
+			switch($conf->photo_plugin->sizes->$size->type)
+			{
+				case 'fixed-width' :
+					$size   = $conf->photo_plugin->sizes->$size->size;
+					return $image->resize_fixed_width($path, $size);
+					
+				case 'fixed-height' :
+					$size   = $conf->photo_plugin->sizes->$size->size;
+					return $image->resize_fixed_height($path, $size);
+					
+				case 'fixed' :
+					$width  = $conf->photo_plugin->sizes->$size->width;
+					$height = $conf->photo_plugin->sizes->$size->height;
+					return $image->resize_fixed($path, $width, $height);
+					
+				case 'square' :
+					$size   = $conf->photo_plugin->sizes->$size->size;
+					return $image->resize_square($path, $size);
+					
+				default : // larger-border
+					$size   = $conf->photo_plugin->sizes->$size->size;
+					return $image->resize_larger_border($path, $size);
+			}			
+		};
+	}
+	
+	/**
+	 * Provides a closure witch work on SQL row after they are fetcher.
+	 * This method is only usefull for photo.get and photo.list method created
+	 * by refactoring and performance issue.
+	 * 
+	 * Becareful the argument $fields is a reference, this is the field array
+	 * should be passed to the Model method.
+	 * 
+	 * @param  array    $fields Becareful this is a reference
+	 * @return \Closure
+	 */
+	protected static function _photo_fetcher_generator(array &$fields)
+	{
+		// some flags needed because photos urls are not stored in database
+		$urlNeeded   = false;
+		$urlOriginal = false;
+		$urlResized  = false;
+		$urlThumb    = false;
+		$isFilename  = false;
+		$isPubDate   = false;
 
-		switch ($size)
-		{
-			case 'original' : $size = $conf->photo_plugin->original; break;
-			case 'resized'  : $size = $conf->photo_plugin->resized;  break;
-			case 'thumb'    : $size = $conf->photo_plugin->thumb;    break;
-			default         : $size = $conf->photo_plugin->resized;  break;
-		}
+		// we inspect the request and set our flags
+		if (in_array('original-url', $fields)) $urlOriginal = true;
+		if (in_array('resized-url',  $fields)) $urlResized  = true;
+		if (in_array('thumb-url',    $fields)) $urlThumb    = true;
+		if (in_array('filename',     $fields)) $isFilename  = true;
+		if (in_array('publish-date', $fields)) $isPubDate   = true;
+
+		// if we need to send an photo url
+		$urlNeeded = $urlThumb || $urlResized || $urlOriginal;
+
+		// if we need to send an url we need to retrieve the photo filename
+		if (!$isFilename && $urlNeeded) $fields[] = 'filename';
 		
-		$size = $conf->photo_plugin->$size;
+		// the url generator if needed
+		$urlGen = ($urlNeeded) ? self::_photo_location_generator() : null;
 		
-		if ($local)
+		// return a closure that operator on each SQL fetched row
+		return function(&$fetchedRow) use ($urlGen, $urlNeeded, $urlThumb, 
+										   $urlResized, $urlOriginal, 
+										   $isFilename, $isPubDate)
 		{
-			return ROOT_PATH . SEP . $conf->photos . SEP . $size . SEP . $filename; 
-		}
-		else
-		{
-			return SHOT_URL . $size . '/' . $filename;
-		}
+			// we terminate the response by adding the specified url
+			if ($urlNeeded)
+			{
+				if ($urlOriginal) $fetchedRow['original-url'] = $urlGen($fetchedRow['filename'], 'original');				
+				if ($urlResized)  $fetchedRow['resized-url']  = $urlGen($fetchedRow['filename'], 'resized');
+				if ($urlThumb)    $fetchedRow['thumb-url']    = $urlGen($fetchedRow['filename'], 'thumb');
+
+				if (!$isFilename) unset($fetchedRow['filename']);							
+			}
+
+			// format the date in RFC3339 if user asked for
+			if ($isPubDate)
+			{
+				$fetchedRow['publish-date'] = $fetchedRow['publish-date']->format(\DateTime::RFC3339);
+			}
+		};
 	}
 	
 	/**

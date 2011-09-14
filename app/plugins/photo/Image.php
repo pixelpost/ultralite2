@@ -119,6 +119,17 @@ class Image
 		imagedestroy($src);
 		return true;
 	}
+
+	/**
+	 * Convert an image in jpg
+	 *
+	 * @param  string $path
+	 * @return bool 
+	 */
+	public function convert_to_jpeg($path)
+	{
+		return $this->_resize($path, $this->_w, $this->_h);
+	}
 	
 	/**
 	 * Resize the image, keep ratio, to width X px.

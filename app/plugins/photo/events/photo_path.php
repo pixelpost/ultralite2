@@ -58,5 +58,7 @@ catch(ApiException $e)
 // retrieve the photoId filename
 $filename = $call->response['filename'];
 
+$pathGenerator = self::_photo_location_generator(true);
+
 // send in response the path of the photo
-$event->response = array('path' => self::_photo_get_image_location($filename, $size, true));
+$event->response = array('path' => $pathGenerator($filename, $size));
