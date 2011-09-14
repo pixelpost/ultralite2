@@ -101,10 +101,10 @@ class Plugin implements pixelpost\PluginInterface
 		pixelpost\Event::register('api.photo.del',     '\\' . __CLASS__ . '::photo_del');
 		pixelpost\Event::register('api.photo.set',     '\\' . __CLASS__ . '::photo_set');
 		pixelpost\Event::register('api.photo.get',     '\\' . __CLASS__ . '::photo_get');
+		pixelpost\Event::register('api.photo.list',    '\\' . __CLASS__ . '::photo_list');
 		pixelpost\Event::register('api.photo.path',    '\\' . __CLASS__ . '::photo_path');
 		pixelpost\Event::register('api.photo.size',    '\\' . __CLASS__ . '::photo_size');
 		// TODO To be created:
-		//pixelpost\Event::register('api.photo.list',    '\\' . __CLASS__ . '::photo_list');
 		//pixelpost\Event::register('api.photo.config.get', '\\' . __CLASS__ . '::photo_size');
 		//pixelpost\Event::register('api.photo.config.set', '\\' . __CLASS__ . '::photo_size');
 	}
