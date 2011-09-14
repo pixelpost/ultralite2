@@ -43,9 +43,14 @@ set_exception_handler(function ($exception)
 {
 	if (class_exists('\pixelpost\Event'))
 	{
-		\pixelpost\Event::signal('error.new', array('exception' => $exception));
+		$event = \pixelpost\Event::signal('error.new', array('exception' => $exception));
+		
+		if (!$event->is_processed() && (!defined('DEBUG') || DEBUG))
+		{
+			echo $exception;
+		}
 	}
-	elseif (DEBUG)
+	elseif (!defined('DEBUG') || DEBUG)
 	{
 		echo $exception;
 	}
