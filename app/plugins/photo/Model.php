@@ -169,12 +169,83 @@ class Model
 	 * @param  Closure $todo
 	 * @return array
 	 */
-	public static function photo_list(array $fields, \Closure $todo = null)
+	public static function photo_list(array $fields, $options, \Closure $todo = null)
 	{
-		$fields = self::_getMapper()->genSqlSelectList($fields);
+		$db     = pixelpost\Db::create();
+		$map    = self::_getMapper();
+		$fields = $map->genSqlSelectList($fields);
+		$where = '';
+		$order = '';
+		$limit = '';
 		
-		$query = 'SELECT %s FROM photos;';
-		$query = sprintf($sql, $fields);
+		// work on SQL where clause
+		if (isset($options['filter']))
+		{
+			$w = array();
+			
+			// use the couple foreach/switch here is more readable and keep
+			// the order in the array
+			foreach($options['filter'] as $filter => $value)
+			{
+				switch($filter)
+				{
+					default: break;
+					
+					case 'publish-date-interval' :
+						$start = $db->escapeString($map->date_serialize($value['start']));
+						$end   = $db->escapeString($map->date_serialize($value['end']));
+						
+						$w[] = sprintf(' publish BETWEEN %s AND %s', $start, $end);
+						break;
+
+					case 'visible' :
+						$w[] = sprintf(' show = %s', intval($value));
+						break;					
+				}
+			}
+			
+			$where = ' WHERE' . implode(' AND', $w);
+		}
+		
+		// work on SQL ORDER BY clause
+		if (isset($options['sort']))
+		{
+			$s = array();
+			
+			// use the couple foreach/switch here is more readable and keep
+			// the order in the array
+			foreach($options['sort'] as $sort => $value)
+			{
+				switch($sort)
+				{
+					default: break;
+						
+					case 'publish-date' :
+						$value = (($value == 'asc') ? 'ASC' : 'DESC');
+						$s[] = sprintf(' `publish` %s', $value);
+						break;
+					
+					case 'title' :
+						$value = (($value == 'asc') ? 'ASC' : 'DESC');
+						$s[] = sprintf(' `title` %s', $value);
+						break;
+				}
+			}
+			
+			$order = ' ORDER BY' . implode(',', $s);			
+		}
+		
+		// work on SQL LIMIT clause
+		if (isset($options['pager']))
+		{
+			$page = intval($options['pager']['page']);
+			$max  = intval($options['pager']['max-per-page']);
+			
+			$limit = sprintf(' LIMIT %s, %s', ($page - 1) * $max, $max);
+		}
+		
+		$query = 'SELECT %s FROM photos%s%s%s;';
+		$query = sprintf($sql, $fields, $where, $order, $limit);
 		
 		$result = pixelpost\Db::create()->query($query);		
 		

@@ -252,7 +252,7 @@ class SqlMapper
 				return $value;
 			
 			case self::DATA_DATE :				
-				return $this->_date_unserialize($value);
+				return $this->date_unserialize($value);
 			
 			default :
 				return null;
@@ -288,7 +288,7 @@ class SqlMapper
 				return sprintf('\'%s\'', Db::escapeString($value));
 			
 			case self::SQL_DATE :				
-				return sprintf('\'%s\'', $this->_date_serialize($value));
+				return sprintf('\'%s\'', $this->date_serialize($value));
 			
 			default :
 				return null;
@@ -304,7 +304,7 @@ class SqlMapper
 	 * @param \DateTime $date
 	 * @return string
 	 */
-	protected function _date_serialize(\DateTime $date)
+	public function date_serialize(\DateTime $date)
 	{
 		$date->setTimezone(new \DateTimeZone('UTC'));
 		
@@ -318,7 +318,7 @@ class SqlMapper
 	 * @param  string    $date
 	 * @return \DateTime
 	 */
-	protected function _date_unserialize($date)
+	public function date_unserialize($date)
 	{
 		pixelpost\Filter::assume_string($date);
 		

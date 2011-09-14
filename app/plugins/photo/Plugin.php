@@ -383,7 +383,72 @@ class Plugin implements pixelpost\PluginInterface
 	}
 
 	/**
-	 * List photos in database
+	 * List photos in database.
+	 * 
+	 * --------
+	 * Request: 
+	 * --------
+	 * { 
+	 *    "fields" : [ "id", "title", "publish-date", "thumb-url" ],
+	 *    "pager"  :
+	 *    {
+	 *        "page"         : 1,
+	 *        "max-per-page" : 10
+	 *    },
+	 *    "sort"   : 
+	 *    { 
+	 *        "publish-date" : "desc", 
+	 *        "title"        : "asc" 
+	 *    },
+	 *	  "filter" :
+	 *    {
+	 *	      "publish-date-interval" :
+	 *        {
+	 *            "start" : "2011-05-01T00:00:00+00:00",
+	 *            "end"   : "2011-05-31T23:59:59+00:00"  
+	 *        },
+	 *        "visible" : true
+	 *    }
+	 * }
+	 * 
+	 * The photo fields to be retrieved like: id | filename | title | description | 
+	 * publish-date | visible | thumb-url | resized-url | original-url
+	 * 
+	 * The pager [optional] field with its argument page and max-per-page. Used
+	 * to paginate the resultset.
+	 * 
+	 * The sort [optional] field is an array of key,value pair with value is asc
+	 * or desc and key can be: id | filename | title | description | 
+	 * publish-date | visible | thumb-url | resized-url | original-url
+	 * 
+	 * The filter [optional] field can contain three option filter:
+	 * - visible: with value true or false. show only visible photo or not.
+	 * - publish-date-interval: retrieve photo published between thoses dates. 
+	 * contains two mandatory field: start and end are bounds dare in RFC3339
+	 * format.
+	 * 
+	 * ---------
+	 * Response: 
+	 * ---------
+	 * [
+	 *	  { 
+	 *		  "id"          : 12, 
+	 *		  "title"       : "A butterfly", 
+	 *		  "publish-date": "2011-05-03T16:38:12+00:00", 
+	 *		  "thumb-url"   : "http://something.com/photos/thumb/kGj123.jpeg" 
+	 *	  },
+	 *	  { 
+	 *		  "id"          : 12, 
+	 *		  "title"       : "A butterfly", 
+	 *		  "publish-date": "2011-05-12T09:12:54+00:00", 
+	 *		  "thumb-url"   : "http://something.com/photos/thumb/ACv3hI.jpeg" 
+	 *	  },
+	 *    {
+	 *        ...
+	 *    }
+	 * ]
+	 * 
+	 * Same as photo.get in an array
 	 * 
 	 * @param pixelpost\Event $event
 	 */
