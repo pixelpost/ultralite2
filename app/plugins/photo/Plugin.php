@@ -419,7 +419,7 @@ class Plugin implements pixelpost\PluginInterface
 	 * 
 	 * The sort [optional] field is an array of key,value pair with value is asc
 	 * or desc and key can be: id | filename | title | description | 
-	 * publish-date | visible | thumb-url | resized-url | original-url
+	 * publish-date | visible
 	 * 
 	 * The filter [optional] field can contain three option filter:
 	 * - visible: with value true or false. show only visible photo or not.
@@ -430,23 +430,26 @@ class Plugin implements pixelpost\PluginInterface
 	 * ---------
 	 * Response: 
 	 * ---------
-	 * [
-	 *	  { 
-	 *		  "id"          : 12, 
-	 *		  "title"       : "A butterfly", 
-	 *		  "publish-date": "2011-05-03T16:38:12+00:00", 
-	 *		  "thumb-url"   : "http://something.com/photos/thumb/kGj123.jpeg" 
-	 *	  },
-	 *	  { 
-	 *		  "id"          : 12, 
-	 *		  "title"       : "A butterfly", 
-	 *		  "publish-date": "2011-05-12T09:12:54+00:00", 
-	 *		  "thumb-url"   : "http://something.com/photos/thumb/ACv3hI.jpeg" 
-	 *	  },
-	 *    {
-	 *        ...
-	 *    }
-	 * ]
+	 * {
+	 *    "photo" :
+	 *    [
+	 *	     { 
+	 *		     "id"          : 12, 
+	 *		     "title"       : "A butterfly", 
+	 *		     "publish-date": "2011-05-03T16:38:12+00:00", 
+	 *		     "thumb-url"   : "http://something.com/photos/thumb/kGj123.jpeg" 
+	 *	     },
+	 *	     { 
+	 *		     "id"          : 23, 
+	 *	   	     "title"       : "Daddy Portrait", 
+	 *   	     "publish-date": "2011-05-12T09:12:54+00:00", 
+	 *		     "thumb-url"   : "http://something.com/photos/thumb/ACv3hI.jpeg" 
+	 *	     },
+	 *       {
+	 *           ...
+	 *       }
+	 *    ]
+	 * }
 	 * 
 	 * Same as photo.get in an array
 	 * 

@@ -41,7 +41,7 @@ try
 	$reply = Model::photo_list($event->request->id, $fields, $options, $toDo);
 
 	// send the reply
-	$event->response = $reply;
+	$event->response = array('photo' => $reply);
 }
 catch(ModelExceptionNoResult $e)
 {
