@@ -50,8 +50,8 @@ try
 	// check if the response exists
 	if (!isset($call->response))
 	{
-		throw new \Exception('event `api.photo.get` not provide a response');			
-	}			
+		throw new \Exception('event `api.photo.get` not provide a response');
+	}
 }
 // handle all pixelpost\plugins\api\Exception can be thrown
 // if you don't the user receive the error message of your internal call

@@ -6,7 +6,7 @@
 	"api"     : "api",
 	"admin"   : "admin",
 	"photos"  : "photos",
-	"plugins" : 
+	"plugins" :
 	{
 		"error"    : "active",
 		"router"   : "active",
@@ -14,20 +14,20 @@
 		"photo"    : "active",
 		"admin"    : "active"
 	},
-	"photo_plugin" : 
+	"photo_plugin" :
 	{
 		"original" : "original",
 		"resized"  : "resized",
 		"thumb"    : "thumb",
 		"quality"  : 90,
-		"sizes"    : 
+		"sizes"    :
 		{
-			"resized" : 
+			"resized" :
 			{
 				"type"    : "larget-border",
 				"size"   : 500
 			},
-			"thumb" : 
+			"thumb" :
 			{
 				"type"    : "square",
 				"size"    : 150

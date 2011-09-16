@@ -32,10 +32,10 @@ class CodecJson implements CodecInterface
 		// check $request is a string
 		pixelpost\Filter::is_string($request);
 		pixelpost\Filter::check_encoding($request);
-		
+
 		if (trim($request) == '')
 		{
-			throw new Exception('no_request', 'Your request is empty.');			
+			throw new Exception('no_request', 'Your request is empty.');
 		}
 
 		// check $request is UTF-8 and decode it
@@ -72,7 +72,7 @@ class CodecJson implements CodecInterface
 	}
 
 	/**
-	 * Check if there is an JSON decode error and return the corresponding 
+	 * Check if there is an JSON decode error and return the corresponding
 	 * error message. Return an empty string if there is no error.
 	 *
 	 * @return string

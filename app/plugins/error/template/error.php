@@ -8,7 +8,7 @@
 		<h1>Oops!</h1>
 		<p>
 			It looks like we're experiencing a few problems with our website.
-			If you are the site owner, please enable debug mode in your 
+			If you are the site owner, please enable debug mode in your
 			configuration to learn more about the problem.
 		</p>
 		<p>

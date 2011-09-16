@@ -11,7 +11,7 @@ require_once dirname(__DIR__) . SEP . 'Model.php';
 if (!isset($event->request->id))
 {
 	throw new ApiException('bad_request', "'api.photo.set' method need a specified 'id' field.");
-}				
+}
 if (!isset($event->request->fields))
 {
 	throw new ApiException('bad_request', "'api.photo.set' method need a specified 'fields' field.");
@@ -25,11 +25,11 @@ if (isset($event->request->fields->filename)) unset($event->request->fields->fil
 if (isset($event->request->fields->{'publish-date'}))
 {
 	$date = $event->request->fields->{'publish-date'};
-	
+
 	$date = \DateTime::createFromFormat(\DateTime::RFC3339, $date);
-	
+
 	if ($date === false)  unset($event->request->fields->{'publish-date'});
-	else                  $event->request->fields->{'publish-date'} = $date;	
+	else                  $event->request->fields->{'publish-date'} = $date;
 }
 
 // retrieve requested fields and send them in the response
@@ -37,7 +37,7 @@ $changes = Model::photo_set($event->request->id, (array) $event->request->fields
 
 if ($changes <= 0)
 {
-	throw new ApiException('no_result', "There no photo corresponding to the 'id' : {$event->request->id}");			
+	throw new ApiException('no_result', "There no photo corresponding to the 'id' : {$event->request->id}");
 }
 
 $event->response = array('message' => 'photo updated');

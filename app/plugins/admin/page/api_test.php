@@ -10,12 +10,12 @@
 			Welcome on api tester.
 		</p>
 		<form>
-			<fieldset>				
+			<fieldset>
 				<legend>API request</legend>
 				<ol>
 					<li>
 						<label for="method">Method:</label>
-						<input id="method" placeholder="photo.get" required />						
+						<input id="method" placeholder="photo.get" required />
 					</li>
 					<li>
 						<label for="request">Request:</label>
@@ -29,20 +29,20 @@
 		</form>
 		<h2>Response</h2>
 		<div id="response">
-			
+
 		</div>
 		<script type="text/javascript" src="http://code.jquery.com/jquery-1.6.4.min.js"></script>
 		<script type="text/javascript">
 			$(document).ready(function()
 			{
 				$('form').submit(function() {
-					
+
 					// stop propagation
 					event.preventDefault();
-					
+
 					var method = $('#method').val();
 					var request = $('#request').val();
-					
+
 					$.ajax({
 					  'type'       : "put",
 					  "url"        : "<?php echo API_URL ?>json/",

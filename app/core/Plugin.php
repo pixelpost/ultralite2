@@ -193,13 +193,13 @@ class Plugin
 		$conf->save();
 
 		foreach(new \RecursiveIteratorIterator(
-					new \RecursiveDirectoryIterator(PLUG_PATH . SEP . $plugin), 
+					new \RecursiveDirectoryIterator(PLUG_PATH . SEP . $plugin),
 					\RecursiveIteratorIterator::CHILD_FIRST) as $file)
 		{
-			$method = $file->isDir() ? "rmdir" : 'unlink';			
+			$method = $file->isDir() ? "rmdir" : 'unlink';
 			$medhod($file->getPathName());
 		}
-		
+
 		return true;
 	}
 

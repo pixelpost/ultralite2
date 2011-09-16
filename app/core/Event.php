@@ -69,8 +69,8 @@ class Event extends \ArrayObject
 	 * content or modified content.
 	 * By default if the event have at least one listener, it's state is set to
 	 * processed. A listener can still change this state.
-	 * 
-	 * A listener may explicitly return false to stop the propagation of the 
+	 *
+	 * A listener may explicitly return false to stop the propagation of the
 	 * event to other listeners.
 	 *
 	 * @param  array $data The data loaded in the Event class.

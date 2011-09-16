@@ -53,7 +53,7 @@ class Plugin implements pixelpost\PluginInterface
 	 * Treat a new request comming from event 'request.admin' and check the second
 	 * part of the requested URL to find what admin page is asked for.
 	 *
-	 * This produce an event admin.* where * is replaced by the requested page. 
+	 * This produce an event admin.* where * is replaced by the requested page.
 	 * (ex: admin.index)
 	 *
 	 * In case of non response to an event admin.* the event admin.404 is thrown.

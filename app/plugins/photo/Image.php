@@ -8,104 +8,104 @@ class Image
 {
 	/**
 	 * The image source file
-	 * 
-	 * @var string 
+	 *
+	 * @var string
 	 */
 	protected $_src;
-	
+
 	/**
 	 * The image source witdh
-	 * 
-	 * @var int 
+	 *
+	 * @var int
 	 */
 	protected $_w;
-	
+
 	/**
 	 * The image source height
-	 * 
-	 * @var int 
+	 *
+	 * @var int
 	 */
 	protected $_h;
-	
+
 	/**
 	 * The image souce type
-	 * 
+	 *
 	 * @var int
 	 */
 	protected $_t;
-	
+
 	/**
 	 * The image souce ratio
-	 * 
+	 *
 	 * @var float
 	 */
 	protected $_r;
 
 	/**
-	 * The final image quality compression 
-	 * 
-	 * @var int 
+	 * The final image quality compression
+	 *
+	 * @var int
 	 */
 	protected $_q;
-	
+
 	/**
 	 * Create a new image for resize.
-	 * 
+	 *
 	 * @param type $filename The location of the image
 	 * @param type $quality  The jpeg quality compression of the resized image
 	 */
 	public function __construct($filename, $quality = 90)
 	{
 		ini_set('memory_limit', "128M");
-		
+
 		if (!defined('GD_MAJOR_VERSION'))
 		{
 			throw new \Exception('GD 2 library is not installed.', 0);
 		}
-		
+
 		if (GD_MAJOR_VERSION < 2)
 		{
-			throw new \Exception('GD library is too old, need at least version 2.0.', 0);			
+			throw new \Exception('GD library is too old, need at least version 2.0.', 0);
 		}
-		
+
 		pixelpost\Filter::assume_string($filename);
 		pixelpost\Filter::assume_int($quality);
-		
+
 		if (!file_exists($filename))
 		{
 			throw new \Exception("Image '$filename' does not exists.", 0);
 		}
-		
+
 		$this->_src = $filename;
-		
+
 		list($this->_w, $this->_h, $this->_t) = getimagesize($this->_src);
-		
+
 		switch($this->_t)
 		{
 			case IMAGETYPE_BMP : break;
 			case IMAGETYPE_GIF : break;
 			case IMAGETYPE_JPEG: break;
 			case IMAGETYPE_PNG : break;
-			default : 
+			default :
 				throw new \Exception("Image format is not supported.", 0);
 		}
-		
+
 		$this->_r = floatval(round($this->_w / $this->_h, 2));
 		$this->_q = $quality;
 	}
 
 	/**
 	 * Resizing the image and store the new image in $path;
-	 * 
+	 *
 	 * @param  string $path the future image location
 	 * @param  int    $w    the future image width
 	 * @param  int    $h    the future image height
 	 * @param  int    $x    the future image start (crop)
 	 * @param  int    $y    the future image start (crop)
-	 * @return bool 
+	 * @return bool
 	 */
 	protected function _resize($path, $w, $h, $x = 0, $y = 0)
-	{		
+	{
 		switch($this->_t)
 		{
 			case IMAGETYPE_BMP : $src = imagecreatefromwbmp($this->_src); break;
@@ -126,32 +126,32 @@ class Image
 	 * Convert an image in jpg
 	 *
 	 * @param  string $path
-	 * @return bool 
+	 * @return bool
 	 */
 	public function convert_to_jpeg($path)
 	{
 		return $this->_resize($path, $this->_w, $this->_h);
 	}
-	
+
 	/**
 	 * Resize the image, keep ratio, to width X px.
-	 * 
+	 *
 	 * @param  string $path  the future image location
 	 * @param  int    $width the future image width
 	 * @return bool
 	 */
 	public function resize_fixed_width($path, $width)
-	{		
-		if ($this->_w < $width) return false;				
+	{
+		if ($this->_w < $width) return false;
 
 		$height  = intval(round($width / $this->_r, 0));
 
 		return $this->_resize($path, $width, $height);
 	}
-		
+
 	/**
 	 * Resize the image, keep ratio, to height X px.
-	 * 
+	 *
 	 * @param  string $path   the future image location
 	 * @param  int    $height the future image height
 	 * @return bool
@@ -160,14 +160,14 @@ class Image
 	{
 		if ($this->_h < $height) return false;
 
-		$width  = intval(round($height * $this->_r, 0));				
-				
-		return $this->_resize($path, $width, $height);		
+		$width  = intval(round($height * $this->_r, 0));
+
+		return $this->_resize($path, $width, $height);
 	}
-		
+
 	/**
 	 * Resize the image, keep ratio, to larger_border X px.
-	 * 
+	 *
 	 * @param  string $path the future image location
 	 * @param  int    $size the future image larger border size
 	 * @return bool
@@ -186,13 +186,13 @@ class Image
 			$height = $size;
 			$width  = intval(round($height * $this->_r, 0));
 		}
-		
+
 		return $this->_resize($path, $width, $height);
 	}
-		
+
 	/**
 	 * Resize the image, not keep ratio, to X px side square shape.
-	 * 
+	 *
 	 * @param  string $path the future image location
 	 * @param  int    $size the future image side size
 	 * @return bool
@@ -202,10 +202,10 @@ class Image
 		return $this->resize_fixed($path, $size, $size);
 	}
 
-		
+
 	/**
 	 * Resize the image, not keep ratio.
-	 * 
+	 *
 	 * @param  string $path   the future image location
 	 * @param  int    $width  the future image width
 	 * @param  int    $height the future image height
@@ -217,41 +217,41 @@ class Image
 
 		$x = 0;
 		$y = 0;
-		
+
 		$w = $this->_w;
 		$h = $this->_h;
-		
+
 		$ratio = round(floatval($width / $height), 2);
-		
+
 		if ($this->_r >= 1 && $ratio < 1 || $this->_r < 1 && $ratio > 1)
 		{
 			$width  ^= $height;
 			$height ^= $width;
 			$width  ^= $height;
-			
+
 			$ratio = round(floatval($width / $height), 2);
 		}
-		
-		
+
+
 		if ($this->_r != $ratio)
-		{	
+		{
 			if ($this->_r > $ratio)
 			{
-				$this->_w = intval(round($this->_h * $ratio, 0));					
-				$x = intval(round(($w - $this->_w) / 2, 0));					
+				$this->_w = intval(round($this->_h * $ratio, 0));
+				$x = intval(round(($w - $this->_w) / 2, 0));
 			}
 			else
 			{
-				$this->_h = intval(round($this->_w / $ratio, 0));					
-				$y = intval(round(($h - $this->_h) / 2, 0));					
+				$this->_h = intval(round($this->_w / $ratio, 0));
+				$y = intval(round(($h - $this->_h) / 2, 0));
 			}
 		}
 
 		$result = $this->_resize($path, $width, $height, $x, $y);
-		
+
 		$this->_w = $w;
 		$this->_h = $h;
-		
+
 		return $result;
 	}
 

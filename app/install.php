@@ -2,7 +2,7 @@
 
 /**
  * Default Configuration Installation
- * 
+ *
  * A quick and dirty way to get things running.
  */
 

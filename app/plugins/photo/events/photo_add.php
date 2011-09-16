@@ -38,12 +38,12 @@ try
 
 	// load the temp image (uploaded) in GD2
 	$image = new Image($filename, pixelpost\Config::create()->photo_plugin->quality);
-	
+
 	// store the original size in jpg to it's final path
 	if (!$image->convert_to_jpeg($original))
 	{
 		unlink($filename);
-		throw new ApiException('internal_error', "can't generate original image.");		
+		throw new ApiException('internal_error', "can't generate original image.");
 	}
 
 	// store the resized size in jpg to it's final path in regards of user conf
@@ -82,5 +82,5 @@ try
 catch(\Exception $e)
 {
 	throw $e;
-	throw new ApiException('internal_error', "can't work on the image.", $e);			
+	throw new ApiException('internal_error', "can't work on the image.", $e);
 }

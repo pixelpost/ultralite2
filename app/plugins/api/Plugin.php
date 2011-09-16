@@ -45,7 +45,7 @@ class Plugin implements pixelpost\PluginInterface
 
 	public static function register()
 	{
-		pixelpost\Event::register('request.api', '\\' . __CLASS__ . '::on_api_request');		
+		pixelpost\Event::register('request.api', '\\' . __CLASS__ . '::on_api_request');
 	}
 
 	/**
@@ -150,12 +150,12 @@ class Plugin implements pixelpost\PluginInterface
 		$className = 'Codec' . str_replace(' ', '', ucwords(str_replace('-', ' ', $format)));
 
 		require_once __DIR__ . SEP . $className . '.php';
-		
+
 		// sometimes php sucks and is unable to find a class in the same
 		// namespace when the class name is dynamic
 		// so we need to provide the full class name.
 		$className = __NAMESPACE__ . '\\' . $className;
-		
+
 		return new $className();
 	}
 
@@ -172,7 +172,7 @@ class Plugin implements pixelpost\PluginInterface
 			'status'  => 'error',
 			'code'    => ($error instanceof Exception) ? $error->getShortMessage() : $error->getCode(),
 			'message' => $error->getMessage(),
-		);			
+		);
 	}
 
 	/**
@@ -191,7 +191,7 @@ class Plugin implements pixelpost\PluginInterface
 
 	/**
 	 * Check an api request is well formated and process the request:
-	 * 
+	 *
 	 * 1. send the api event corresponding to the method request
 	 * 2. return the event response if exists
 	 *

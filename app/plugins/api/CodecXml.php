@@ -32,10 +32,10 @@ class CodecXml implements CodecInterface
 		// check $request is a string
 		pixelpost\Filter::is_string($request);
 		pixelpost\Filter::check_encoding($request);
-		
+
 		if (trim($request) == '')
 		{
-			throw new Exception('no_request', 'Your request is empty.');			
+			throw new Exception('no_request', 'Your request is empty.');
 		}
 
 		// shut up ! all xml errors and prefer libxml_get_errors()
@@ -88,7 +88,7 @@ class CodecXml implements CodecInterface
 
 	/**
 	 * transform an array to an XML string
-	 * 
+	 *
 	 * @param  array $data
 	 * @return string
 	 */
@@ -112,8 +112,8 @@ class CodecXml implements CodecInterface
 			{
 				$value = sprintf('<![CDATA[%s]]>', $value);
 			}
-			
-			$xml .= sprintf('<%s>%s</%s>', $key, $value, $key);			
+
+			$xml .= sprintf('<%s>%s</%s>', $key, $value, $key);
 		}
 
 		return $xml;

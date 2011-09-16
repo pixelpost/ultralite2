@@ -20,7 +20,7 @@ if (!isset($event->request->fields))
 
 if (count($event->request->fields) == 0)
 {
-	throw new ApiException('bad_request', "'api.photo.get' method need a specified at least one 'fields'.");	
+	throw new ApiException('bad_request', "'api.photo.get' method need a specified at least one 'fields'.");
 }
 
 // exec the request
@@ -31,7 +31,7 @@ try
 {
 	// the requested fields
 	$fields = $event->request->fields;
-	
+
 	$toDo = self::_photo_fetcher_generator($fields);
 
 	// retrieve requested fields and send them in the response
