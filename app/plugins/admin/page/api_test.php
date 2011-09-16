@@ -7,7 +7,7 @@
 	<body>
 		<h1>API Tester</h1>
 		<p>
-			Welcome on api tester.
+			Welcome to the api tester.
 		</p>
 		<form>
 			<fieldset>
@@ -24,7 +24,7 @@
 				</ol>
 			</fieldset>
 			<fieldset>
-				<button type="submit">Envoyer</button>
+				<button type="submit">Submit</button>
 			</fieldset>
 		</form>
 		<h2>Response</h2>

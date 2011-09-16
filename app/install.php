@@ -25,12 +25,20 @@ $url .= ($_SERVER['SERVER_PORT'] != 80)? ':' . $_SERVER['SERVER_PORT'] : '';
 // path
 $url .= substr($_SERVER['REQUEST_URI'] , 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1);
 
+/**
+ * @todo Detect root URL, even if mod_rewrite is already installed
+ * e.g. Installer runs while browsing /admin/
+ */
+
 // Set Site URL
 $conf->url = $url;
 
 // Set User Directory
 $conf->userdir = 'ultraite2';
 
+/**
+ * FIXME: For some reason, saving the config breaks Ultralite, is there an encoding issue?
+ */
 $conf->save();
 
 if(!file_exists(ROOT_PATH . SEP . '.htaccess'))
