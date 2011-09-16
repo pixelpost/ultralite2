@@ -66,6 +66,10 @@ require_once CORE_PATH . SEP . 'Db.php';
 require_once CORE_PATH . SEP . 'Filter.php';
 require_once CORE_PATH . SEP . 'PluginInterface.php';
 
+// Run installer no configuration file is set
+if(!file_exists(PRIV_PATH . SEP . 'config.json'))
+	require_once APP_PATH . SEP . 'install.php';
+
 // Step 5. We need to parse the config file and set properly the environnement
 $conf = Config::load(PRIV_PATH . SEP . 'config.json');
 
