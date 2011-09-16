@@ -69,13 +69,13 @@ class Model
 		if (is_null(self::$_mapper))
 		{
 			// use pixelpost\SqlMapper as Map
-			self::$_mapper = new Map();
-			self::$_mapper->map('id',           'id',      Map::DATA_INT)
-						  ->map('filename',     'file',    Map::DATA_STRING)
-						  ->map('title',        'title',   Map::DATA_STRING)
-						  ->map('description',  'desc',    Map::DATA_STRING)
-						  ->map('publish-date', 'publish', Map::DATA_DATE)
-						  ->map('visible',      'show',    Map::DATA_BOOL);
+			self::$_mapper = Map::create()
+					->map('id',           'id',      Map::DATA_INT)
+					->map('filename',     'file',    Map::DATA_STRING)
+					->map('title',        'title',   Map::DATA_STRING)
+					->map('description',  'desc',    Map::DATA_STRING)
+					->map('publish-date', 'publish', Map::DATA_DATE)
+					->map('visible',      'show',    Map::DATA_BOOL);
 		}
 
 		return self::$_mapper;

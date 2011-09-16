@@ -33,6 +33,16 @@ class SqlMapper
 	protected $_sqlType   = array();
 	
 	/**
+	 * Return an SqlMapper object
+	 * 
+	 * @return SqlMapper 
+	 */
+	public static function create()
+	{
+		return new SqlMapper();
+	}
+	
+	/**
 	 * Register a new field in the map, if sqlType is not provided he is 
 	 * automatically created from $datatype with this casting rule :
 	 * 
