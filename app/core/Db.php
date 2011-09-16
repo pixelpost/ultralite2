@@ -31,7 +31,7 @@ class Db extends \SQLite3
 		}
 
 		$this->open(PRIV_PATH . SEP . 'sqlite3.db');
-		self::$_instance = self;
+		self::$_instance = $this;
 	}
 	
 	/**
@@ -176,7 +176,7 @@ class SqlMapper
 	 * @param  array  $dataFields
 	 * @return string
 	 */
-	public function genSqlInsertList(array $dataFiels)
+	public function genSqlInsertList(array $dataFields)
 	{
 		$list = array();
 		
@@ -320,7 +320,7 @@ class SqlMapper
 	 */
 	public function date_unserialize($date)
 	{
-		pixelpost\Filter::assume_string($date);
+		Filter::assume_string($date);
 		
 		return \DateTime::createFromFormat('YmdHis', $date, new \DateTimeZone('UTC'));
 	}

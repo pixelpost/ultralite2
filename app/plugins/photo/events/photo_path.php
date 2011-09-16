@@ -1,5 +1,10 @@
 <?php
 
+namespace pixelpost\plugins\photo;
+
+use pixelpost;
+use pixelpost\plugins\api\Exception as ApiException;
+
 // check if the request is correct
 if (!isset($event->request->id))
 {
@@ -27,7 +32,9 @@ switch($size)
 /***** how to properly call an event... *****/
 
 // prepare your request data
-$request = array('request' => array('id'=> $id, 'fields' => array('filename')));
+$request = array('id'=> $id, 'fields' => array('filename'));
+$request = json_decode(json_encode($request));
+$request = array('request' => $request);
 
 // make a try..catch
 try

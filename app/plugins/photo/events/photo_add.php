@@ -1,7 +1,12 @@
 <?php
 
-require_once __DIR__ . SEP . 'Model.php';
-require_once __DIR__ . SEP . 'Image.php';
+namespace pixelpost\plugins\photo;
+
+use pixelpost;
+use pixelpost\plugins\api\Exception as ApiException;
+
+require_once dirname(__DIR__) . SEP . 'Model.php';
+require_once dirname(__DIR__) . SEP . 'Image.php';
 
 // check if the request is correct
 if (!isset($event->request->file))
@@ -20,22 +25,22 @@ try
 	$filename = $event->request->file;
 
 	// create a uniq image filename width jpeg ext
-	$uid      = md5($filename . date() . time() . rand(0, 200)) . '.jpg';
+	$uid      = md5($filename . date("YmdHis") . rand(0, 200)) . '.jpg';
 
 	// generate the location of the three image format : original, resized, thumb
 	$pathGenerator  = self::_photo_location_generator(true);
 	// generate the resized and thumb file
-	$thumbGenerator = self::_photo_size_generator();
+	$thumbGenerator = self::_photo_thumbnail_generator();
 
 	$original = $pathGenerator($uid, 'original');
 	$resized  = $pathGenerator($uid, 'resized');
 	$thumb    = $pathGenerator($uid, 'thumb');
 
 	// load the temp image (uploaded) in GD2
-	$image = new Image($filename, $conf->photo_plugin->quality);
+	$image = new Image($filename, pixelpost\Config::create()->photo_plugin->quality);
 	
 	// store the original size in jpg to it's final path
-	if ($image->convert_to_jpeg($original))
+	if (!$image->convert_to_jpeg($original))
 	{
 		unlink($filename);
 		throw new ApiException('internal_error', "can't generate original image.");		
@@ -50,7 +55,7 @@ try
 	}
 
 	// store the thumb size in jpg to it's final path in regards of user conf
-	if (!$thumbGenerator($image, $resized, 'thumb'))
+	if (!$thumbGenerator($image, $thumb, 'thumb'))
 	{
 		unlink($filename);
 		unlink($original);
@@ -76,5 +81,6 @@ try
 }
 catch(\Exception $e)
 {
+	throw $e;
 	throw new ApiException('internal_error', "can't work on the image.", $e);			
 }

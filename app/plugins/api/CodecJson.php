@@ -30,15 +30,21 @@ class CodecJson implements CodecInterface
 	public function decode($request)
 	{
 		// check $request is a string
-		pixelpost\Filter::param_string($request);
+		pixelpost\Filter::is_string($request);
+		pixelpost\Filter::check_encoding($request);
+		
+		if (trim($request) == '')
+		{
+			throw new Exception('no_request', 'Your request is empty.');			
+		}
 
 		// check $request is UTF-8 and decode it
-		$request = json_decode(pixelpost\Filter::check_encoding($request));
+		$request = json_decode($request);
 
 		// check if the request is well decoded
-		if ('' == $errorMsg = $this->get_json_decode_error())
+		if ('' != $errorMsg = $this->get_json_decode_error())
 		{
-			if (pixelpost\DEBUG)
+			if (DEBUG)
 			{
 				throw new Exception('bad_encoding',
 						'The JSON request seems invalid format. Debug: ' . $errorMsg);
@@ -62,7 +68,7 @@ class CodecJson implements CodecInterface
 	 */
 	public function encode(array $response)
 	{
-		return json_encode($response);
+		return json_encode($response, JSON_HEX_QUOT);
 	}
 
 	/**
@@ -83,16 +89,4 @@ class CodecJson implements CodecInterface
 		}
 	}
 
-}
-
-/**
- * Override the PHP core json_encode by the same method with extra option set.
- *
- * @param mixed $data
- * @return string
- */
-function json_encode($data)
-{
-	return json_encode($data, \JSON_FORCE_OBJECT | \JSON_HEX_TAG  | \JSON_HEX_APOS 
-			                | \JSON_HEX_QUOT     | \JSON_HEX_AMP);
 }

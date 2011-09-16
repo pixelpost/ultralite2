@@ -7,3 +7,4 @@ application/config.php
 *.tmproj
 *.sqlite3
 *.un~
+private/config.json

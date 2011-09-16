@@ -36,7 +36,7 @@ class Config extends \ArrayObject
 		}
 
 		parent::__construct(array(), \ArrayObject::ARRAY_AS_PROPS);
-		self::$_instance = self;
+		self::$_instance = $this;
 	}
 
 	/**
@@ -73,7 +73,7 @@ class Config extends \ArrayObject
 			throw Error::create(4, array($filename));
 		}
 
-		$conf = json_decode($content, true);
+		$conf = json_decode($content);
 
 		if (json_last_error() != \JSON_ERROR_NONE)
 		{
@@ -102,8 +102,7 @@ class Config extends \ArrayObject
 	 */
 	public function save()
 	{
-		$data = json_encode($this, JSON_FORCE_OBJECT | JSON_HEX_TAG |
-				JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP);
+		$data = json_encode($this, JSON_HEX_QUOT);
 
 		return (bool) file_put_contents(self::$_file, $data, LOCK_EX);
 	}

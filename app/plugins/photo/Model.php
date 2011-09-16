@@ -204,7 +204,7 @@ class Model
 				}
 			}
 			
-			$where = ' WHERE' . implode(' AND', $w);
+			if (count($w) > 0) $where = ' WHERE' . implode(' AND', $w);
 		}
 		
 		// work on SQL ORDER BY clause
@@ -222,17 +222,17 @@ class Model
 						
 					case 'publish-date' :
 						$value = (($value == 'asc') ? 'ASC' : 'DESC');
-						$s[] = sprintf(' `publish` %s', $value);
+						$s[] = sprintf(' publish %s', $value);
 						break;
 					
 					case 'title' :
 						$value = (($value == 'asc') ? 'ASC' : 'DESC');
-						$s[] = sprintf(' `title` %s', $value);
+						$s[] = sprintf(' title %s', $value);
 						break;
 				}
 			}
 			
-			$order = ' ORDER BY' . implode(',', $s);			
+			if (count($s) > 0) $order = ' ORDER BY' . implode(',', $s);				
 		}
 		
 		// work on SQL LIMIT clause
@@ -245,20 +245,20 @@ class Model
 		}
 		
 		$query = 'SELECT %s FROM photos%s%s%s;';
-		$query = sprintf($sql, $fields, $where, $order, $limit);
-		
+		$query = sprintf($query, $fields, $where, $order, $limit);
+
 		$result = pixelpost\Db::create()->query($query);		
-		
+
 		if ($result === true)  throw new ModelExceptionNoResult();		
 		if ($result === false) throw new ModelExceptionSqlError();		
 		
 		$list = array();
-		
+
 		while(false !== $fetched = $result->fetchArray(\SQLITE3_ASSOC))
 		{
 			$list[] = self::_getMapper()->genArrayResult($fetched, $todo);
 		}
-		
+
 		return $list; 
 	}
 	
@@ -288,7 +288,7 @@ class Model
 		$fields = self::_getMapper()->genSqlSelectList($fields);
 		
 		$query = 'SELECT %s FROM photos WHERE id = %d LIMIT 1;';
-		$query = sprintf($sql, $fields, $photoId);
+		$query = sprintf($query, $fields, $photoId);
 		
 		$result = pixelpost\Db::create()->querySingle($query, true);		
 		

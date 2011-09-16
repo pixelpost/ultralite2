@@ -41,7 +41,7 @@ class Exception extends \Exception
 	 * 
 	 * @return string 
 	 */
-	public function getCode()
+	public function getShortMessage()
 	{
 		return $this->_shortMsg;
 	}

@@ -55,7 +55,7 @@ class Plugin implements pixelpost\PluginInterface
 		}';
 		
 		$conf = pixelpost\Config::create();		
-		$conf->photo_plugin = json_decode($configuration, true);		
+		$conf->photo_plugin = json_decode($configuration);
 		$conf->save();
 
 		Model::table_create();
@@ -506,9 +506,9 @@ class Plugin implements pixelpost\PluginInterface
 	 * 
 	 * @param pixelpost\Event $event 
 	 */
-	public static function photo_sizes(pixelpost\Event $event)
+	public static function photo_size(pixelpost\Event $event)
 	{
-		$event->response = pixelpost\Db::create()->photo_plugin->sizes;		
+		$event->response = pixelpost\Config::create()->photo_plugin->sizes;		
 	}
 
 }

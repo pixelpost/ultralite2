@@ -30,18 +30,24 @@ class CodecXml implements CodecInterface
 	public function decode($request)
 	{
 		// check $request is a string
-		pixelpost\Filter::param_string($request);
+		pixelpost\Filter::is_string($request);
+		pixelpost\Filter::check_encoding($request);
+		
+		if (trim($request) == '')
+		{
+			throw new Exception('no_request', 'Your request is empty.');			
+		}
 
 		// shut up ! all xml errors and prefer libxml_get_errors()
 		libxml_use_internal_errors(true);
 
 		// check $request is UTF-8 and decode it
-		$request = simplexml_load_string(pixelpost\Filter::check_encoding($request));
+		$request = simplexml_load_string($request);
 
 		// check if the request is well decoded
 		if ($request === false)
 		{
-			if (pixelpost\DEBUG)
+			if (DEBUG)
 			{
 				$errorMsg = '';
 

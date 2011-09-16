@@ -56,14 +56,16 @@ class Image
 	 */
 	public function __construct($filename, $quality = 90)
 	{
-		if (!defined(GD_MAJOR_VERSION))
+		ini_set('memory_limit', "128M");
+		
+		if (!defined('GD_MAJOR_VERSION'))
 		{
-			throw new \Exception(0, 'GD library is not installed.');
+			throw new \Exception('GD 2 library is not installed.', 0);
 		}
 		
 		if (GD_MAJOR_VERSION < 2)
 		{
-			throw new \Exception(0, 'GD library is too old, need at least version 2.0.');			
+			throw new \Exception('GD library is too old, need at least version 2.0.', 0);			
 		}
 		
 		pixelpost\Filter::assume_string($filename);
@@ -71,7 +73,7 @@ class Image
 		
 		if (!file_exists($filename))
 		{
-			throw new \Exception(0, "Image '$filename' does not exists.");
+			throw new \Exception("Image '$filename' does not exists.", 0);
 		}
 		
 		$this->_src = $filename;
@@ -85,7 +87,7 @@ class Image
 			case IMAGETYPE_JPEG: break;
 			case IMAGETYPE_PNG : break;
 			default : 
-				throw new \Exception(0, "Image format is not supported.");
+				throw new \Exception("Image format is not supported.", 0);
 		}
 		
 		$this->_r = floatval(round($this->_w / $this->_h, 2));
@@ -103,13 +105,13 @@ class Image
 	 * @return bool 
 	 */
 	protected function _resize($path, $w, $h, $x = 0, $y = 0)
-	{
+	{		
 		switch($this->_t)
 		{
-			case IMAGETYPE_BMP : $src = imagecreatefromwbmp($this->_src);
-			case IMAGETYPE_GIF : $src = imagecreatefromgif($this->_src);
-			case IMAGETYPE_JPEG: $src = imagecreatefromjpeg($this->_src);
-			case IMAGETYPE_PNG : $src = imagecreatefrompng($this->_src);
+			case IMAGETYPE_BMP : $src = imagecreatefromwbmp($this->_src); break;
+			case IMAGETYPE_GIF : $src = imagecreatefromgif($this->_src);  break;
+			case IMAGETYPE_JPEG: $src = imagecreatefromjpeg($this->_src); break;
+			case IMAGETYPE_PNG : $src = imagecreatefrompng($this->_src);  break;
 			default            : return false;
 		}
 		$dst = imagecreatetruecolor($w, $h);
@@ -142,7 +144,7 @@ class Image
 	{		
 		if ($this->_w < $width) return false;				
 
-		$height  = intval(round($width * ($this->_h / $this->_w), 0));
+		$height  = intval(round($width / $this->_r, 0));
 
 		return $this->_resize($path, $width, $height);
 	}
@@ -158,7 +160,7 @@ class Image
 	{
 		if ($this->_h < $height) return false;
 
-		$width  = intval(round($height * ($this->_w / $this->_h), 0));				
+		$width  = intval(round($height * $this->_r, 0));				
 				
 		return $this->_resize($path, $width, $height);		
 	}
@@ -176,13 +178,13 @@ class Image
 		{
 			if ($this->_w < $size) return false;
 			$width  = $size;
-			$height = intval(round($width * $this->_r, 0));
+			$height = intval(round($width / $this->_r, 0));
 		}
 		else
 		{
 			if ($this->_h < $size) return false;
 			$height = $size;
-			$width  = intval(round($height / $this->_r, 0));
+			$width  = intval(round($height * $this->_r, 0));
 		}
 		
 		return $this->_resize($path, $width, $height);
@@ -197,18 +199,7 @@ class Image
 	 */
 	public function resize_square($path, $size)
 	{
-		if ($this->_w < $size || $this->_h < $size) return false;
-		
-		$x  = 0;
-		$y  = 0;
-		
-		if ($this->_r != 1)
-		{
-			if ($this->_r > 1) $x = intval(round(($this->_w - $this->_h) / 2, 0));			
-			else               $y = intval(round(($this->_h - $this->_w) / 2, 0));										
-		}
-		
-		return $this->_resize($path, $size, $size, $x, $y);
+		return $this->resize_fixed($path, $size, $size);
 	}
 
 		
@@ -227,30 +218,41 @@ class Image
 		$x = 0;
 		$y = 0;
 		
+		$w = $this->_w;
+		$h = $this->_h;
+		
 		$ratio = round(floatval($width / $height), 2);
 		
-		if ($this->_r >= 1 && $ratio < 1 || $this->_r < 1 && $ratio >= 1)
+		if ($this->_r >= 1 && $ratio < 1 || $this->_r < 1 && $ratio > 1)
 		{
 			$width  ^= $height;
 			$height ^= $width;
 			$width  ^= $height;
+			
+			$ratio = round(floatval($width / $height), 2);
 		}
 		
+		
 		if ($this->_r != $ratio)
-		{
-			if ($this->_r < $ratio)
+		{	
+			if ($this->_r > $ratio)
 			{
-				$z  = ($this->_r >= 1) ? 'y' : 'x';
-				$$z = intval(round(($this->_h - ($this->_w / $ratio)) / 2, 0));							
+				$this->_w = intval(round($this->_h * $ratio, 0));					
+				$x = intval(round(($w - $this->_w) / 2, 0));					
 			}
 			else
 			{
-				$z  = ($this->_r >= 1) ? 'x' : 'y';
-				$$z = intval(round(($this->_w - ($this->_h * $ratio)) / 2, 0));							
-			}			
+				$this->_h = intval(round($this->_w / $ratio, 0));					
+				$y = intval(round(($h - $this->_h) / 2, 0));					
+			}
 		}
 
-		return $this->_resize($path, $width, $height, $x, $y);
+		$result = $this->_resize($path, $width, $height, $x, $y);
+		
+		$this->_w = $w;
+		$this->_h = $h;
+		
+		return $result;
 	}
-	
+
 }

@@ -46,6 +46,7 @@ class Plugin implements pixelpost\PluginInterface
 		pixelpost\Event::register('request.admin', '\\' . __CLASS__ . '::on_request');
 		pixelpost\Event::register('admin.index',   '\\' . __CLASS__ . '::on_page_index');
 		pixelpost\Event::register('admin.404',     '\\' . __CLASS__ . '::on_page_404');
+		pixelpost\Event::register('admin.api-test','\\' . __CLASS__ . '::on_api_test');
 	}
 
 	/**
@@ -93,6 +94,11 @@ class Plugin implements pixelpost\PluginInterface
 	public static function on_page_404(pixelpost\Event $event)
 	{
 		echo "<h1>Oops 404 error</h1>";
+	}
+
+	public static function on_api_test(pixelpost\Event $event)
+	{
+		include __DIR__ . SEP . 'page' . SEP . 'api_test.php';
 	}
 
 }

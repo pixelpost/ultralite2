@@ -79,8 +79,8 @@ class Plugin implements pixelpost\PluginInterface
 		if (self::is_valid_format($format) == false)
 		{
 			echo 'ERROR: Bad url format, please use:', "\n",
-			'- ', WEB_URL . API_URL . '/json/', "\n",
-			'- ', WEB_URL . API_URL . '/xml/', "\n";
+			'- ', API_URL . 'json/', "\n",
+			'- ', API_URL . 'xml/', "\n";
 			return false;
 		}
 
@@ -111,7 +111,7 @@ class Plugin implements pixelpost\PluginInterface
 			$basic = new Exception('unknown', 'Unknown error.');
 
 			// according the DEBUG mode, we send the real error or not
-			$response = self::format_error(pixelpost\DEBUG ? $error : $basic);
+			$response = self::format_error(DEBUG ? $error : $basic);
 		}
 
 		// send the response to the client
@@ -150,7 +150,12 @@ class Plugin implements pixelpost\PluginInterface
 		$className = 'Codec' . str_replace(' ', '', ucwords(str_replace('-', ' ', $format)));
 
 		require_once __DIR__ . SEP . $className . '.php';
-
+		
+		// sometimes php sucks and is unable to find a class in the same
+		// namespace when the class name is dynamic
+		// so we need to provide the full class name.
+		$className = __NAMESPACE__ . '\\' . $className;
+		
 		return new $className();
 	}
 
@@ -165,9 +170,9 @@ class Plugin implements pixelpost\PluginInterface
 	{
 		return array(
 			'status'  => 'error',
-			'code'    => $error->getCode(),
+			'code'    => ($error instanceof Exception) ? $error->getShortMessage() : $error->getCode(),
 			'message' => $error->getMessage(),
-		);
+		);			
 	}
 
 	/**
@@ -197,12 +202,12 @@ class Plugin implements pixelpost\PluginInterface
 		// check the request is well formated
 		if (!property_exists($request, 'method'))
 		{
-			throw new Exception('bad_format', 'The request need to provide a \'method\’ property');
+			throw new Exception('bad_format', 'The request need to provide a \'method\' property');
 		}
 
 		if (!property_exists($request, 'request'))
 		{
-			throw new Exception('bad_format', 'The request need to provide a \'request’ property');
+			throw new Exception('bad_format', 'The request need to provide a \'request\' property');
 		}
 
 		// get the requested api method

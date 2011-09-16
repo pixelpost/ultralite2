@@ -11,6 +11,27 @@
 		"error"    : "active",
 		"router"   : "active",
 		"api"      : "active",
+		"photo"    : "active",
 		"admin"    : "active"
+	},
+	"photo_plugin" : 
+	{
+		"original" : "original",
+		"resized"  : "resized",
+		"thumb"    : "thumb",
+		"quality"  : 90,
+		"sizes"    : 
+		{
+			"resized" : 
+			{
+				"type"    : "larget-border",
+				"size"   : 500
+			},
+			"thumb" : 
+			{
+				"type"    : "square",
+				"size"    : 150
+			}
+		}
 	}
 }
