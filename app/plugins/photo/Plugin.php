@@ -19,6 +19,8 @@ use pixelpost\plugins\api\Exception as ApiException;
  * - 'api.photo.list'
  * - 'api.photo.path'
  * - 'api.photo.size'
+ * - 'api.photo.config.get'
+ * - 'api.photo.config.set'
  *
  * @copyright  2011 Alban LEROUX <seza@paradoxal.org>
  * @license    http://creativecommons.org/licenses/by-sa/3.0/ Creative Commons
@@ -43,7 +45,7 @@ class Plugin implements pixelpost\PluginInterface
 			"quality"   : 90,
 			"sizes"     : {
 				"resized" : {
-					"type" : "large-border",
+					"type" : "larger-border",
 					"size" : 500
 				},
 				"thumb" : {
@@ -103,9 +105,8 @@ class Plugin implements pixelpost\PluginInterface
 		pixelpost\Event::register('api.photo.list',    '\\' . __CLASS__ . '::photo_list');
 		pixelpost\Event::register('api.photo.path',    '\\' . __CLASS__ . '::photo_path');
 		pixelpost\Event::register('api.photo.size',    '\\' . __CLASS__ . '::photo_size');
-		// TODO To be created:
-		//pixelpost\Event::register('api.photo.config.get', '\\' . __CLASS__ . '::photo_size');
-		//pixelpost\Event::register('api.photo.config.set', '\\' . __CLASS__ . '::photo_size');
+		pixelpost\Event::register('api.photo.config.get', '\\' . __CLASS__ . '::config_set');
+		pixelpost\Event::register('api.photo.config.set', '\\' . __CLASS__ . '::config_get');
 	}
 
 	/**
@@ -226,276 +227,54 @@ class Plugin implements pixelpost\PluginInterface
 		};
 	}
 	
-	/**
-	 * Return the actual version number of the plugin
-	 * 
-	 * --------
-	 * Request: { }
-	 * --------
-	 * 
-	 * No data need to be provided
-	 * 
-	 * ---------
-	 * Response: { "version" : "0.0.1" }
-	 * ---------
-	 * 
-	 * The string repesentating the version number of the plugin
-	 * 
-	 * @param pixelpost\Event $event
-	 */
 	public static function photo_version(pixelpost\Event $event)
 	{
 		$event->response = array('version' => self::version());
 	}
 
-	/**
-	 * Add a photo in database
-	 *
-	 * --------
-	 * Request: { "file": "\tmp\tempnam-ulkdfjg.jpg" }
-	 * --------
-	 * 
-	 * The photo file, this file will be moved in his final folder.
-	 * 
-	 * ---------
-	 * Response: { 'id' : 1234 }
-	 * ---------
-	 * 
-	 * The photo id created.
-	 * 
-	 * @param pixelpost\Event $event
-	 */
 	public static function photo_add(pixelpost\Event $event)
 	{
 		include __DIR__ . SEP . 'events' . SEP . 'photo_add.php';
 	}
 
-	/**
-	 * Delete a photo from database
-	 *
-	 * --------
-	 * Request: { "id": 1234 }
-	 * --------
-	 * 
-	 * The photo id to be deleted.
-	 * 
-	 * ---------
-	 * Response: { "message" : "Photo is deleted" }
-	 * ---------
-	 * 
-	 * Confirmation Message.
-	 * 
-	 * @param pixelpost\Event $event
-	 */
 	public static function photo_del(pixelpost\Event $event)
 	{
 		include __DIR__ . SEP . 'events' . SEP . 'photo_del.php';
 	}
 
-	/**
-	 * Change a photo in database, the possible infos are:
-	 *
-	 * --------
-	 * Request:
-	 * --------
-	 * { 
-	 *    "id"     : 1234, 
-	 *    "fields" : { "title": "my photo", "visible": true } 
-	 * }
-	 * 
-	 * The photo id to be updated.
-	 * The photo fields to be updated like: title | description | publish-date | visible
-	 * 
-	 * filename:     string
-	 * title:        string
-	 * description:  string
-	 * publish-date: date string formated like RFC3339
-	 * visible:      boolean
-	 * 
-	 * ---------
-	 * Response: { "message" : "Photo is updated" }
-	 * ---------
-	 * 
-	 * Confirmation Message.
-	 * 
-	 * @param pixelpost\Event $event
-	 */
 	public static function photo_set(pixelpost\Event $event)
 	{
 		include __DIR__ . SEP . 'events' . SEP . 'photo_set.php';
 	}
 
-	/**
-	 * Retrieve photo infos from database, the possible infos are: 
-	 * 
-	 * --------
-	 * Request: 
-	 * --------
-	 * { 
-	 *	  "id"     : 1234, 
-	 *    "fields" : [ "title", "description", "thumb-url" ] 
-	 * }
-	 * 
-	 * The photo id.
-	 * The photo fields to be retrieved like: id | filename | title | description | 
-	 * publish-date | visible | thumb-url | resized-url | original-url
-	 * 
-	 * ---------
-	 * Response: 
-	 * ---------
-	 * { 
-	 *	  "title":       "My Photo", 
-	 *    "description": "My description", 
-	 *    "thumb-url":   "http://something.com/photos/thumb/kGj123elakjz32.jpeg" 
-	 * }
-	 * 
-	 * The data which are asked for:
-	 * 
-	 * id:           int
-	 * filename:     string
-	 * title:        string
-	 * description:  string
-	 * publish-date: date string formated like RFC3339
-	 * visible:      boolean
-	 * thumb-url:    url
-	 * resized-url:  url
-	 * original-url: url
-	 * 
-	 * @param pixelpost\Event $event
-	 */
 	public static function photo_get(pixelpost\Event $event)
 	{
 		include __DIR__ . SEP . 'events' . SEP . 'photo_get.php';
 	}
 
-	/**
-	 * List photos in database.
-	 * 
-	 * --------
-	 * Request: 
-	 * --------
-	 * { 
-	 *    "fields" : [ "id", "title", "publish-date", "thumb-url" ],
-	 *    "pager"  :
-	 *    {
-	 *        "page"         : 1,
-	 *        "max-per-page" : 10
-	 *    },
-	 *    "sort"   : 
-	 *    { 
-	 *        "publish-date" : "desc", 
-	 *        "title"        : "asc" 
-	 *    },
-	 *	  "filter" :
-	 *    {
-	 *	      "publish-date-interval" :
-	 *        {
-	 *            "start" : "2011-05-01T00:00:00+00:00",
-	 *            "end"   : "2011-05-31T23:59:59+00:00"  
-	 *        },
-	 *        "visible" : true
-	 *    }
-	 * }
-	 * 
-	 * The photo fields to be retrieved like: id | filename | title | description | 
-	 * publish-date | visible | thumb-url | resized-url | original-url
-	 * 
-	 * The pager [optional] field with its argument page and max-per-page. Used
-	 * to paginate the resultset.
-	 * 
-	 * The sort [optional] field is an array of key,value pair with value is asc
-	 * or desc and key can be: id | filename | title | description | 
-	 * publish-date | visible
-	 * 
-	 * The filter [optional] field can contain three option filter:
-	 * - visible: with value true or false. show only visible photo or not.
-	 * - publish-date-interval: retrieve photo published between thoses dates. 
-	 * contains two mandatory field: start and end are bounds dare in RFC3339
-	 * format.
-	 * 
-	 * ---------
-	 * Response: 
-	 * ---------
-	 * {
-	 *    "photo" :
-	 *    [
-	 *	     { 
-	 *		     "id"          : 12, 
-	 *		     "title"       : "A butterfly", 
-	 *		     "publish-date": "2011-05-03T16:38:12+00:00", 
-	 *		     "thumb-url"   : "http://something.com/photos/thumb/kGj123.jpeg" 
-	 *	     },
-	 *	     { 
-	 *		     "id"          : 23, 
-	 *	   	     "title"       : "Daddy Portrait", 
-	 *   	     "publish-date": "2011-05-12T09:12:54+00:00", 
-	 *		     "thumb-url"   : "http://something.com/photos/thumb/ACv3hI.jpeg" 
-	 *	     },
-	 *       {
-	 *           ...
-	 *       }
-	 *    ]
-	 * }
-	 * 
-	 * Same as photo.get in an array
-	 * 
-	 * @param pixelpost\Event $event
-	 */
 	public static function photo_list(pixelpost\Event $event)
 	{
 		include __DIR__ . SEP . 'events' . SEP . 'photo_list.php';
 	}
 	
-	/**
-	 * Return a photo path
-	 * 
-	 * --------
-	 * Request: { "id": 1234, "size": "thumb" }
-	 * --------
-	 * 
-	 * Possible sizes are: original | resized | thumb
-	 * 
-	 * ---------
-	 * Response: { "path" : "/var/www/photoblog/photos/thumb/AHkx3Fgke23.jpg" }
-	 * ---------
-	 * 
-	 * Where located the photo on the local storage
-	 * 
-	 * @param pixelpost\Event $event 
-	 */
 	public static function photo_path(pixelpost\Event $event)
 	{
 		include __DIR__ . SEP . 'events' . SEP . 'photo_path.php';
 	}
 	
-	/**
-	 * Return the size of the photo
-	 * 
-	 * --------
-	 * Request: { }
-	 * --------
-	 * 
-	 * No data needed
-	 * 
-	 * ---------
-	 * Response:
-	 * ---------
-	 * {
-	 *     "resized" : { "type": "fixed", "width": 600, "height": 200 },
-	 *     "thumb"   : { "type": "square", "size": 150 }
-	 * }
-	 * 
-	 * The photo size and there format. Possible `type`: larger-border | 
-	 * fixed-width | fixed-height | fixed | square
-	 * Only fixed type provide `witdh` and `height` data, others provide 
-	 * size data.
-	 * 
-	 * @param pixelpost\Event $event 
-	 */
 	public static function photo_size(pixelpost\Event $event)
 	{
 		$event->response = pixelpost\Config::create()->plugin_photo->sizes;		
 	}
-
+	
+	public static function config_get(pixelpost\Event $event)
+	{
+		$event->response = pixelpost\Config::create()->plugin_photo;		
+	}
+	
+	public static function config_set(pixelpost\Event $event)
+	{
+		include __DIR__ . SEP . 'events' . SEP . 'photo_path.php';
+	}
 }
 
