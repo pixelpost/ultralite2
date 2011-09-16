@@ -1,12 +1,9 @@
 {
 	"debug"   : true,
 	"url"     : "http://www.something.com/",
-	"timezone": "America/Chicago",
 	"userdir" : "",
-	"api"     : "api",
-	"admin"   : "admin",
-	"photos"  : "photos",
-	"plugins" :
+	"timezone": "America/Chicago",
+	"plugins" : 
 	{
 		"error"    : "active",
 		"router"   : "active",
@@ -14,20 +11,26 @@
 		"photo"    : "active",
 		"admin"    : "active"
 	},
-	"photo_plugin" :
+	"plugin_router" : 
 	{
-		"original" : "original",
-		"resized"  : "resized",
-		"thumb"    : "thumb",
-		"quality"  : 90,
-		"sizes"    :
+		"api"   : "api",
+		"admin" : "admin"	
+	},
+	"plugin_photo" : 
+	{
+		"directory" : "photos",
+		"original"  : "original",
+		"resized"   : "resized",
+		"thumb"     : "thumb",
+		"quality"   : 90,
+		"sizes"     : 
 		{
-			"resized" :
+			"resized" : 
 			{
 				"type"    : "larget-border",
 				"size"   : 500
 			},
-			"thumb" :
+			"thumb" : 
 			{
 				"type"    : "square",
 				"size"    : 150

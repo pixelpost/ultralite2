@@ -9,7 +9,7 @@ use pixelpost\SqlMapper as Map;
  * All Exception thown by the Model class are ModelException class
  *
  * @copyright  2011 Alban LEROUX <seza@paradoxal.org>
- * @license    http://creativecommons.org/licenses/by-sa/2.0/fr/ Creative Commons
+ * @license    http://creativecommons.org/licenses/by-sa/3.0/ Creative Commons
  * @version    0.0.1
  * @since      File available since Release 1.0.0
  */
@@ -19,7 +19,7 @@ class ModelException extends \Exception {}
  * Exception thrown when a SQL resultset is empty
  *
  * @copyright  2011 Alban LEROUX <seza@paradoxal.org>
- * @license    http://creativecommons.org/licenses/by-sa/2.0/fr/ Creative Commons
+ * @license    http://creativecommons.org/licenses/by-sa/3.0/ Creative Commons
  * @version    0.0.1
  * @since      File available since Release 1.0.0
  */
@@ -30,7 +30,7 @@ class ModelExceptionNoResult extends ModelException {}
  * automatically the last SQL error message and error code.
  *
  * @copyright  2011 Alban LEROUX <seza@paradoxal.org>
- * @license    http://creativecommons.org/licenses/by-sa/2.0/fr/ Creative Commons
+ * @license    http://creativecommons.org/licenses/by-sa/3.0/ Creative Commons
  * @version    0.0.1
  * @since      File available since Release 1.0.0
  */
@@ -48,7 +48,7 @@ class ModelExceptionSqlError extends ModelException
  * This class Store and retrieve the photo data
  *
  * @copyright  2011 Alban LEROUX <seza@paradoxal.org>
- * @license    http://creativecommons.org/licenses/by-sa/2.0/fr/ Creative Commons
+ * @license    http://creativecommons.org/licenses/by-sa/3.0/ Creative Commons
  * @version    0.0.1
  * @since      File available since Release 1.0.0
  */

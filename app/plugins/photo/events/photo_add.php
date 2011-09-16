@@ -5,9 +5,6 @@ namespace pixelpost\plugins\photo;
 use pixelpost;
 use pixelpost\plugins\api\Exception as ApiException;
 
-require_once dirname(__DIR__) . SEP . 'Model.php';
-require_once dirname(__DIR__) . SEP . 'Image.php';
-
 // check if the request is correct
 if (!isset($event->request->file))
 {
@@ -37,13 +34,13 @@ try
 	$thumb    = $pathGenerator($uid, 'thumb');
 
 	// load the temp image (uploaded) in GD2
-	$image = new Image($filename, pixelpost\Config::create()->photo_plugin->quality);
-
+	$image = new Image($filename, pixelpost\Config::create()->plugin_photo->quality);
+	
 	// store the original size in jpg to it's final path
 	if (!$image->convert_to_jpeg($original))
 	{
 		unlink($filename);
-		throw new ApiException('internal_error', "can't generate original image.");
+		throw new ApiException('internal_error', "can't generate original image.");		
 	}
 
 	// store the resized size in jpg to it's final path in regards of user conf
@@ -82,5 +79,5 @@ try
 catch(\Exception $e)
 {
 	throw $e;
-	throw new ApiException('internal_error', "can't work on the image.", $e);
+	throw new ApiException('internal_error', "can't work on the image.", $e);			
 }

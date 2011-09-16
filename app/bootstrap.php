@@ -56,15 +56,49 @@ set_exception_handler(function ($exception)
 	}
 });
 
-// Step 4. We need to load the minimum to work
-require_once CORE_PATH . SEP . 'Error.php';
-require_once CORE_PATH . SEP . 'Config.php';
-require_once CORE_PATH . SEP . 'Event.php';
-require_once CORE_PATH . SEP . 'Request.php';
-require_once CORE_PATH . SEP . 'Plugin.php';
-require_once CORE_PATH . SEP . 'Db.php';
-require_once CORE_PATH . SEP . 'Filter.php';
-require_once CORE_PATH . SEP . 'PluginInterface.php';
+// Step 4. We need a cool autoloader
+spl_autoload_register(function($className)
+{
+    // the main namespace, all other is ignored
+    $nsPrefix = 'pixelpost\\';
+	
+	// we need to keep $className, so we work on $class
+	$class    = $className;
+
+    // some security checking
+    if (strpos($class, '/') !== false) return false;
+    if (strpos($class, '.') !== false) return false;
+    
+    // remove the beginning backslash
+    if (substr($class, 0, 1) == '\\') $class = substr($class, 1);
+    
+    // check if the class start with the main namespace
+    if (substr($class, 0, strlen($nsPrefix)) != $nsPrefix) return false;
+
+    // remove the main namespace of the class name
+    $class = substr($class, strlen($nsPrefix));
+
+    // get all parts of the class name
+    $items = explode('\\', $class);
+
+    // extract the file name
+    $class = array_pop($items);
+
+    // create the related path
+    $path = (count($items) == 0) ? 'Core' : implode('\\', $items);  
+    
+    // create the absolute path with the complete file name
+    $file = APP_PATH . SEP . str_replace('\\', SEP, $path) . SEP . $class . '.php';
+
+    // check if file exists...
+    if ( ! is_file($file)) return false;
+
+    // include him...
+    require_once $file;
+    
+    // return if the class is loaded...
+    return class_exists($className);
+});
 
 // Run installer no configuration file is set
 if(!file_exists(PRIV_PATH . SEP . 'config.json'))
@@ -73,11 +107,8 @@ if(!file_exists(PRIV_PATH . SEP . 'config.json'))
 // Step 5. We need to parse the config file and set properly the environnement
 $conf = Config::load(PRIV_PATH . SEP . 'config.json');
 
-defined('DEBUG')     or define('DEBUG',     $conf->debug,                  true);
-defined('WEB_URL')   or define('WEB_URL',   $conf->url,                    true);
-defined('API_URL')   or define('API_URL',   WEB_URL . $conf->api . '/',    true);
-defined('ADMIN_URL') or define('ADMIN_URL', WEB_URL . $conf->admin . '/',  true);
-defined('SHOT_URL')  or define('SHOT_URL',  WEB_URL . $conf->photos . '/', true);
+defined('DEBUG')   or define('DEBUG',   $conf->debug, true);
+defined('WEB_URL') or define('WEB_URL', $conf->url,   true);
 
 DEBUG or error_reporting(0);
 
