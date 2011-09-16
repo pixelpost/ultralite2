@@ -5,8 +5,6 @@ namespace pixelpost\plugins\photo;
 use pixelpost;
 use pixelpost\plugins\api\Exception as ApiException;
 
-require_once dirname(__DIR__) . SEP . 'Model.php';
-
 // check if the request is correct
 if (!isset($event->request->fields))
 {

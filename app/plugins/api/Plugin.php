@@ -4,8 +4,6 @@ namespace pixelpost\plugins\api;
 
 use pixelpost;
 
-require_once __DIR__ . SEP . 'Exception.php';
-
 /**
  * API router for pixelpost api urls.
  *
@@ -16,7 +14,7 @@ require_once __DIR__ . SEP . 'Exception.php';
  * - 'api.*'
  *
  * @copyright  2011 Alban LEROUX <seza@paradoxal.org>
- * @license    http://creativecommons.org/licenses/by-sa/2.0/fr/ Creative Commons
+ * @license    http://creativecommons.org/licenses/by-sa/3.0/ Creative Commons
  * @version    0.0.1
  * @since      File available since Release 1.0.0
  */
@@ -63,9 +61,6 @@ class Plugin implements pixelpost\PluginInterface
 	 */
 	public static function on_api_request(pixelpost\Event $event)
 	{
-		// doing it here, avoid to include this file, if is not needed
-		require_once 'Exception.php';
-
 		// Retrieve the url paramters
 		$urlParams = $event->request->get_params();
 
@@ -149,8 +144,6 @@ class Plugin implements pixelpost\PluginInterface
 		// change word like 'xml-rpc' in camelcase: 'CodecXmlRpc'
 		$className = 'Codec' . str_replace(' ', '', ucwords(str_replace('-', ' ', $format)));
 
-		require_once __DIR__ . SEP . $className . '.php';
-		
 		// sometimes php sucks and is unable to find a class in the same
 		// namespace when the class name is dynamic
 		// so we need to provide the full class name.

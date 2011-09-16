@@ -18,12 +18,53 @@ use pixelpost;
  * request.web
  *
  * @copyright  2011 Alban LEROUX <seza@paradoxal.org>
- * @license    http://creativecommons.org/licenses/by-sa/2.0/fr/ Creative Commons
+ * @license    http://creativecommons.org/licenses/by-sa/3.0/ Creative Commons
  * @version    0.0.1
  * @since      File available since Release 1.0.0
  */
 class Plugin implements pixelpost\PluginInterface
 {
+
+	public static function version()
+	{
+		return '0.0.1';
+	}
+
+	public static function install()
+	{
+		$configuration = '{
+			"api"   : "api", 
+			"admin" : "admin"
+		}';
+		
+		$conf = pixelpost\Config::create();
+		$conf->plugin_router = json_decode($configuration);
+		$conf->save();
+	}
+
+	public static function uninstall()
+	{
+		$conf = pixelpost\Config::create();
+		
+		unset($conf->plugin_router);
+		
+		$conf->save();
+	}
+
+	public static function update()
+	{
+		return true;
+	}
+
+	public static function register()
+	{
+		$conf = pixelpost\Config::create();
+		
+		define('API_URL',   WEB_URL . $conf->plugin_router->api   . '/', true);
+		define('ADMIN_URL', WEB_URL . $conf->plugin_router->admin . '/', true);
+		
+		pixelpost\Event::register('request.new', '\\' . __CLASS__ . '::on_request');
+	}
 
 	public static function on_request(pixelpost\Event $event)
 	{
@@ -46,10 +87,10 @@ class Plugin implements pixelpost\PluginInterface
 		// other words is the WEB interface.
 		switch (array_shift($urlParams))
 		{
-			case $conf->admin :
+			case $conf->plugin_router->admin :
 				pixelpost\Event::signal('request.admin', $eventData);
 				break;
-			case $conf->api :
+			case $conf->plugin_router->api :
 				pixelpost\Event::signal('request.api', $eventData);
 				break;
 			default :
@@ -60,31 +101,6 @@ class Plugin implements pixelpost\PluginInterface
 		// we order to stop processing of the event request.new by returning
 		// false
 		return false;
-	}
-
-	public static function version()
-	{
-		return '0.0.1';
-	}
-
-	public static function install()
-	{
-		return true;
-	}
-
-	public static function uninstall()
-	{
-		return true;
-	}
-
-	public static function update()
-	{
-		return true;
-	}
-
-	public static function register()
-	{
-		pixelpost\Event::register('request.new', '\\' . __CLASS__ . '::on_request');
 	}
 
 }

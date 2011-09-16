@@ -21,7 +21,7 @@ use pixelpost\plugins\api\Exception as ApiException;
  * - 'api.photo.size'
  *
  * @copyright  2011 Alban LEROUX <seza@paradoxal.org>
- * @license    http://creativecommons.org/licenses/by-sa/2.0/fr/ Creative Commons
+ * @license    http://creativecommons.org/licenses/by-sa/3.0/ Creative Commons
  * @version    0.0.1
  * @since      File available since Release 1.0.0
  */
@@ -35,14 +35,13 @@ class Plugin implements pixelpost\PluginInterface
 
 	public static function install()
 	{
-		require_once __DIR__ . SEP . 'Model.php';
-		
 		$configuration = '{
-			"original" : "original",
-			"resized"  : "resized",
-			"thumb"    : "thumb",
-			"quality"  : 90,
-			"sizes"    : {
+			"directory" : "photos",  
+			"original"  : "original",
+			"resized"   : "resized",
+			"thumb"     : "thumb",
+			"quality"   : 90,
+			"sizes"     : {
 				"resized" : {
 					"type" : "large-border",
 					"size" : 500
@@ -55,12 +54,12 @@ class Plugin implements pixelpost\PluginInterface
 		}';
 		
 		$conf = pixelpost\Config::create();		
-		$conf->photo_plugin = json_decode($configuration);
+		$conf->plugin_photo = json_decode($configuration);
 		$conf->save();
 
 		Model::table_create();
 
-		$path = ROOT_PATH . SEP . $conf->photos;
+		$path = ROOT_PATH . SEP . 'photos';
 		
 		mkdir($path                   , 0775);
 		mkdir($path . SEP . 'original', 0775);
@@ -70,18 +69,18 @@ class Plugin implements pixelpost\PluginInterface
 
 	public static function uninstall()
 	{	
-		require_once __DIR__ . SEP . 'Model.php';
-
 		$conf = pixelpost\Config::create();
 		
-		unset($conf['photo_plugin']);
+		$photoDir = $conf->plugin_photo->directory;
+		
+		unset($conf->plugin_photo);
 		
 		$conf->save();
 
 		Model::table_delete();
 		
 		foreach(new \RecursiveIteratorIterator(
-					new \RecursiveDirectoryIterator(ROOT_PATH . SEP . $conf->photos), 
+					new \RecursiveDirectoryIterator(ROOT_PATH . SEP . $photoDir), 
 					\RecursiveIteratorIterator::CHILD_FIRST) as $file)
 		{
 			$method = $file->isDir() ? "rmdir" : 'unlink';			
@@ -120,20 +119,20 @@ class Plugin implements pixelpost\PluginInterface
 	protected static function _photo_location_generator($local = false)
 	{
 		$conf   = pixelpost\Config::create();
-		$sizes  = $conf->photo_plugin;
+		$myConf = $conf->plugin_photo;
 		 
 		$format = ($local)
-				? ROOT_PATH . SEP . $conf->photos . SEP . '%s' . SEP . '%s'
-				: SHOT_URL . '%s/%s';
+				? ROOT_PATH . SEP . $myConf->directory . SEP . '%s' . SEP . '%s'
+				: $conf->url . $myConf->directory . '/%s/%s';
 		
-		return function($filename, $size) use ($sizes, $format)
+		return function($filename, $size) use ($myConf, $format)
 		{
 			switch ($size)
 			{
-				case 'original' : $size = $sizes->original; break;
-				case 'resized'  : $size = $sizes->resized;  break;
-				case 'thumb'    : $size = $sizes->thumb;    break;
-				default         : $size = $sizes->resized;  break;
+				case 'original' : $size = $myConf->original; break;
+				case 'resized'  : $size = $myConf->resized;  break;
+				case 'thumb'    : $size = $myConf->thumb;    break;
+				default         : $size = $myConf->resized;  break;
 			}
 			
 			return sprintf($format, $size, $filename);
@@ -142,7 +141,7 @@ class Plugin implements pixelpost\PluginInterface
 	
 	/**
 	 * Provide a closure which accepts three arguments:
-	 * - $Image (pixelpost\plugins\photo\Image) The file 
+	 * - $image (pixelpost\plugins\photo\Image) The file 
 	 * - $path  (string) Where to register the new file
 	 * - $size  (string) The size format needed (resized, thumb)
 	 * 
@@ -150,32 +149,19 @@ class Plugin implements pixelpost\PluginInterface
 	 */
 	protected static function _photo_thumbnail_generator()
 	{
-		$conf   = pixelpost\Config::create();		
+		$conf = pixelpost\Config::create()->plugin_photo->sizes;		
 		
 		return function(\pixelpost\plugins\photo\Image $image, $path, $size) use ($conf)
 		{
-			switch($conf->photo_plugin->sizes->$size->type)
+			$c = $conf->$size;
+			
+			switch($c->type)
 			{
-				case 'fixed-width' :
-					$size   = $conf->photo_plugin->sizes->$size->size;
-					return $image->resize_fixed_width($path, $size);
-					
-				case 'fixed-height' :
-					$size   = $conf->photo_plugin->sizes->$size->size;
-					return $image->resize_fixed_height($path, $size);
-					
-				case 'fixed' :
-					$width  = $conf->photo_plugin->sizes->$size->width;
-					$height = $conf->photo_plugin->sizes->$size->height;
-					return $image->resize_fixed($path, $width, $height);
-					
-				case 'square' :
-					$size   = $conf->photo_plugin->sizes->$size->size;
-					return $image->resize_square($path, $size);
-					
-				default : // larger-border
-					$size   = $conf->photo_plugin->sizes->$size->size;
-					return $image->resize_larger_border($path, $size);
+				default             : return $image->resize_larger_border($path, $c->size);
+				case 'fixed-width'  : return $image->resize_fixed_width($path, $c->size);					
+				case 'fixed-height' : return $image->resize_fixed_height($path, $c->size);
+				case 'fixed'        : return $image->resize_fixed($path, $c->width, $c->height);					
+				case 'square'       : return $image->resize_square($path, $c->size);					
 			}			
 		};
 	}
@@ -508,7 +494,7 @@ class Plugin implements pixelpost\PluginInterface
 	 */
 	public static function photo_size(pixelpost\Event $event)
 	{
-		$event->response = pixelpost\Config::create()->photo_plugin->sizes;		
+		$event->response = pixelpost\Config::create()->plugin_photo->sizes;		
 	}
 
 }

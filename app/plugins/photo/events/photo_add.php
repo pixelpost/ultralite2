@@ -5,9 +5,6 @@ namespace pixelpost\plugins\photo;
 use pixelpost;
 use pixelpost\plugins\api\Exception as ApiException;
 
-require_once dirname(__DIR__) . SEP . 'Model.php';
-require_once dirname(__DIR__) . SEP . 'Image.php';
-
 // check if the request is correct
 if (!isset($event->request->file))
 {
@@ -37,7 +34,7 @@ try
 	$thumb    = $pathGenerator($uid, 'thumb');
 
 	// load the temp image (uploaded) in GD2
-	$image = new Image($filename, pixelpost\Config::create()->photo_plugin->quality);
+	$image = new Image($filename, pixelpost\Config::create()->plugin_photo->quality);
 	
 	// store the original size in jpg to it's final path
 	if (!$image->convert_to_jpeg($original))
