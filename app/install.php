@@ -8,7 +8,7 @@
 
 // Use Sample Config
 if(!file_exists(PRIV_PATH . SEP . 'config.json'))
-		copy(PRIV_PATH . SEP . 'config_sample.json', PRIV_PATH . SEP . 'config.json');
+	copy(PRIV_PATH . SEP . 'config_sample.json', PRIV_PATH . SEP . 'config.json');
 
 
 // Load Config
@@ -33,8 +33,11 @@ $conf->userdir = 'ultraite2';
 
 $conf->save();
 
-if(!file_exists('.htaccess'))
-	copy('app/htaccess_sample', '.htaccess');
+if(!file_exists(ROOT_PATH . SEP . '.htaccess'))
+	copy(APP_PATH . SEP . 'htaccess_sample', ROOT_PATH . SEP .'.htaccess');
+
+if(!file_exists(PRIV_PATH . SEP . '.htaccess'))
+	copy(PRIV_PATH . SEP . 'htaccess_sample', PRIV_PATH . SEP .'.htaccess');
 
 if(!file_exists(PRIV_PATH . SEP . 'sqlite3.db'))
 {
