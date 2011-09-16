@@ -32,9 +32,8 @@ switch($size)
 /***** how to properly call an event... *****/
 
 // prepare your request data
-$request = array('id'=> $id, 'fields' => array('filename'));
-$request = json_decode(json_encode($request));
-$request = array('request' => $request);
+$request = array('id' => $id, 'fields' => array('filename'));
+$request = array('request' => pixelpost\Filter::arrayToObject($request));
 
 // make a try..catch
 try

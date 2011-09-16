@@ -255,6 +255,20 @@ class Filter
 	}
 
 	/**
+	 * Check $param is a valid DateTime string [in $format]
+	 *
+	 * @param  string $date
+	 * @param  string $format
+	 * @return bool
+	 */
+	public static function validate_date($param, $format = '')
+	{
+		if ($format != '') return (bool) date_create_from_format ($format, $param);
+			
+		return !(strtotime($param) === false);
+	}
+
+	/**
 	 * Remove all accents of a string
 	 *
 	 * @param string $string
@@ -338,5 +352,42 @@ class Filter
 		return str_replace('%2f', '%252f', urlencode($str));
 	}
 
+	/**
+	 * Convert multidimentionnal array to object
+	 * 
+	 * @param array $array
+	 * @return stdClass 
+	 */
+	public static function arrayToObject($array)
+	{
+		if (is_array($array)) return (object) array_map(__FUNCTION__, $array);
+		
+		return $array;
+	}
+	
+	/**
+	 * Convert multidimantionnal object to array
+	 * 
+	 * @param stdClass $object
+	 * @return array 
+	 */
+	public static function objectToArray($object)
+	{
+		if (is_object($object)) $object = get_object_vars($object);
+
+		if (is_array($object)) return array_map(__FUNCTION__, $object);
+
+		return $object;
+	}
+	
+	/**
+	 * Convert a string to a Datetime object
+	 * 
+	 * @param string $date 
+	 */
+	public static function strToDate(&$date)
+	{
+		$date = new \DateTime($date);
+	}
 }
 

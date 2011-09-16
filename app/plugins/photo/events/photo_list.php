@@ -16,28 +16,41 @@ if (count($event->request->fields) == 0)
 	throw new ApiException('bad_request', "'api.photo.get' method need a specified at least one 'fields'.");
 }
 
-$options = array();
+$options = pixelpost\Filter::objectToArray($event->request);
 
-// I do not very love this part
-// this need  a more beautiful construction
-if (isset($event->request->pager))  $options['pager']  = (array) $event->request->pager;
-if (isset($event->request->sort))   $options['sort']   = (array) $event->request->sort;
-if (isset($event->request->filter))
+$fields  = $options['fields'];
+
+if (isset($options['pager']))
 {
-	$options['filter'] = (array) $event->request->filter;
-
-	if (isset($options['filter']['publish-date-interval']))
+	if (!isset($options['pager']['page']))
 	{
-		$options['filter']['publish-date-interval'] = (array) $options['filter']['publish-date-interval'];
-
-		$options['filter']['publish-date-interval']['start'] =
-			new \DateTime($options['filter']['publish-date-interval']['start']);
-
-		$options['filter']['publish-date-interval']['end']   =
-			new \DateTime($options['filter']['publish-date-interval']['end']);
+		throw new ApiException('bad_format', "'pager' require a field 'page'.");
 	}
+	if (!isset($options['pager']['max-per-page']))
+	{
+		throw new ApiException('bad_format', "'pager' require a field 'max-per-page'.");
+	}	
 }
-// end of hate part
+
+if (isset($options['filter']) && 
+	isset($options['filter']['publish-date-interval']))
+{	
+	// look at this beautiful reference
+	$start =& $options['filter']['publish-date-interval']['start'];
+	$end   =& $options['filter']['publish-date-interval']['end'];
+
+	if (pixelpost\Filter::validate_date($start))
+	{
+		throw new ApiException('bad_format', "'start' need to be a valid RFC3339 date.");			
+	}
+	if (pixelpost\Filter::validate_date($end))
+	{
+		throw new ApiException('bad_format', "'start' need to be a valid RFC3339 date.");
+	}
+
+	pixelpost\Filter::strToDate($start);
+	pixelpost\Filter::strToDate($end);
+}
 
 // exec the request
 // we don't catch ModelExceptionSqlError because the api plugin
@@ -45,9 +58,6 @@ if (isset($event->request->filter))
 // unless it send a classic unknow error
 try
 {
-	// the requested fields
-	$fields = $event->request->fields;
-
 	$toDo = self::_photo_fetcher_generator($fields);
 
 	// retrieve requested fields and send them in the response
