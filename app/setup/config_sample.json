@@ -1,0 +1,9 @@
+{
+	"debug"   : false,
+	"uid"     : "",
+	"title"   : "My Photoblog",
+	"url"     : "http://www.something.com/",
+	"userdir" : "",
+	"timezone": "UTC",
+	"plugins" : {}
+}

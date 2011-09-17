@@ -17,3 +17,9 @@
         ExpiresDefault A3600
     </FilesMatch>
 </IfModule>
+
+# keep in mind to change {{PRIV}} during the installation
+<Directory {{PRIV}}>
+	deny from all
+</Directory>
+
