@@ -67,6 +67,8 @@ class Plugin implements pixelpost\PluginInterface
 		mkdir($path . SEP . 'original', 0775);
 		mkdir($path . SEP . 'resized' , 0775);
 		mkdir($path . SEP . 'thumb'   , 0775);
+		
+		return true;
 	}
 
 	public static function uninstall()
@@ -88,6 +90,8 @@ class Plugin implements pixelpost\PluginInterface
 			$method = $file->isDir() ? "rmdir" : 'unlink';			
 			$medhod($file->getPathName());
 		}
+		
+		return true;
 	}
 
 	public static function update()

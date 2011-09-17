@@ -40,6 +40,8 @@ class Plugin implements pixelpost\PluginInterface
 		$conf = pixelpost\Config::create();
 		$conf->plugin_router = json_decode($configuration);
 		$conf->save();
+		
+		return true;
 	}
 
 	public static function uninstall()
@@ -49,6 +51,8 @@ class Plugin implements pixelpost\PluginInterface
 		unset($conf->plugin_router);
 		
 		$conf->save();
+		
+		return true;
 	}
 
 	public static function update()

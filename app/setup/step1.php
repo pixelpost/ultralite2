@@ -54,13 +54,13 @@ else
 			<?php
 			foreach($warnings as $message)
 			{
-				printf('<li></li>', $message);
+				printf('<li>%s</li>', $message);
 			}
 			?>
 		</ul>
 
 		<p>
-			<a href="#">VERIFY AGAIN</a>			
+			<a href="./install.php?step=1">VERIFY AGAIN</a>			
 		</p>
 		
 		<?php else :  #------------------------------------------------------ ?>
@@ -78,7 +78,7 @@ else
 						<select id="timezone" name="timezone" required>
 							<?php
 							foreach(DateTimeZone::listIdentifiers() as $tz)
-								printf('<option>%s</option>', $tz);
+								printf('<option>%s<option>', $tz);
 							?>
 						<select>
 					</li>

@@ -16,7 +16,7 @@ class Plugin
 	const NS                = 'plugins';
 	const PLUG_CLASS        = 'Plugin';
 	const PLUG_FILE         = 'Plugin.php';
-	const PLUG_IFACE        = '\pixelpost\PluginInterface';
+	const PLUG_IFACE        = 'pixelpost\PluginInterface';
 
 	const STATE_UNINSTALLED = 'uninstalled';
 	const STATE_INACTIVE    = 'inactive';
@@ -35,12 +35,12 @@ class Plugin
 
 		$conf = Config::create();
 
-		if (!isset($conf->plugins[$plugin]))
+		if (!isset($conf->plugins->$plugin))
 		{
 			self::set_state($plugin, self::STATE_UNINSTALLED);
 		}
 
-		return $conf->plugins[$plugin];
+		return $conf->plugins->$plugin;
 	}
 
 	/**
@@ -66,7 +66,7 @@ class Plugin
 		}
 
 		$conf = Config::create();
-		$conf->plugins[$plugin] = $state;
+		$conf->plugins->$plugin = $state;
 
 		return $conf->save();
 	}
@@ -120,6 +120,7 @@ class Plugin
 	 *
 	 * @throws Error
 	 * @param string $plugin The plugin name
+	 * @return bool
 	 */
 	public static function validate($plugin)
 	{
@@ -136,6 +137,8 @@ class Plugin
 		{
 			throw new Error(8, array($plugin, self::PLUG_CLASS, self::PLUG_IFACE));
 		}
+		
+		return true;
 	}
 
 	/**
@@ -158,11 +161,13 @@ class Plugin
 
 		while (false !== $file = readdir($rd))
 		{
-			if (!is_dir($file) || $file == '.' || $file == '..') continue;
+            $f = PLUG_PATH . SEP . $file;
 
-			if (!isset($conf->plugins[$file]) && self::validate($plugin))
+			if (!is_dir($f) || $file == '.' || $file == '..') continue;
+
+			if (!isset($conf->plugins->$file) && self::validate($file))
 			{
-				$conf->plugins[$file] = self::STATE_UNINSTALLED;
+				$conf->plugins->$file = self::STATE_UNINSTALLED;
 
 				$isNewPlugin = true;
 			}
@@ -185,12 +190,11 @@ class Plugin
 	 */
 	public static function clean($plugin)
 	{
-		if (!self::uninstall($plugin))
-			return false;
+		if (!self::uninstall($plugin)) return false;
 
 		$conf = Config::create();
 
-		unset($conf->plugins[$plugin]);
+		unset($conf->plugins->$plugin);
 
 		$conf->save();
 

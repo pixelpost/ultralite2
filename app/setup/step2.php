@@ -12,17 +12,6 @@ try
 	
 	$rollbackTo = 1;
 
-	// create private directory .htaccess file
-	$dst = PRIV_PATH . SEP . '.htaccess';
-	$content = 'Deny from all';
-
-	if (file_put_contents($dst, $content) == false)
-	{
-		throw new Exception('Cannot create `' . $dst . '`.');
-	}
-	
-	$rollbackTo = 2;
-
 	// copy the config file
 	$src = APP_PATH . SEP . 'setup' . SEP . 'config_sample.json';
 	$dst = PRIV_PATH . SEP . 'config.json';
@@ -32,11 +21,22 @@ try
 		throw new Exception('Cannot copy `'. $src . '` to `' . $dst . '`.');
 	}
 
-	$rollbackTo = 3;
+	$rollbackTo = 2;
 	
 	// copy the .htaccess file
 	$src = APP_PATH . SEP . 'setup' . SEP . 'htaccess_sample';
 	$dst = ROOT_PATH . SEP . '.htaccess';
+
+	if (copy($src, $dst) == false)
+	{
+		throw new Exception('Cannot copy `'. $src . '` to `' . $dst . '`.');
+	}
+
+	$rollbackTo = 3;
+	
+	// copy the private/.htaccess file
+	$src = APP_PATH . SEP . 'setup' . SEP . 'htaccess_priv_sample';
+	$dst = PRIV_PATH . SEP . '.htaccess';
 
 	if (copy($src, $dst) == false)
 	{
@@ -74,7 +74,7 @@ try
 	$conf->userdir = implode('/', $path);
 
 	// retreive the website url
-	$conf->url = $request->get_base_url();
+	$conf->url = $request->set_userdir($conf->userdir)->get_base_url();
 	
 	// retrieve the timezone
 	$conf->timezone = $post['timezone'];
@@ -115,9 +115,9 @@ catch(Exception $e)
 	
 	if ($rollbackTo >= 6) unlink(PRIV_PATH . SEP . 'sqlite3.db');
 	if ($rollbackTo >= 5) unlink(ROOT_PATH . SEP . 'index.php');
-	if ($rollbackTo >= 4) unlink(ROOT_PATH . SEP . '.htaccess');
-	if ($rollbackTo >= 3) unlink(PRIV_PATH . SEP . 'config.json');
-	if ($rollbackTo >= 2) unlink(PRIV_PATH . SEP . '.htaccess');
+	if ($rollbackTo >= 4) unlink(PRIV_PATH . SEP . '.htaccess');
+	if ($rollbackTo >= 3) unlink(ROOT_PATH . SEP . '.htaccess');
+	if ($rollbackTo >= 2) unlink(PRIV_PATH . SEP . 'config.json');
 	if ($rollbackTo >= 1) rmdir(PRIV_PATH);
 }
 
@@ -137,9 +137,13 @@ catch(Exception $e)
 			<?php echo $error ?>
 		</p>
 
+        <form method="POST">
 		<p>
-			<a href="#">TRY AGAIN</a>			
+		    <input type="hidden" name="title" value="<?php echo $_POST['title'] ?>" />
+		    <input type="hidden" name="timezone" value="<?php echo $_POST['timezone'] ?>" />
+			<button type="submit">TRY AGAIN</button>			
 		</p>
+		</form>
 		
 		<?php else :  #------------------------------------------------------ ?>
 		
@@ -149,7 +153,7 @@ catch(Exception $e)
 		</p>
 
 		<p>
-			<a href="<?php $request->get_base_url() ?>admin">FINISH</a>			
+			<a href="<?php echo $conf->url . $conf->plugin_router->admin ?>/">FINISH</a>
 		</p>
 		
 		<?php endif; #------------------------------------------------------- ?>
