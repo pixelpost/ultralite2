@@ -78,7 +78,7 @@ else
 						<select id="timezone" name="timezone" required>
 							<?php
 							foreach(DateTimeZone::listIdentifiers() as $tz)
-								printf('<option>%s<option>', $tz);
+								printf('<option>%s</option>', $tz);
 							?>
 						<select>
 					</li>
