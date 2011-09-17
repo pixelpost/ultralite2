@@ -12,6 +12,17 @@ try
 	
 	$rollbackTo = 1;
 
+	// create private directory .htaccess file
+	$dst = PRIV_PATH . SEP . '.htaccess';
+	$content = 'Deny from all';
+
+	if (file_put_contents($dst, $content) == false)
+	{
+		throw new Exception('Cannot create `' . $dst . '`.');
+	}
+	
+	$rollbackTo = 2;
+
 	// copy the config file
 	$src = APP_PATH . SEP . 'setup' . SEP . 'config_sample.json';
 	$dst = PRIV_PATH . SEP . 'config.json';
@@ -21,7 +32,7 @@ try
 		throw new Exception('Cannot copy `'. $src . '` to `' . $dst . '`.');
 	}
 
-	$rollbackTo = 2;
+	$rollbackTo = 3;
 	
 	// copy the .htaccess file
 	$src = APP_PATH . SEP . 'setup' . SEP . 'htaccess_sample';
@@ -31,13 +42,8 @@ try
 	{
 		throw new Exception('Cannot copy `'. $src . '` to `' . $dst . '`.');
 	}
-
-	// set the folders in .htaccess file
-	$content = file_get_contents($dst);
-	$content = str_replace('{{PRIV}}', PRIV_PATH, $content);
-	file_put_contents($dst, $content);
 	
-	$rollbackTo = 3;
+	$rollbackTo = 4;
 	
 	// copy the index.php file
 	$src = APP_PATH . SEP . 'setup' . SEP . 'index_sample.php';
@@ -48,7 +54,7 @@ try
 		throw new Exception('Cannot copy `'. $src . '` to `' . $dst . '`.');
 	}
 
-	$rollbackTo = 4;
+	$rollbackTo = 5;
 	
 	// Load the request
 	$request = pixelpost\Request::create()->auto();
@@ -85,7 +91,7 @@ try
 	// create the database
 	$db = pixelpost\Db::create();
 	
-	$rollbackTo = 5;
+	$rollbackTo = 6;
 
 	// detect all plugins already in the package (and store the list in conf)
 	pixelpost\Plugin::detect();
@@ -107,10 +113,11 @@ catch(Exception $e)
 {	
 	$error = $e->getMessage();
 	
-	if ($rollbackTo >= 5) unlink(PRIV_PATH . SEP . 'sqlite3.db');
-	if ($rollbackTo >= 4) unlink(ROOT_PATH . SEP . 'index.php');
-	if ($rollbackTo >= 3) unlink(ROOT_PATH . SEP . '.htaccess');
-	if ($rollbackTo >= 2) unlink(PRIV_PATH . SEP . 'config.json');
+	if ($rollbackTo >= 6) unlink(PRIV_PATH . SEP . 'sqlite3.db');
+	if ($rollbackTo >= 5) unlink(ROOT_PATH . SEP . 'index.php');
+	if ($rollbackTo >= 4) unlink(ROOT_PATH . SEP . '.htaccess');
+	if ($rollbackTo >= 3) unlink(PRIV_PATH . SEP . 'config.json');
+	if ($rollbackTo >= 2) unlink(PRIV_PATH . SEP . '.htaccess');
 	if ($rollbackTo >= 1) rmdir(PRIV_PATH);
 }
 

@@ -6,3 +6,4 @@
 *.un~
 private/config.json
 photos/
+index.php

@@ -1,3 +1,8 @@
+<FilesMatch "config\.json|\.(htaccess|db|git)$">
+ Order Allow,Deny
+ Deny from all
+</FilesMatch>
+
 <IfModule mod_rewrite.c>
     RewriteEngine on
     RewriteRule ^.*\.(css|js|gif|png|jpe?g|ico|swf|flv|txt)$ - [L]
@@ -17,9 +22,3 @@
         ExpiresDefault A3600
     </FilesMatch>
 </IfModule>
-
-# keep in mind to change {{PRIV}} during the installation
-<Directory {{PRIV}}>
-	deny from all
-</Directory>
-
