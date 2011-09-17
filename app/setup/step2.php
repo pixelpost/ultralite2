@@ -13,7 +13,7 @@ try
 	$rollbackTo = 1;
 
 	// copy the config file
-	$src = APP_PATH . SET . 'setup' . SEP . 'config_sample.json';
+	$src = APP_PATH . SEP . 'setup' . SEP . 'config_sample.json';
 	$dst = PRIV_PATH . SEP . 'config.json';
 
 	if (copy($src, $dst) == false)
@@ -24,7 +24,7 @@ try
 	$rollbackTo = 2;
 	
 	// copy the .htaccess file
-	$src = APP_PATH . SET . 'setup' . SEP . 'htaccess_sample';
+	$src = APP_PATH . SEP . 'setup' . SEP . 'htaccess_sample';
 	$dst = ROOT_PATH . SEP . '.htaccess';
 
 	if (copy($src, $dst) == false)
@@ -40,7 +40,7 @@ try
 	$rollbackTo = 3;
 	
 	// copy the index.php file
-	$src = APP_PATH . SET . 'setup' . SEP . 'index_sample.php';
+	$src = APP_PATH . SEP . 'setup' . SEP . 'index_sample.php';
 	$dst = ROOT_PATH . SEP . 'index.php';
 
 	if (copy($src, $dst) == false)
