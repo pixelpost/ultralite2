@@ -1,55 +1,33 @@
 <?php
 
-/**
- * Default Configuration Installation
- *
- * A quick and dirty way to get things running.
+/***
+ * INSTALL HEADER
  */
+$minStep = 1;
+$maxStep = 2;
+$isConfFileExists = true;
 
-// Use Sample Config
-if(!file_exists(PRIV_PATH . SEP . 'config.json'))
-	copy(PRIV_PATH . SEP . 'config_sample.json', PRIV_PATH . SEP . 'config.json');
-
-
-// Load Config
-$conf = pixelpost\Config::load(PRIV_PATH . SEP . 'config.json');
-
-// Detect Site URL
-$url = '';
-// scheme
-$url .= (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on')? 'https://' : 'http://';
-// host
-$url .= $_SERVER['SERVER_NAME'];
-// port
-$url .= ($_SERVER['SERVER_PORT'] != 80)? ':' . $_SERVER['SERVER_PORT'] : '';
-// path
-$url .= substr($_SERVER['REQUEST_URI'] , 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1);
-
-/**
- * @todo Detect root URL, even if mod_rewrite is already installed
- * e.g. Installer runs while browsing /admin/
- */
-
-// Set Site URL
-$conf->url = $url;
-
-// Set User Directory
-$conf->userdir = 'ultraite2';
-
-/**
- * FIXME: For some reason, saving the config breaks Ultralite, is there an encoding issue?
- */
-$conf->save();
-
-if(!file_exists(ROOT_PATH . SEP . '.htaccess'))
-	copy(APP_PATH . SEP . 'htaccess_sample', ROOT_PATH . SEP .'.htaccess');
-
-if(!file_exists(PRIV_PATH . SEP . '.htaccess'))
-	copy(PRIV_PATH . SEP . 'htaccess_sample', PRIV_PATH . SEP .'.htaccess');
-
-if(!file_exists(PRIV_PATH . SEP . 'sqlite3.db'))
+try 
 {
-	// Install Photo Plugin & Databse
-	require_once PLUG_PATH . SEP . 'photo' . SEP . 'Plugin.php';
-	pixelpost\plugins\photo\Plugin::install();
+	require_once __DIR__ . DIRECTORY_SEPARATOR . 'bootstrap.php';
+}
+catch(\pixelpost\Error $e)
+{
+	if ($e->getCode() == 3) $isConfFileExists = false;
+	else throw $e;
+}
+
+if (isset($_GET['step'])) $step = abs(intval($_GET['step']));
+
+if ($step < $minStep) $step = $minStep;
+if ($step > $maxStep) $step = $maxStep;
+
+switch($step)
+{
+	case 1:
+		require __DIR__ . SEP . 'setup' . SEP . 'step1.php'; 
+		break;
+	case 2:
+		require __DIR__ . SEP . 'setup' . SEP . 'step2.php'; 
+		break;
 }

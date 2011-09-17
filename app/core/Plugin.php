@@ -169,6 +169,8 @@ class Plugin
 		}
 
 		closedir($rd);
+		
+		$conf->save();
 
 		return $isNewPlugin;
 	}
