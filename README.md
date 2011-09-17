@@ -16,8 +16,9 @@ Requirements
 Setup & Configuration
 ---------------------
 
-1. Modify and rename `./app/sample_htaccess` to `./.htaccess`.
-2. Modify and rename `./private/sample_config.json` to `./private/config.json`.
+1. Copy the `app` folder in your web directory.
+2. Launch the install script `http://www.you.com/app/install.php`.
+3. Enjoy !
 
 License & Copyright
 -------------------
