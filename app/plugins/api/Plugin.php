@@ -8,6 +8,7 @@ use pixelpost;
  * API router for pixelpost api urls.
  *
  * Tracks Event :
+ * - 'api.version'
  * - 'request.api'
  *
  * Sends Event :
@@ -44,6 +45,12 @@ class Plugin implements pixelpost\PluginInterface
 	public static function register()
 	{
 		pixelpost\Event::register('request.api', '\\' . __CLASS__ . '::on_api_request');		
+		pixelpost\Event::register('api.version', '\\' . __CLASS__ . '::api_version');		
+	}
+	
+	public static function api_version(pixelpost\Event $event)
+	{
+		$event->response = array('version' => self::version());
 	}
 
 	/**
