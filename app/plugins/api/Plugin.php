@@ -96,7 +96,7 @@ class Plugin implements pixelpost\PluginInterface
 			$request = $codec->decode($event->request->get_data());
 
 			// process the request
-			$response = self::process($request);
+			$response = self::process($request, $event->request);
 
 			// get the response and format it
 			$response = self::format_valid($response);
@@ -195,9 +195,10 @@ class Plugin implements pixelpost\PluginInterface
 	 * 1. send the api event corresponding to the method request
 	 * 2. return the event response if exists
 	 *
-	 * @param \stdClass $request
+	 * @param \stdClass          $request The API data in the request
+	 * @param \pixelpost\Request $http    The HTTP request provided by request.new
 	 */
-	public static function process(\stdClass $request)
+	public static function process(\stdClass $request, \pixelpost\Request $http)
 	{
 		// check the request is well formated
 		if (!property_exists($request, 'method'))
@@ -215,9 +216,12 @@ class Plugin implements pixelpost\PluginInterface
 		{
 			throw new Exception('empty_method', 'The method field is empty.');
 		}
+		
+		// create the data who are propagated int the event
+		$datas = array('request' => $request->request, 'http_request' => $http);
 
 		// send the signal that an API method is requested
-		$event = pixelpost\Event::signal('api.' . $method, array('request' => $request->request));
+		$event = pixelpost\Event::signal('api.' . $method, $datas);
 
 		// check if the event is processed (no '404' request)
 		if (!$event->is_processed())
