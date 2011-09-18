@@ -14,9 +14,11 @@ class Event extends \ArrayObject
 {
 
 	/**
-	 * @var array containts the list of callback indexed by event name.
+	 * @var array containts the list of callback indexed by event name
+	 * and priority.
 	 */
-	protected static $_listen = array();
+	protected static $_listen  = array();
+	protected static $_ordered = array();
 
 	/**
 	 * @var bool the event is processed or not
@@ -51,8 +53,9 @@ class Event extends \ArrayObject
 	 *
 	 * @param string   $event    The name of the event want to listen.
 	 * @param callback $callback The callback method to call when the event is throw
+	 * @param int      $priotiy  The default priority is set to 100, less is highter
 	 */
-	public static function register($eventName, $callback)
+	public static function register($eventName, $callback, $priority = 100)
 	{
 		Filter::assume_string($eventName);
 
@@ -60,8 +63,13 @@ class Event extends \ArrayObject
 		{
 			self::$_listen[$eventName] = array();
 		}
+		if (!isset(self::$_listen[$eventName][$priority]))
+		{
+			return self::register($eventName, $callback, $priority++);
+		}
 
-		self::$_listen[$eventName][] = $callback;
+		self::$_listen[$eventName][$priority] = $callback;
+		self::$_ordered[$eventName] = false;
 	}
 
 	/**
@@ -82,11 +90,15 @@ class Event extends \ArrayObject
 
 		$event = self::create($data);
 
-		if (!isset(self::$_listen[$eventName]))
-			return $event;
+		if (!isset(self::$_listen[$eventName])) return $event;
 
-		if (count(self::$_listen[$eventName]) <= 0)
-			return $event;
+		if (count(self::$_listen[$eventName]) <= 0) return $event;
+		
+		if (!self::$_ordered[$eventName])
+		{
+			ksort(self::$_listen[$eventName]);
+			self::$_ordered[$eventName];
+		}
 
 		$event->set_processed();
 
