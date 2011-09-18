@@ -85,6 +85,9 @@ try
 	// create an uniq id for this installation
 	$conf->uid = md5(uniqid() . microtime() . $request->get_request_url());
 
+	// set the version number of the installation
+	$conf->version = VERSION;
+	
 	// save the configuration file
 	$conf->save();
 

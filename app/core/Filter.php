@@ -389,5 +389,33 @@ class Filter
 	{
 		$date = new \DateTime($date);
 	}
+	
+	/**
+	 * Compare two version number formater like A.B.C where:
+	 * A is the major version (BC break possible)
+	 * B is the minor version (Non BC beak)
+	 * C is the bug fixes release version
+	 * 
+	 * Return true if $new is upper to $old
+	 * Return null if $new is equal to $old
+	 * Return false if $old is upper to $new
+	 * 
+	 * @param type $old
+	 * @param type $new 
+	 * @return mixed
+	 */
+	public static function compare_version($old, $new)
+	{
+		list($A1, $B1, $C1) = explode(".", $old);
+		list($A2, $B2, $C2) = explode(".", $old);
+
+		$old = intval(vsprintf("%02s%02s%02s", explode('.', $old)));
+		$new = intval(vsprintf("%02s%02s%02s", explode('.', $new)));
+		
+		if ($new > $old) return true;
+		if ($new == $old) return null;
+		
+		return false;
+	}
 }
 

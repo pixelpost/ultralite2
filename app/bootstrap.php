@@ -26,6 +26,7 @@ ini_set('short_open_tag',                'off');
 ini_set('magic_quotes_gpc',              'off');
 
 // Step 2. A little of constant creation
+defined('VERSION')   or define('VERSION',   "0.0.1",                     true);
 defined('SEP')       or define('SEP',       DIRECTORY_SEPARATOR,         true);
 defined('ROOT_PATH') or define('ROOT_PATH', dirname(__DIR__),            true);
 defined('APP_PATH')  or define('APP_PATH',  ROOT_PATH . SEP . 'app',     true);
@@ -110,11 +111,17 @@ DEBUG or error_reporting(0);
 
 date_default_timezone_set($conf->timezone);
 
-// Step 6. Registers activated plugins
+// Step 6. Check auto update if needed
+if (Filter::compare_version($conf->version, VERSION))
+{
+	require_once APP_PATH . 'update.php';
+}
+
+// Step 7. Registers activated plugins
 Plugin::make_registration();
 
-// Step 7. We need to parse the incoming request
+// Step 8. We need to parse the incoming request
 $request = Request::create()->set_userdir($conf->userdir)->auto();
 
-// Step 8. We just said we have a new request ! Enjoy :)
+// Step 9. We just said we have a new request ! Enjoy :)
 $event = Event::signal('request.new', array('request' => $request));

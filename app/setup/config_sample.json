@@ -1,5 +1,6 @@
 {
 	"debug"   : false,
+	"version" : "",
 	"uid"     : "",
 	"title"   : "My Photoblog",
 	"url"     : "http://www.something.com/",
