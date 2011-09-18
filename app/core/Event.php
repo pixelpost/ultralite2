@@ -63,7 +63,9 @@ class Event extends \ArrayObject
 		{
 			self::$_listen[$eventName] = array();
 		}
-		if (!isset(self::$_listen[$eventName][$priority]))
+
+		// If an event with the same priority exists, increase the priority by one.
+		if (isset(self::$_listen[$eventName][$priority]))
 		{
 			return self::register($eventName, $callback, $priority++);
 		}
@@ -93,7 +95,7 @@ class Event extends \ArrayObject
 		if (!isset(self::$_listen[$eventName])) return $event;
 
 		if (count(self::$_listen[$eventName]) <= 0) return $event;
-		
+
 		if (!self::$_ordered[$eventName])
 		{
 			ksort(self::$_listen[$eventName]);
