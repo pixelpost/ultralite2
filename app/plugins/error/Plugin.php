@@ -9,6 +9,7 @@ use pixelpost;
  *
  * Tracks Event :
  *
+ * error.version
  * error.new
  *
  * @copyright  2011 Alban LEROUX <seza@paradoxal.org>
@@ -41,10 +42,16 @@ class Plugin implements pixelpost\PluginInterface
 
 	public static function register()
 	{
-		pixelpost\Event::register('error.new', '\\' . __CLASS__ . '::on_error');
+		pixelpost\Event::register('error.version', '\\' . __CLASS__ . '::error_version');
+		pixelpost\Event::register('error.new', '\\' . __CLASS__ . '::error_new');
 	}
 
-	public static function on_error(pixelpost\Event $event)
+	public static function error_version(pixelpost\Event $event)
+	{
+		$event->response = array('version' => self::version());
+	}
+	
+	public static function error_new(pixelpost\Event $event)
 	{
 		$error = $event->exception;
 
