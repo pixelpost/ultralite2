@@ -44,9 +44,15 @@ class Plugin implements pixelpost\PluginInterface
 	public static function register()
 	{
 		pixelpost\Event::register('request.admin', '\\' . __CLASS__ . '::on_request');
+		pixelpost\Event::register('admin.version', '\\' . __CLASS__ . '::on_version');
 		pixelpost\Event::register('admin.index',   '\\' . __CLASS__ . '::on_page_index');
 		pixelpost\Event::register('admin.404',     '\\' . __CLASS__ . '::on_page_404');
 		pixelpost\Event::register('admin.api-test','\\' . __CLASS__ . '::on_api_test');
+	}
+	
+	public static function on_version(pixelpost\Event $event)
+	{
+		$event->response = array('version' => self::version());
 	}
 
 	/**
