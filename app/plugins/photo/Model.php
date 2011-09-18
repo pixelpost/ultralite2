@@ -4,6 +4,7 @@ namespace pixelpost\plugins\photo;
 
 use pixelpost;
 use pixelpost\SqlMapper as Map;
+use pixelpost\Db as Db;
 
 /**
  * All Exception thown by the Model class are ModelException class
@@ -38,7 +39,7 @@ class ModelExceptionSqlError extends ModelException
 {
 	public function __construct()
 	{
-		$db = pixelpost\Db::create();
+		$db = Db::create();
 
 		parent::__construct($db->lastErrorMsg(), $db->lastErrorCode());
 	}
@@ -86,7 +87,7 @@ class Model
 	 */
 	public static function table_create()
 	{
-		pixelpost\Db::create()->exec('CREATE TABLE photos (id INTEGER PRIMARY KEY,
+		Db::create()->exec('CREATE TABLE photos (id INTEGER PRIMARY KEY,
 			file TEXT, title TEXT, desc TEXT, publish INTEGER, show INTEGER);');
 	}
 
@@ -103,7 +104,7 @@ class Model
 	 */
 	public static function table_delete()
 	{
-		pixelpost\Db::create()->exec('DROP TABLE photos;');
+		Db::create()->exec('DROP TABLE photos;');
 	}
 
 	/**
@@ -123,7 +124,7 @@ class Model
 			'show'         => 0
 		));
 
-		$db  = pixelpost\Db::create();
+		$db  = Db::create();
 		$sql = sprintf('INSERT INTO photos %s;', $fields);
 
 		if (!$db->exec($sql)) throw new ModelExceptionSqlError();
@@ -142,7 +143,7 @@ class Model
 	{
 		pixelpost\Filter::assume_int($photoId);
 
-		$db  = pixelpost\Db::create();
+		$db  = Db::create();
 		$sql = sprintf('DELETE FROM photos WHERE id = %d;', $photoId);
 
 		if (!$db->exec($sql)) throw new ModelExceptionSqlError();
@@ -171,7 +172,7 @@ class Model
 	 */
 	public static function photo_list(array $fields, $options, \Closure $todo = null)
 	{
-		$db     = pixelpost\Db::create();
+		$db     = Db::create();
 		$map    = self::_getMapper();
 		$fields = $map->genSqlSelectList($fields);
 		$where = '';
@@ -192,8 +193,8 @@ class Model
 					default: break;
 
 					case 'publish-date-interval' :
-						$start = $db->escapeString($map->date_serialize($value['start']));
-						$end   = $db->escapeString($map->date_serialize($value['end']));
+						$start = Db::escape(Db::date_serialize($value['start']));
+						$end   = Db::escape(Db::date_serialize($value['end']));
 
 						$w[] = sprintf(' publish BETWEEN %s AND %s', $start, $end);
 						break;

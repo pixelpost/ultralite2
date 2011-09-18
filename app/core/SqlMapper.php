@@ -210,7 +210,7 @@ class SqlMapper
 				return $value;
 			
 			case self::DATA_DATE :				
-				return $this->date_unserialize($value);
+				return Db::date_unserialize($value);
 			
 			default :
 				return null;
@@ -232,7 +232,7 @@ class SqlMapper
 		{
 			case self::SQL_TEXT :
 				Filter::assume_string($value);
-				return $db->escape($value);
+				return Db::escape($value);
 			
 			case self::SQL_INT :
 				Filter::assume_int($value);
@@ -243,44 +243,14 @@ class SqlMapper
 				return $value;
 			
 			case self::SQL_BLOB :
-				return $db->escape($value);
+				return Db::escape($value);
 			
 			case self::SQL_DATE :				
-				return $db->escape($value);
+				return Db::date_serialize($value);
 			
 			default :
 				return null;
 		}
-	}
-	
-	/**
-	 * Serialize a DateTime object in a string to be stored in database as a 
-	 * INTEGER value. The result is a string and not en int because PHP cannot
-	 * handle big int as SQlite3 can (SQlite3 automatically convert string to 
-	 * INTEGER on insertion).
-	 * 
-	 * @param \DateTime $date
-	 * @return string
-	 */
-	public function date_serialize(\DateTime $date)
-	{
-		$date->setTimezone(new \DateTimeZone('UTC'));
-		
-		return $date->format('YmdHis');
-	}
-	
-	/**
-	 * Unserialize a $date string comming from SQlite3 database to a datetime
-	 * Object.
-	 * 
-	 * @param  string    $date
-	 * @return \DateTime
-	 */
-	public function date_unserialize($date)
-	{
-		Filter::assume_string($date);
-		
-		return \DateTime::createFromFormat('YmdHis', $date, new \DateTimeZone('UTC'));
 	}
 }
 

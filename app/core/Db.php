@@ -59,10 +59,40 @@ class Db extends \SQLite3
 	 * @param  string $string 
 	 * @return string
 	 */
-	public function escape($string)
+	public static function escape($string)
 	{
 		Filter::assume_string($string);
 		
 		return sprintf('\'%s\'', self::escapeString($string));
+	}
+	
+	/**
+	 * Serialize a DateTime object in a string to be stored in database as a 
+	 * INTEGER value. The result is a string and not en int because PHP cannot
+	 * handle big int as SQlite3 can (SQlite3 automatically convert string to 
+	 * INTEGER on insertion).
+	 * 
+	 * @param \DateTime $date
+	 * @return string
+	 */
+	public static function date_serialize(\DateTime $date)
+	{
+		$date->setTimezone(new \DateTimeZone('UTC'));
+		
+		return $date->format('YmdHis');
+	}
+	
+	/**
+	 * Unserialize a $date string comming from SQlite3 database to a datetime
+	 * Object.
+	 * 
+	 * @param  string    $date
+	 * @return \DateTime
+	 */
+	public static function date_unserialize($date)
+	{
+		Filter::assume_string($date);
+		
+		return \DateTime::createFromFormat('YmdHis', $date, new \DateTimeZone('UTC'));
 	}
 }
