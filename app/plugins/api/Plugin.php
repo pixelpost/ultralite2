@@ -199,7 +199,16 @@ class Plugin implements pixelpost\PluginInterface
 	 * @param \pixelpost\Request $http    The HTTP request provided by request.new
 	 */
 	public static function process(\stdClass $request, \pixelpost\Request $http)
-	{
+	{		
+		// create the data who are propagated int the event
+		$datas = array('request' => $request->request, 'http_request' => $http);
+
+		// we send an the significate the api data is decoded
+		$event = pixelpost\Event::signal('request.api.decoded', $datas);
+		
+		// whatever if event is processed or not, we just retrieve the request
+		$request = $event->request;
+		
 		// check the request is well formated
 		if (!property_exists($request, 'method'))
 		{
