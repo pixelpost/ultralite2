@@ -232,7 +232,7 @@ class SqlMapper
 		{
 			case self::SQL_TEXT :
 				Filter::assume_string($value);
-				return sprintf('\'%s\'', Db::escapeString($value));
+				return $db->escape($value);
 			
 			case self::SQL_INT :
 				Filter::assume_int($value);
@@ -243,10 +243,10 @@ class SqlMapper
 				return $value;
 			
 			case self::SQL_BLOB :
-				return sprintf('\'%s\'', Db::escapeString($value));
+				return $db->escape($value);
 			
 			case self::SQL_DATE :				
-				return sprintf('\'%s\'', $this->date_serialize($value));
+				return $db->escape($value);
 			
 			default :
 				return null;

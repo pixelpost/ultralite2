@@ -52,4 +52,17 @@ class Db extends \SQLite3
 	{
 		return self::$_instance ?: new static;
 	}
+	
+	/**
+	 * Escape a string for SQL request. Add quotes aside the string.
+	 * 
+	 * @param  string $string 
+	 * @return string
+	 */
+	public function escape($string)
+	{
+		Filter::assume_string($string);
+		
+		return sprintf('\'%s\'', self::escapeString($string));
+	}
 }
