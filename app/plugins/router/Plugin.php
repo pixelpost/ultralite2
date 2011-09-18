@@ -9,6 +9,7 @@ use pixelpost;
  *
  * Tracks Event :
  *
+ * router.version
  * request.new
  *
  * Sends Event :
@@ -67,7 +68,13 @@ class Plugin implements pixelpost\PluginInterface
 		define('API_URL',   WEB_URL . $conf->plugin_router->api   . '/', true);
 		define('ADMIN_URL', WEB_URL . $conf->plugin_router->admin . '/', true);
 		
-		pixelpost\Event::register('request.new', '\\' . __CLASS__ . '::on_request');
+		pixelpost\Event::register('router.version', '\\' . __CLASS__ . '::router_version');
+		pixelpost\Event::register('request.new',    '\\' . __CLASS__ . '::on_request');
+	}
+
+	public static function router_version(pixelpost\Event $event)
+	{
+		$event->response = array('version' => self::version());
 	}
 
 	public static function on_request(pixelpost\Event $event)
