@@ -25,6 +25,11 @@ class Plugin implements pixelpost\PluginInterface
 	{
 		return '0.0.1';
 	}
+	
+	public static function depends()
+	{
+		return array('router' => '0.0.1');
+	}	
 
 	public static function install()
 	{

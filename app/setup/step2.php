@@ -1,5 +1,8 @@
 <?php
-try 
+
+require __DIR__ . SEP . 'Dependencie.php';
+
+try
 {	
 	$error = '';
 	$rollbackTo = 0;
@@ -98,19 +101,18 @@ try
 
 	// detect all plugins already in the package (and store the list in conf)
 	pixelpost\Plugin::detect();
-
-	foreach($conf->plugins as $plugin => $state)
+	
+	// create the install plugin order
+	$manager = new DependencieManager(array_keys($conf->plugins));
+		
+	foreach($manager->process() as $plugin)
 	{
-		if (pixelpost\Plugin::install($plugin) == false)
-		{
-			throw new Exception('Error during plugin ' . $plugin . ' setup.');
-		}
-
 		if (pixelpost\Plugin::active($plugin) == false)
 		{
-			throw new Exception('Error during plugin ' . $plugin . ' activation.');
+			$e = pixelpost\Plugin::get_last_error();
+			throw new Exception("Error during plugin '$plugin' setup. error: $e.");
 		}
-	}
+	}		
 } 
 catch(Exception $e)
 {	

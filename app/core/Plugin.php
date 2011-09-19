@@ -22,6 +22,35 @@ class Plugin
 	const STATE_INACTIVE    = 'inactive';
 	const STATE_ACTIVE      = 'active';
 
+	protected static $_error = '';
+	
+	/**
+	 * Return the last error message
+	 * 
+	 * @return string
+	 */
+	public static function get_last_error()
+	{
+		$error = self::$_error; 
+		
+		self::$_error = '';
+		
+		return $error;
+	}
+	
+	/**
+	 * Return if a plugins is detected
+	 * 
+	 * @param  string $plugin
+	 * @return bool 
+	 */
+	public static function is_exists($plugin)
+	{
+		Filter::is_string($plugin);
+		
+		return isset(Config::create()->plugins->$plugin);
+	}
+	
 	/**
 	 * Return the actual state of a plugins, the state is directly read from the
 	 * configuration file.
@@ -281,19 +310,17 @@ class Plugin
 	 */
 	public static function install($plugin)
 	{
-		if (self::get_state($plugin) != self::STATE_UNINSTALLED)
-			return true;
+		$state = self::get_state($plugin);
+		
+		if ($state != self::STATE_UNINSTALLED) return true;
 
-		if (call_user_func(self::get_method($plugin, 'install')))
-		{
-			self::set_state($plugin, self::STATE_INACTIVE);
-			return true;
-		}
-		else
-		{
-			self::set_state($plugin, self::STATE_UNINSTALLED);
-			return false;
-		}
+		if (!self::check_dependencies($plugin)) return false;
+		
+		if (!call_user_func(self::get_method($plugin, 'install'))) return false;
+		
+		self::set_state($plugin, self::STATE_INACTIVE);
+		
+		return true;
 	}
 
 	/**
@@ -306,21 +333,17 @@ class Plugin
 	 */
 	public static function uninstall($plugin)
 	{
-		if (self::get_state($plugin) == self::STATE_UNINSTALLED)
-			return true;
+		$state = self::get_state($plugin);
+		
+		if ($state == self::STATE_UNINSTALLED) return true;
 
-		self::inactive($plugin);
-
-		if (call_user_func(self::get_method($plugin, 'uninstall')))
-		{
-			self::set_state($plugin, self::STATE_UNINSTALLED);
-			return true;
-		}
-		else
-		{
-			self::set_state($plugin, self::STATE_INACTIVE);
-			return false;
-		}
+		if (!self::inactive($plugin)) return false;
+		
+		if (!call_user_func(self::get_method($plugin, 'uninstall'))) return false;
+		
+		self::set_state($plugin, self::STATE_UNINSTALLED);
+		
+		return true;
 	}
 
 	/**
@@ -334,17 +357,14 @@ class Plugin
 	public static function active($plugin)
 	{
 		$state = self::get_state($plugin);
+		
+		if ($state == self::STATE_ACTIVE) return true;
 
-		if ($state == self::STATE_UNINSTALLED)
-		{
-			if (!self::install($plugin))
-				return false;
-		}
+		if (!self::install($plugin)) return false;
 
-		if ($state == self::STATE_INACTIVE)
-		{
-			self::set_state($plugin, self::STATE_ACTIVE);
-		}
+		if (!self::check_dependencies($plugin)) return false;
+			
+		self::set_state($plugin, self::STATE_ACTIVE);
 
 		return true;
 	}
@@ -360,17 +380,16 @@ class Plugin
 	public static function inactive($plugin)
 	{
 		$state = self::get_state($plugin);
+		
+		if ($state == self::STATE_INACTIVE) return true;
 
-		if ($state == self::STATE_ACTIVE)
-		{
-			self::set_state($plugin, self::STATE_INACTIVE);
-			return true;
-		}
-
-		if ($state == self::STATE_UNINSTALLED)
-		{
-			return self::install($plugin);
-		}
+		if (!self::install($plugin)) return false;
+		
+		if (!self::check_required($plugin)) return false;
+			
+		self::set_state($plugin, self::STATE_INACTIVE);
+		
+		return true;
 	}
 
 	/**
@@ -388,4 +407,75 @@ class Plugin
 		}
 	}
 
+	/**
+	 * Retrieve dependencies of a plugin
+	 * 
+	 * @param  string $plugin
+	 * @return array 
+	 */
+	public static function get_dependencies($plugin)
+	{
+		return call_user_func(self::get_method($plugin, 'depends'));
+	}
+	
+	/**
+	 * Verify if a plugin need another plugin to be installed/actived
+	 * 
+	 * @param  string $plugin
+	 * @return bool 
+	 */
+	public static function check_dependencies($plugin)
+	{
+		if (self::get_state($plugin) != self::STATE_UNINSTALLED) return true;
+		
+		foreach(self::get_dependencies($plugin) as $dep => $version)
+		{			
+			if (!self::is_exists($dep)) 
+			{
+				self::$_error = "'$plugin' require plugin '$dep' >= '$version'.";
+				return false;
+			}
+			
+			if (self::get_state($dep) != self::STATE_ACTIVE) 
+			{
+				self::$_error = "'$plugin' require plugin '$dep' to be active.";
+				return false;
+			}
+			
+			$v = call_user_func(self::get_method($dep));
+			
+			if (Filter::compare_version($v, $version)) 
+			{
+				self::$_error = "'$plugin' require plugin '$dep' >= '$version'.";
+				return false;
+			}
+		}
+		
+		return true;
+	}
+	
+	/**
+	 * Verify if a plugin is still required by another one to be 
+	 * inactived/uninstalled.
+	 * 
+	 * @param  string $plugin
+	 * @return bool 
+	 */
+	public static function check_required($plugin)
+	{
+		foreach(Config::create()->plugins as $plug => $state)
+		{
+			if ($state != self::STATE_ACTIVE) continue;
+			
+			$deps = self::get_dependencies($plug);
+			
+			if (isset($deps[$plugin])) 
+			{
+				self::$_error = "'$plugin' is required by '$plug'.";
+				return false;
+			}
+		}
+		
+		return true;
+	}
 }

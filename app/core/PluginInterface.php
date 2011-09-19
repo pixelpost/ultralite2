@@ -14,11 +14,26 @@ interface PluginInterface
 {
 
 	/**
-	 * This method provide the actual plugin version number in a string
+	 * This method provide the actual plugin version number in a string.
+	 * The string will be formated like A.B.C:
+	 * 
+	 * A is the major version (BC break possible)
+	 * B is the minor version (Non BC beak)
+	 * C is the bug fixes release version
 	 *
 	 * @return string
 	 */
 	public static function version();
+	
+	
+	/**
+	 * This method provide a list of required plugins. The list returned is
+	 * an array with required plugin in key and version's plugin required
+	 * in value.
+	 * 
+	 * @return array
+	 */
+	public static function depends();
 
 	/**
 	 * This action is executed each time when a request is executed on the
