@@ -3,7 +3,7 @@
 /**
  * Create the plugin order
  */
-class DependencieManager
+class DependencyManager
 {
 	private $plugins = array();
 	private $temp    = array();
@@ -62,7 +62,7 @@ class DependencieManager
 			$requires = pixelpost\Plugin::get_dependencies($pluginName);
 			
 			// create the object hold that
-			$this->plugins[$pluginName] = new DependenciePriority();
+			$this->plugins[$pluginName] = new DependencyPriority();
 			$this->plugins[$pluginName]->name = $pluginName;
 			
 			// for each plugin required we add it to the object ...
@@ -102,7 +102,7 @@ class DependencieManager
  * This class is use to hold a plugin priority
  * And tell other linked plugins about it.
  */
-class DependenciePriority
+class DependencyPriority
 {
 	public $name     = '';       // the plugin name
 	public $priority = 0;        // it's priority highter is prior

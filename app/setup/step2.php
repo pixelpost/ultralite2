@@ -1,6 +1,6 @@
 <?php
 
-require __DIR__ . SEP . 'Dependencie.php';
+require __DIR__ . SEP . 'Dependency.php';
 
 try
 {	
@@ -103,7 +103,7 @@ try
 	pixelpost\Plugin::detect();
 	
 	// create the install plugin order
-	$manager = new DependencieManager(array_keys($conf->plugins));
+	$manager = new DependencyManager(array_keys($conf->plugins));
 		
 	foreach($manager->process() as $plugin)
 	{
