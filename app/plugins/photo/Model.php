@@ -83,6 +83,87 @@ class Model
 	}
 
 	/**
+	 * Parse an option array and return SQL parts of a future query
+	 * 
+	 * @param  array $options The options for the query
+	 * @return array          An array with three component where, order, limit
+	 */
+	protected static function _getOptions(array $options)
+	{
+		$where = '';
+		$order = '';
+		$limit = '';
+		
+		// work on SQL where clause
+		if (isset($options['filter']))
+		{
+			$w = array();
+
+			// use the couple foreach/switch here is more readable and keep
+			// the order in the array
+			foreach($options['filter'] as $filter => $value)
+			{
+				switch($filter)
+				{
+					default: break;
+
+					case 'publish-date-interval' :
+						$start = Db::escape(Db::date_serialize($value['start']));
+						$end   = Db::escape(Db::date_serialize($value['end']));
+
+						$w[] = sprintf(' publish BETWEEN %s AND %s', $start, $end);
+						break;
+
+					case 'visible' :
+						$w[] = sprintf(' show = %s', intval($value));
+						break;
+				}
+			}
+
+			if (count($w) > 0) $where = ' WHERE' . implode(' AND', $w);
+		}
+
+		// work on SQL ORDER BY clause
+		if (isset($options['sort']))
+		{
+			$s = array();
+
+			// use the couple foreach/switch here is more readable and keep
+			// the order in the array
+			foreach($options['sort'] as $sort => $value)
+			{
+				switch($sort)
+				{
+					default: break;
+
+					case 'publish-date' :
+						$value = (($value == 'asc') ? 'ASC' : 'DESC');
+						$s[] = sprintf(' publish %s', $value);
+						break;
+
+					case 'title' :
+						$value = (($value == 'asc') ? 'ASC' : 'DESC');
+						$s[] = sprintf(' title %s', $value);
+						break;
+				}
+			}
+
+			if (count($s) > 0) $order = ' ORDER BY' . implode(',', $s);
+		}
+
+		// work on SQL LIMIT clause
+		if (isset($options['pager']))
+		{
+			$page = intval($options['pager']['page']);
+			$max  = intval($options['pager']['max-per-page']);
+
+			$limit = sprintf(' LIMIT %s, %s', ($page - 1) * $max, $max);
+		}
+		
+		return array($where, $order, $limit);
+	}
+
+	/**
 	 * Create the table in database
 	 */
 	public static function table_create()
@@ -165,8 +246,8 @@ class Model
 	 * In case of error this method raise an ModelExceptionSqlError exception
 	 * In case of no result this method raise an ModelExceptionNoResult exception
 	 *
-	 * @param  int     $photoId
 	 * @param  array   $fields
+	 * @param  array   $options
 	 * @param  Closure $todo
 	 * @return array
 	 */
@@ -175,75 +256,8 @@ class Model
 		$db     = Db::create();
 		$map    = self::_getMapper();
 		$fields = $map->genSqlSelectList($fields);
-		$where = '';
-		$order = '';
-		$limit = '';
 
-		// work on SQL where clause
-		if (isset($options['filter']))
-		{
-			$w = array();
-
-			// use the couple foreach/switch here is more readable and keep
-			// the order in the array
-			foreach($options['filter'] as $filter => $value)
-			{
-				switch($filter)
-				{
-					default: break;
-
-					case 'publish-date-interval' :
-						$start = Db::escape(Db::date_serialize($value['start']));
-						$end   = Db::escape(Db::date_serialize($value['end']));
-
-						$w[] = sprintf(' publish BETWEEN %s AND %s', $start, $end);
-						break;
-
-					case 'visible' :
-						$w[] = sprintf(' show = %s', intval($value));
-						break;
-				}
-			}
-
-			if (count($w) > 0) $where = ' WHERE' . implode(' AND', $w);
-		}
-
-		// work on SQL ORDER BY clause
-		if (isset($options['sort']))
-		{
-			$s = array();
-
-			// use the couple foreach/switch here is more readable and keep
-			// the order in the array
-			foreach($options['sort'] as $sort => $value)
-			{
-				switch($sort)
-				{
-					default: break;
-
-					case 'publish-date' :
-						$value = (($value == 'asc') ? 'ASC' : 'DESC');
-						$s[] = sprintf(' publish %s', $value);
-						break;
-
-					case 'title' :
-						$value = (($value == 'asc') ? 'ASC' : 'DESC');
-						$s[] = sprintf(' title %s', $value);
-						break;
-				}
-			}
-
-			if (count($s) > 0) $order = ' ORDER BY' . implode(',', $s);
-		}
-
-		// work on SQL LIMIT clause
-		if (isset($options['pager']))
-		{
-			$page = intval($options['pager']['page']);
-			$max  = intval($options['pager']['max-per-page']);
-
-			$limit = sprintf(' LIMIT %s, %s', ($page - 1) * $max, $max);
-		}
+		list($where, $order, $limit) = self::_getOptions($options);
 
 		$query = 'SELECT %s FROM photos%s%s%s;';
 		$query = sprintf($query, $fields, $where, $order, $limit);
@@ -261,6 +275,31 @@ class Model
 		}
 
 		return $list;
+	}
+	
+	/**
+	 * Retrieve the number of photos in database.
+	 *
+	 * In case of error this method raise an ModelExceptionSqlError exception
+	 *
+	 * @param  array   $options
+	 * @return int
+	 */
+	public static function photo_count($options)
+	{
+		$db = Db::create();
+
+		list($where, $order, $limit) = self::_getOptions($options);
+
+		$query = 'SELECT COUNT(id) FROM photos%s%s%s;';
+		$query = sprintf($query, $where, $order, $limit);
+
+		$result = pixelpost\Db::create()->querySingle($query);
+
+		if ($result === null)  $result = '0';
+		if ($result === false) throw new ModelExceptionSqlError();
+
+		return intval($result);
 	}
 
 	/**

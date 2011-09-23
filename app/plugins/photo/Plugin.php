@@ -17,6 +17,7 @@ use pixelpost\plugins\api\Exception as ApiException;
  * - 'api.photo.set'
  * - 'api.photo.get'
  * - 'api.photo.list'
+ * - 'api.photo.count'
  * - 'api.photo.path'
  * - 'api.photo.size'
  * - 'api.photo.config.get'
@@ -112,6 +113,7 @@ class Plugin implements pixelpost\PluginInterface
 		pixelpost\Event::register('api.photo.set',     '\\' . __CLASS__ . '::photo_set');
 		pixelpost\Event::register('api.photo.get',     '\\' . __CLASS__ . '::photo_get');
 		pixelpost\Event::register('api.photo.list',    '\\' . __CLASS__ . '::photo_list');
+		pixelpost\Event::register('api.photo.count',   '\\' . __CLASS__ . '::photo_count');
 		pixelpost\Event::register('api.photo.path',    '\\' . __CLASS__ . '::photo_path');
 		pixelpost\Event::register('api.photo.size',    '\\' . __CLASS__ . '::photo_size');
 		pixelpost\Event::register('api.photo.config.get', '\\' . __CLASS__ . '::config_set');
@@ -264,6 +266,11 @@ class Plugin implements pixelpost\PluginInterface
 	public static function photo_list(pixelpost\Event $event)
 	{
 		include __DIR__ . SEP . 'events' . SEP . 'photo_list.php';
+	}
+
+	public static function photo_count(pixelpost\Event $event)
+	{
+		include __DIR__ . SEP . 'events' . SEP . 'photo_count.php';
 	}
 	
 	public static function photo_path(pixelpost\Event $event)
