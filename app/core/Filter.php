@@ -360,7 +360,9 @@ class Filter
 	 */
 	public static function arrayToObject($array)
 	{
-		if (is_array($array)) return (object) array_map(__FUNCTION__, $array);
+		$func = '\\' . __CLASS__ . '::' . __FUNCTION__;
+		
+		if (is_array($array)) return (object) array_map($func, $array);
 		
 		return $array;
 	}
@@ -373,9 +375,11 @@ class Filter
 	 */
 	public static function objectToArray($object)
 	{
+		$func = '\\' . __CLASS__ . '::' . __FUNCTION__;
+
 		if (is_object($object)) $object = get_object_vars($object);
 
-		if (is_array($object)) return array_map(__FUNCTION__, $object);
+		if (is_array($object)) return array_map($func, $object);
 
 		return $object;
 	}

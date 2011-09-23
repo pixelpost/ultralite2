@@ -103,7 +103,7 @@ try
 	pixelpost\Plugin::detect();
 	
 	// create the install plugin order
-	$manager = new DependencyManager(array_keys($conf->plugins));
+	$manager = new DependencyManager(array_keys(pixelpost\Filter::objectToArray($conf->plugins)));
 		
 	foreach($manager->process() as $plugin)
 	{
@@ -116,7 +116,7 @@ try
 } 
 catch(Exception $e)
 {	
-	$error = $e->getMessage();
+	$error = $e->getMessage() . ', on line: ' . $e->getLine() . ' : ' . $e->getFile();
 	
 	if ($rollbackTo >= 6) unlink(PRIV_PATH . SEP . 'sqlite3.db');
 	if ($rollbackTo >= 5) unlink(ROOT_PATH . SEP . 'index.php');

@@ -442,7 +442,7 @@ class Plugin
 				return false;
 			}
 			
-			$v = call_user_func(self::get_method($dep));
+			$v = call_user_func(self::get_method($dep, 'version'));
 			
 			if (Filter::compare_version($v, $version)) 
 			{

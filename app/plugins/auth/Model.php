@@ -76,8 +76,10 @@ class Model
 		$db->exec('CREATE TABLE auth_token (id INTEGER PRIMARY KEY,
 			token TEXT, challenge TEXT, user_id INTEGER, created INTEGER);');
 		
-		$db->exec('INSERT INTO auth_grant (name) VALUES 
-			("read"), ("write"), ("config"), ("delete");');
+		$db->exec('INSERT INTO auth_grant (name) VALUES ("read");');
+		$db->exec('INSERT INTO auth_grant (name) VALUES ("write");');
+		$db->exec('INSERT INTO auth_grant (name) VALUES ("config");');
+		$db->exec('INSERT INTO auth_grant (name) VALUES ("delete");');
 	}
 
 	/**
