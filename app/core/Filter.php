@@ -276,7 +276,7 @@ class Filter
 	 */
 	public static function format_without_accent($string)
 	{
-		self::assumeString($string);
+		self::assume_string($string);
 
 		$accent = utf8_decode('ÀÁÂÃÄÅàáâãäåÒÓÔÕÖØòóôõöøÈÉÊËéèêëÇçÌÍÎÏìíîïÙÚÛÜùúûüÿÑñ');
 		$noaccent = utf8_decode('AAAAAAaaaaaaOOOOOOooooooEEEEeeeeCcIIIIiiiiUUUUuuuuyNn');
