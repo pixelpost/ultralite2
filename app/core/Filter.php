@@ -349,7 +349,7 @@ class Filter
 
 		// évite le bug apache erreur 404 à cause des / (%2f)
 		// interdit dans les url (seulement autorisée dans la query string)
-		return str_replace('%2f', '%252f', urlencode($str));
+		return str_replace(array('%2f','%2F'), '%252F', urlencode($str));
 	}
 
 	/**
