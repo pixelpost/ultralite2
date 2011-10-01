@@ -127,7 +127,19 @@ class Error extends \Exception
 			case 7 : return 'Plugin: plugin "%s1" should provide a "%s2" class (fullname: "%s3").';
 			case 8 : return 'Plugin: plugin "%s1" should provide a "%s2" class that implements "%s3".';
 			case 9 : return 'Plugin: Could not open the directory "%s1".';
-			case 10: return 'Db: This is a singleton, use create() method instead of __construct().';
+			case 11: return 'Template: Method assign require the first argument is a string or an array.';
+			case 12: return 'Template: Try to access property "%s1", this property is not set (use Template::assign("%s1")).';
+			case 13: return 'Template: Try to call method "%s1", this method is not set (use Template::assign("%s1")).';
+			case 14: return 'Template: Try to call method "%s1", this property is not callable.';
+			case 15: return 'Template: Try to set a protected property "%s1", use name starting without underscore.';
+			case 16: return 'Template: Template file "%s1" not exists, impossible to render this view.';
+			case 17: return 'TemplateLoop: Try to loop on a non Array or Object var.';
+			case 18: return 'TemplateLoop: Try to loop on a non Traversable object.';
+			case 19: return 'TemplateLoop: Try to loop on a non Countable object.';
+			case 20: return 'TemplateCompiler: Please provide a filename in the extends tag.';
+			case 21: return 'TemplateCompiler: Try to extends a template with a non existant template file : "%s1".';
+			case 22: return 'TemplateCompiler: Please provide a filename in the include tag.';
+			case 23: return 'TemplateCompiler: Try to include a template from a non existant template file : "%s1".';
 		}
 	}
 
