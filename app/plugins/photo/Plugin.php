@@ -106,7 +106,8 @@ class Plugin implements pixelpost\PluginInterface
 
 	public static function register()
 	{
-		$apiClass = '\\' . __NAMESPACE__ . '\\Api';
+		$apiClass   = '\\' . __NAMESPACE__ . '\\Api';
+		$adminClass = '\\' . __NAMESPACE__ . '\\Admin';
 		
 		pixelpost\Event::register('api.photo.version',    $apiClass . '::photo_version');
 		pixelpost\Event::register('api.photo.add',        $apiClass . '::photo_add');
@@ -119,6 +120,9 @@ class Plugin implements pixelpost\PluginInterface
 		pixelpost\Event::register('api.photo.size',       $apiClass . '::photo_size');
 		pixelpost\Event::register('api.photo.config.get', $apiClass . '::config_set');
 		pixelpost\Event::register('api.photo.config.set', $apiClass . '::config_get');
+		
+		pixelpost\Event::register('admin.template.nav',    $adminClass . '::template_nav');
+		pixelpost\Event::register('admin.template.widget', $adminClass . '::template_widget');
 	}
 }
 
