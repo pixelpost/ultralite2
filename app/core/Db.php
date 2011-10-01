@@ -61,7 +61,7 @@ class Db extends \SQLite3
 	 * 
 	 * @param string $file the sqlite3 database file.
 	 */
-	public static function setDatabaseFile($file)
+	public static function set_database_file($file)
 	{
 		self::$_database = $file;
 	}
