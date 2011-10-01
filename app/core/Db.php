@@ -32,7 +32,7 @@ class Db extends \SQLite3
 	{
 		if (!is_null(self::$_instance)) throw Error::create(10);
 		
-		$this->open('' ?: PRIV_PATH . SEP . 'sqlite3.db');
+		$this->open(self::$_database ?: PRIV_PATH . SEP . 'sqlite3.db');
 		
 		self::$_instance = $this;
 	}
