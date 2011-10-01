@@ -16,7 +16,7 @@ if (count($event->request->fields) == 0)
 	throw new ApiException('bad_request', "'api.photo.get' method need a specified at least one 'fields'.");
 }
 
-$options = pixelpost\Filter::objectToArray($event->request);
+$options = pixelpost\Filter::object_to_array($event->request);
 
 $fields  = $options['fields'];
 
@@ -48,8 +48,8 @@ if (isset($options['filter']) &&
 		throw new ApiException('bad_format', "'start' need to be a valid RFC3339 date.");
 	}
 
-	pixelpost\Filter::strToDate($start);
-	pixelpost\Filter::strToDate($end);
+	pixelpost\Filter::str_to_date($start);
+	pixelpost\Filter::str_to_date($end);
 }
 
 // exec the request

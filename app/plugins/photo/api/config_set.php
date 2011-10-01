@@ -9,8 +9,8 @@ $conf = pixelpost\Config::create();
 
 $myConf = $conf->plugin_photo;
 
-$newConf  = pixelpost\Filter::objectToArray($event->request);
-$newConf += pixelpost\Filter::objectToArray($myConf);
+$newConf  = pixelpost\Filter::object_to_array($event->request);
+$newConf += pixelpost\Filter::object_to_array($myConf);
 
 // change a directory
 $checkDir = function($name, $base) use ($myConf, $newConf, &$conf)

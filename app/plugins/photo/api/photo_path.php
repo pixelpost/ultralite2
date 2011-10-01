@@ -33,7 +33,7 @@ switch($size)
 
 // prepare your request data
 $request = array('id' => $id, 'fields' => array('filename'));
-$request = array('request' => pixelpost\Filter::arrayToObject($request));
+$request = array('request' => pixelpost\Filter::array_to_object($request));
 
 // make a try..catch
 try

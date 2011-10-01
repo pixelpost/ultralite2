@@ -358,7 +358,7 @@ class Filter
 	 * @param array $array
 	 * @return stdClass 
 	 */
-	public static function arrayToObject($array)
+	public static function array_to_object($array)
 	{
 		$func = '\\' . __CLASS__ . '::' . __FUNCTION__;
 		
@@ -373,7 +373,7 @@ class Filter
 	 * @param stdClass $object
 	 * @return array 
 	 */
-	public static function objectToArray($object)
+	public static function object_to_array($object)
 	{
 		$func = '\\' . __CLASS__ . '::' . __FUNCTION__;
 
@@ -389,7 +389,7 @@ class Filter
 	 * 
 	 * @param string $date 
 	 */
-	public static function strToDate(&$date)
+	public static function str_to_date(&$date)
 	{
 		$date = new \DateTime($date);
 	}

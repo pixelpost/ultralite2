@@ -6,7 +6,7 @@ use pixelpost;
 use pixelpost\plugins\api\Exception as ApiException;
 
 // check if the request is correct
-$options = pixelpost\Filter::objectToArray($event->request);
+$options = pixelpost\Filter::object_to_array($event->request);
 
 if (isset($options['filter']) && 
 	isset($options['filter']['publish-date-interval']))
@@ -24,8 +24,8 @@ if (isset($options['filter']) &&
 		throw new ApiException('bad_format', "'start' need to be a valid RFC3339 date.");
 	}
 
-	pixelpost\Filter::strToDate($start);
-	pixelpost\Filter::strToDate($end);
+	pixelpost\Filter::str_to_date($start);
+	pixelpost\Filter::str_to_date($end);
 }
 
 // retrieve requested fields and send them in the response

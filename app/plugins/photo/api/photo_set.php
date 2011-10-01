@@ -17,7 +17,7 @@ if (!isset($request->fields))
 	throw new ApiException('bad_request', "'api.photo.set' method need a specified 'fields' field.");
 }
 
-$fields = pixelpost\Filter::objectToArray($request->fields);
+$fields = pixelpost\Filter::object_to_array($request->fields);
 
 // remove id and filename fields if they are provided
 if (isset($fields['id']))       unset($fields['id']);
@@ -31,7 +31,7 @@ if (isset($fields['publish-date']))
 		throw new ApiException('bad_format', "'publish-date' need to be a valid RFC3339 date.");
 	}
 	
-	pixelpost\Filter::strToDate($fields['publish-date']);
+	pixelpost\Filter::str_to_date($fields['publish-date']);
 }
 
 // retrieve requested fields and send them in the response

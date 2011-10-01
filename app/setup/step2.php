@@ -103,7 +103,7 @@ try
 	pixelpost\Plugin::detect();
 	
 	// create the install plugin order
-	$manager = new DependencyManager(array_keys(pixelpost\Filter::objectToArray($conf->plugins)));
+	$manager = new DependencyManager(array_keys(pixelpost\Filter::object_to_array($conf->plugins)));
 		
 	foreach($manager->process() as $plugin)
 	{
