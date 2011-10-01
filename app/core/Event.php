@@ -67,7 +67,9 @@ class Event extends \ArrayObject
 		// If an event with the same priority exists, increase the priority by one.
 		if (isset(self::$_listen[$eventName][$priority]))
 		{
-			return self::register($eventName, $callback, $priority++);
+			// BECAREFUL ! The $priority need to be pre-incremented
+			// post-increment on it create an infinite loop.
+			return self::register($eventName, $callback, ++$priority);
 		}
 
 		self::$_listen[$eventName][$priority] = $callback;
