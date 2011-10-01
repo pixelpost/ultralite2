@@ -1,0 +1,1 @@
+<div class="widget"><strong>{{ count }}</strong> {{ text }}</div>

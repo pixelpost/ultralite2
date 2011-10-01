@@ -20,7 +20,6 @@ use pixelpost;
  */
 class Plugin implements pixelpost\PluginInterface
 {
-
 	public static function version()
 	{
 		return '0.0.1';
@@ -99,7 +98,7 @@ class Plugin implements pixelpost\PluginInterface
 
 	public static function on_page_index(pixelpost\Event $event)
 	{
-		echo "<h1>Welcome On admin page</h1>";
+		include __DIR__ . SEP . 'page' . SEP . 'home.php';
 	}
 
 	public static function on_page_404(pixelpost\Event $event)

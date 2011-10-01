@@ -1,0 +1,58 @@
+body {
+	margin: 40px;
+	color: black;
+	font-family: Lato, Arial, sans-serif;
+}
+
+header ul {
+	padding-left:0;
+}
+
+header li {
+	display: inline-block;
+	list-style: none;
+	margin: 0 10px 0 0;
+	padding: 0;
+}
+
+header a {
+	color: grey;
+	text-decoration: none;
+	border-bottom: 4px solid white;
+}
+
+header a:hover {
+	border-bottom-color: grey;	
+}
+
+#widget:after {
+	content: " ";
+	clear: both;
+}
+
+.widget {
+	display: inline-block;
+	width: 130px;
+	height: 70px;
+	padding: 15px;
+	margin-right:20px;
+	border-bottom: 10px solid white;
+	background-color: black;
+	color: white;
+	cursor: pointer;
+}
+
+.widget:hover {
+	border-bottom-color: grey;	
+}
+
+.widget strong {
+	display:block;
+	font-size:300%;
+	line-height:100%;
+}
+
+fieldset {
+	background-color:#DDD;
+	border:0;
+}
