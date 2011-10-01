@@ -19,18 +19,21 @@ class Db extends \SQLite3
 	protected static $_instance;
 	
 	/**
+	 * @var String The database file
+	 */
+	protected static $_database = '';
+	
+	/**
 	 * You shoudn't use this contructor directly, You must use create() method.
 	 *
 	 * @throws Error
 	 */
 	final public function __construct()
 	{
-		if (!is_null(self::$_instance))
-		{
-			throw Error::create(10);
-		}
-
-		$this->open(PRIV_PATH . SEP . 'sqlite3.db');
+		if (!is_null(self::$_instance)) throw Error::create(10);
+		
+		$this->open('' ?: PRIV_PATH . SEP . 'sqlite3.db');
+		
 		self::$_instance = $this;
 	}
 	
@@ -51,6 +54,16 @@ class Db extends \SQLite3
 	public static function create()
 	{
 		return self::$_instance ?: new static;
+	}
+
+	/**
+	 * Change the database to connect on when use create()
+	 * 
+	 * @param string $file the sqlite3 database file.
+	 */
+	public static function setDatabaseFile($file)
+	{
+		self::$_database = $file;
 	}
 	
 	/**
