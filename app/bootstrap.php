@@ -104,8 +104,9 @@ spl_autoload_register(function($className)
 // Step 5. We need to parse the config file and set properly the environnement
 $conf = Config::load(PRIV_PATH . SEP . 'config.json');
 
-defined('DEBUG')   or define('DEBUG',   $conf->debug, true);
-defined('WEB_URL') or define('WEB_URL', $conf->url,   true);
+defined('DEBUG')       or define('DEBUG',       $conf->debug, true);
+defined('WEB_URL')     or define('WEB_URL',     $conf->url,   true);
+defined('CONTENT_URL') or define('CONTENT_URL', $conf->url . 'app/plugins/',   true);
 
 DEBUG or error_reporting(0);
 
