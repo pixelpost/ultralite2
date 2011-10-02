@@ -56,3 +56,32 @@ fieldset {
 	background-color:#DDD;
 	border:0;
 }
+
+textarea { vertical-align:top; }
+
+legend { 
+	padding-top:30px;
+	margin-bottom: 15px; 
+	color:white; 
+	font-weight: bold;
+}
+
+fieldset>ol {
+	padding-left:20px;
+}
+
+fieldset>ol>li {
+	color:white;
+	margin-left:0;
+}
+
+fieldset label {
+	color:black;
+	display:inline-block;
+	width:25%;
+}
+
+fieldset input, fieldset textarea {
+	border:0;
+	width: 60%;
+}
