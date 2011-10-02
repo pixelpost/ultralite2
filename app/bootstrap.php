@@ -24,6 +24,8 @@ ini_set('register_long_arrays',          'off');
 ini_set('safe_mode',                     'off');
 ini_set('short_open_tag',                'off');
 ini_set('magic_quotes_gpc',              'off');
+ini_set('display_errors',                'stdout');
+ini_set('html_errors',                   'off');
 
 // Step 2. A little of constant creation
 defined('VERSION')   or define('VERSION',   "0.0.1",                     true);
