@@ -87,7 +87,8 @@ class Plugin implements pixelpost\PluginInterface
 		{
 			echo 'ERROR: Bad url format, please use:', "\n",
 			'- ', API_URL . 'json/', "\n",
-			'- ', API_URL . 'xml/', "\n";
+			'- ', API_URL . 'xml/', "\n",
+			'- ', API_URL . 'get/', "\n";
 			return false;
 		}
 
@@ -98,7 +99,7 @@ class Plugin implements pixelpost\PluginInterface
 		try
 		{
 			// decode the requested data
-			$request = $codec->decode($event->request->get_data());
+			$request = $codec->decode($event->request);
 
 			// process the request
 			$response = self::process($request, $event->request);
@@ -140,6 +141,7 @@ class Plugin implements pixelpost\PluginInterface
 		{
 			case 'json' : return true;
 			case 'xml'  : return true;
+			case 'get'  : return true;
 			default     : return false;
 		}
 	}
@@ -173,10 +175,18 @@ class Plugin implements pixelpost\PluginInterface
 	 */
 	public static function format_error(\Exception $error)
 	{
+		$message = (DEBUG) 
+		         ? $error->getMessage() . ': [' . $error->getLine() . ']:' . $error->getFile()
+				 : $error->getMessage();
+		
+		$code    = ($error instanceof Exception) 
+		         ? $error->getShortMessage() 
+			     : $error->getCode();
+		
 		return array(
 			'status'  => 'error',
-			'code'    => ($error instanceof Exception) ? $error->getShortMessage() : $error->getCode(),
-			'message' => $error->getMessage(),
+			'code'    => $code,
+			'message' => $message,
 		);			
 	}
 
@@ -206,14 +216,14 @@ class Plugin implements pixelpost\PluginInterface
 	public static function process(\stdClass $request, \pixelpost\Request $http)
 	{		
 		// create the data who are propagated int the event
-		$datas = array('request' => $request->request, 'http_request' => $http);
+		$datas = array('request' => $request, 'http_request' => $http);
 
 		// we send an the significate the api data is decoded
 		$event = pixelpost\Event::signal('request.api.decoded', $datas);
 		
 		// whatever if event is processed or not, we just retrieve the request
 		$request = $event->request;
-		
+
 		// check the request is well formated
 		if (!property_exists($request, 'method'))
 		{
@@ -248,7 +258,7 @@ class Plugin implements pixelpost\PluginInterface
 		{
 			throw new Exception('internal_error', "Oops ! there is actually a problem.");
 		}
-
+		
 		return $event->response;
 	}
 

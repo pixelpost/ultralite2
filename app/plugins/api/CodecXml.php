@@ -21,11 +21,12 @@ class CodecXml implements CodecInterface
 	 * Decode the request and return an PHP stdClass containing the requested
 	 * data.
 	 *
-	 * @param  string
+	 * @param  pixelpost\Request 
 	 * @return stdClass
 	 */
-	public function decode($request)
+	public function decode(pixelpost\Request $request)
 	{
+		$request = $request->get_data();
 		// check $request is a string
 		pixelpost\Filter::is_string($request);
 		pixelpost\Filter::check_encoding($request);
@@ -95,17 +96,19 @@ class CodecXml implements CodecInterface
 
 		foreach ($data as $key => $value)
 		{
-			if (is_array($value)) $value = $this->array_to_xml($value);
-
-			pixelpost\Filter::assume_string($value);
-
 			$key = pixelpost\Filter::format_for_xml($key);
 
-			if (is_bool($value))
+			if (is_object($value)) $value = pixelpost\Filter::object_to_array($value);
+			
+			if (is_array($value))
+			{
+				$value = $this->array_to_xml($value);
+			}
+			elseif (is_bool($value))
 			{
 				$value = strval(intval($value)); // cast boolean to '0' or '1'
 			}
-			elseif (pixelpost\Filter::format_for_url($value) != $value)
+			elseif (pixelpost\Filter::format_for_xml($value) != $value)
 			{
 				$value = sprintf('<![CDATA[%s]]>', $value);
 			}

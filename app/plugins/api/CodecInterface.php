@@ -22,10 +22,10 @@ interface CodecInterface
 	 * Decode the request and return an PHP stdClass containing the requested
 	 * data.
 	 *
-	 * @param  string
+	 * @param  pixelpost\Request 
 	 * @return stdClass
 	 */
-	public function decode($request);
+	public function decode(pixelpost\Request $request);
 
 	/**
 	 * Encode a reponse, an array containing all the client data, in the client
