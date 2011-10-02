@@ -97,23 +97,23 @@ class Plugin implements pixelpost\PluginInterface
 	public static function register()
 	{
 		pixelpost\Event::register('request.api.decoded', '\\' . __CLASS__ . '::request_api_decoded');
-		pixelpost\Event::register('auth.version',    '\\' . __CLASS__ . '::auth_version');
-		pixelpost\Event::register('auth.request',    '\\' . __CLASS__ . '::auth_request');
-		pixelpost\Event::register('auth.token',      '\\' . __CLASS__ . '::auth_token');
-		pixelpost\Event::register('auth.refresh',    '\\' . __CLASS__ . '::auth_refresh');
-		pixelpost\Event::register('auth.config.get', '\\' . __CLASS__ . '::auth_config_get');
-		pixelpost\Event::register('auth.config.set', '\\' . __CLASS__ . '::auth_config_set');
+		pixelpost\Event::register('api.auth.version',    '\\' . __CLASS__ . '::auth_version');
+		pixelpost\Event::register('api.auth.request',    '\\' . __CLASS__ . '::auth_request');
+		pixelpost\Event::register('api.auth.token',      '\\' . __CLASS__ . '::auth_token');
+		pixelpost\Event::register('api.auth.refresh',    '\\' . __CLASS__ . '::auth_refresh');
+		pixelpost\Event::register('api.auth.config.get', '\\' . __CLASS__ . '::auth_config_get');
+		pixelpost\Event::register('api.auth.config.set', '\\' . __CLASS__ . '::auth_config_set');
 		// TODO add thoses events
-		//pixelpost\Event::register('auth.user.add', '...');
-		//pixelpost\Event::register('auth.user.set', '...');
-		//pixelpost\Event::register('auth.user.get', '...');
-		//pixelpost\Event::register('auth.user.del', '...');
-		//pixelpost\Event::register('auth.user.list', '...');
-		//pixelpost\Event::register('auth.grant.add', '...');
-		//pixelpost\Event::register('auth.grant.set', '...');
-		//pixelpost\Event::register('auth.grant.get', '...');
-		//pixelpost\Event::register('auth.grant.del', '...');
-		//pixelpost\Event::register('auth.grant.list', '...');
+		//pixelpost\Event::register('api.auth.user.add', '...');
+		//pixelpost\Event::register('api.auth.user.set', '...');
+		//pixelpost\Event::register('api.auth.user.get', '...');
+		//pixelpost\Event::register('api.auth.user.del', '...');
+		//pixelpost\Event::register('api.auth.user.list', '...');
+		//pixelpost\Event::register('api.auth.grant.add', '...');
+		//pixelpost\Event::register('api.auth.grant.set', '...');
+		//pixelpost\Event::register('api.auth.grant.get', '...');
+		//pixelpost\Event::register('api.auth.grant.del', '...');
+		//pixelpost\Event::register('api.auth.grant.list', '...');
 	}
 	
 	public static function auth_version(pixelpost\Event $event)
