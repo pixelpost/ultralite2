@@ -135,7 +135,7 @@ class Api
 	
 	public static function photo_version(pixelpost\Event $event)
 	{
-		$event->response = array('version' => self::version());
+		$event->response = array('version' => Plugin::version());
 	}
 
 	public static function photo_add(pixelpost\Event $event)
