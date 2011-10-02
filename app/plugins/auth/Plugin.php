@@ -96,13 +96,18 @@ class Plugin implements pixelpost\PluginInterface
 
 	public static function register()
 	{
-		pixelpost\Event::register('request.api.decoded', '\\' . __CLASS__ . '::request_api_decoded');
-		pixelpost\Event::register('api.auth.version',    '\\' . __CLASS__ . '::auth_version');
-		pixelpost\Event::register('api.auth.request',    '\\' . __CLASS__ . '::auth_request');
-		pixelpost\Event::register('api.auth.token',      '\\' . __CLASS__ . '::auth_token');
-		pixelpost\Event::register('api.auth.refresh',    '\\' . __CLASS__ . '::auth_refresh');
-		pixelpost\Event::register('api.auth.config.get', '\\' . __CLASS__ . '::auth_config_get');
-		pixelpost\Event::register('api.auth.config.set', '\\' . __CLASS__ . '::auth_config_set');
+		$selfClass = '\\' . __CLASS__;
+		$apiClass  = '\\' . __NAMESPACE__ . '\\Api';
+		
+		pixelpost\Event::register('request.api.decoded', $selfClass . '::request_api_decoded');
+		
+		pixelpost\Event::register('api.auth.version',    $apiClass . '::auth_version');
+		pixelpost\Event::register('api.auth.request',    $apiClass . '::auth_request');
+		pixelpost\Event::register('api.auth.token',      $apiClass . '::auth_token');
+		pixelpost\Event::register('api.auth.refresh',    $apiClass . '::auth_refresh');
+		pixelpost\Event::register('api.auth.config.get', $apiClass . '::auth_config_get');
+		pixelpost\Event::register('api.auth.config.set', $apiClass . '::auth_config_set');
+		
 		// TODO add thoses events
 		//pixelpost\Event::register('api.auth.user.add', '...');
 		//pixelpost\Event::register('api.auth.user.set', '...');
@@ -114,36 +119,6 @@ class Plugin implements pixelpost\PluginInterface
 		//pixelpost\Event::register('api.auth.grant.get', '...');
 		//pixelpost\Event::register('api.auth.grant.del', '...');
 		//pixelpost\Event::register('api.auth.grant.list', '...');
-	}
-	
-	public static function auth_version(pixelpost\Event $event)
-	{
-		$event->response = array('version' => self::version());
-	}
-	
-	public static function auth_request(pixelpost\Event $event)
-	{
-		include __DIR__ . SEP . 'events' . SEP . 'auth_request.php';
-	}
-
-	public static function auth_token(pixelpost\Event $event)
-	{
-		include __DIR__ . SEP . 'events' . SEP . 'auth_token.php';
-	}
-	
-	public static function auth_refresh(pixelpost\Event $event)
-	{
-		include __DIR__ . SEP . 'events' . SEP . 'auth_refresh.php';
-	}
-	
-	public static function auth_config_get(pixelpost\Event $event)
-	{
-		include __DIR__ . SEP . 'events' . SEP . 'auth_config_get.php';
-	}
-	
-	public static function auth_config_set(pixelpost\Event $event)
-	{
-		include __DIR__ . SEP . 'events' . SEP . 'auth_config_set.php';
 	}
 	
 	/**
