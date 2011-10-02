@@ -3,14 +3,14 @@
 namespace pixelpost\plugins\photo;
 
 use pixelpost;
-use pixelpost\plugins\api\Exception as ApiException;
+use pixelpost\plugins\api\Exception as ApiError;
+use pixelpost\plugins\auth\Plugin as Auth;
+
+// check grants
+if (!Auth::is_granted('delete')) throw new ApiError\Ungranted('photo.del');
 
 // check if the request is correct
-if (!isset($event->request->id))
-{
-	throw new ApiException('bad_request', "'api.photo.del' method need a
-		specified 'id' field.");
-}
+if (!isset($event->request->id)) throw new ApiError\FieldRequired('photo.del', 'id');
 
 // exec the request
 // we don't catch ModelExceptionSqlError because the api plugin
@@ -35,5 +35,5 @@ try
 }
 catch(ModelExceptionNoResult $e)
 {
-	throw new ApiException('no_result', "There no photo corresponding to the 'id' : {$event->request->id}");
+	throw new ApiError\FieldNonExists('id', $event->request->id);
 }

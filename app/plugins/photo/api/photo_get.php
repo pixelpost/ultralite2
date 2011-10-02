@@ -3,23 +3,18 @@
 namespace pixelpost\plugins\photo;
 
 use pixelpost;
-use pixelpost\plugins\api\Exception as ApiException;
+use pixelpost\plugins\api\Exception as ApiError;
+use pixelpost\plugins\auth\Plugin as Auth;
+
+// check grants
+if (!Auth::is_granted('read')) throw new ApiError\Ungranted('photo.get');
 
 // check if the request is correct
-if (!isset($event->request->id))
-{
-	throw new ApiException('bad_request', "'api.photo.get' method need a specified 'id' field.");
-}
+if (!isset($event->request->id)) throw new ApiError\FieldRequired('photo.get', 'id');
 
-if (!isset($event->request->fields))
-{
-	throw new ApiException('bad_request', "'api.photo.get' method need a specified 'fields' field.");
-}
+if (!isset($event->request->fields)) throw new ApiError\FieldRequired('photo.get', 'fields');
 
-if (count($event->request->fields) == 0)
-{
-	throw new ApiException('bad_request', "'api.photo.get' method need a specified at least one 'fields'.");
-}
+if (count($event->request->fields) == 0)  throw new ApiError\FieldEmpty('fields');
 
 // exec the request
 // we don't catch ModelExceptionSqlError because the api plugin
@@ -40,5 +35,5 @@ try
 }
 catch(ModelExceptionNoResult $e)
 {
-	throw new ApiException('no_result', "There is no photo corresponding to the 'id' : {$event->request->id}");
+	throw new ApiError\FieldNonExists('id', $event->request->id);
 }

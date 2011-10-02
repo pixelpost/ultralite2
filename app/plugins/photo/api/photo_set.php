@@ -3,19 +3,15 @@
 namespace pixelpost\plugins\photo;
 
 use pixelpost;
-use pixelpost\plugins\api\Exception as ApiException;
+use pixelpost\plugins\api\Exception as ApiError;
+use pixelpost\plugins\auth\Plugin as Auth;
 
 $request = $event->request;
 
 // check if the request is correct
-if (!isset($request->id))
-{
-	throw new ApiException('bad_request', "'api.photo.set' method need a specified 'id' field.");
-}
-if (!isset($request->fields))
-{
-	throw new ApiException('bad_request', "'api.photo.set' method need a specified 'fields' field.");
-}
+if (!isset($request->id)) throw new ApiError\FieldRequired('photo.set', 'id');
+
+if (!isset($request->fields)) throw new ApiError\FieldRequired('photo.set', 'fields');
 
 $fields = pixelpost\Filter::object_to_array($request->fields);
 
@@ -28,7 +24,7 @@ if (isset($fields['publish-date']))
 {
 	if (pixelpost\Filter::validate_date($fields['publish-date'], \DateTime::RFC3339))
 	{
-		throw new ApiException('bad_format', "'publish-date' need to be a valid RFC3339 date.");
+		throw new ApiError\FieldNotValid('publish-date', 'invalid RFC3339 date');
 	}
 	
 	pixelpost\Filter::str_to_date($fields['publish-date']);
@@ -39,7 +35,7 @@ $changes = Model::photo_set($request->id, $fields);
 
 if ($changes <= 0)
 {
-	throw new ApiException('no_result', "There no photo corresponding to the 'id' : {$request->id}");
+	throw new ApiError\FieldNonExists('id', $request->id);
 }
 
 $event->response = array('message' => 'photo updated');

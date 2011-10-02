@@ -3,7 +3,11 @@
 namespace pixelpost\plugins\photo;
 
 use pixelpost;
-use pixelpost\plugins\api\Exception as ApiException;
+use pixelpost\plugins\api\Exception as ApiError;
+use pixelpost\plugins\auth\Plugin as Auth;
+
+// check grants
+if (!Auth::is_granted('config')) throw new ApiError\Ungranted('photo.config.set');
 
 $conf = pixelpost\Config::create();
 
@@ -24,7 +28,7 @@ $checkDir = function($name, $base) use ($myConf, $newConf, &$conf)
 
 	if (file_exists($newPath))
 	{
-		throw new ApiException('invalid_path', "dir name '$newPath' already exists.");
+		throw new ApiError\FieldNotValid($name, "dir name '$newPath' already exists");
 	}
 
 	if (rename($oldPath, $newPath)) $conf->plugin_photo->$name = $newConf[$name];
@@ -32,11 +36,11 @@ $checkDir = function($name, $base) use ($myConf, $newConf, &$conf)
 
 $checkNumber = function($number, $min, $max, $message)
 {
-	if (!is_numeric($number))  throw new ApiException('invalid_value', $message);		
+	if (!is_numeric($number))  throw new ApiError\FieldOutBounds($name, $min, $max);
 
 	$int = abs(intval($number));
 	
-	if ($int < $min || $int > $max) throw new ApiException('invalid_value', $message);
+	if ($int < $min || $int > $max)  throw new ApiError\FieldOutBounds($name, $min, $max);
 	
 	return $int;
 };
@@ -48,7 +52,9 @@ $checkSize = function($name) use ($myConf, $newConf, &$conf, $checkNumber)
 	if ($newConf['sizes'][$name]['type'] == $myConf->sizes->$name->type)
 	{
 		$change = true;
-		
+
+		$options = array('larger-border', 'fixed-width', 'fixed-height', 'fixed', 'sqare');
+				
 		switch($newConf['sizes'][$name]['type'])
 		{
 			case 'larger-border': break;
@@ -57,7 +63,7 @@ $checkSize = function($name) use ($myConf, $newConf, &$conf, $checkNumber)
 			case 'fixed'        : break;
 			case 'square'       : break;
 			default: 
-				throw new ApiException('invalid_value', "'type' value need to be larger-border|fixed-width|fixed-height|fixed|sqare.");
+				throw new ApiError\FieldNotInList('type', $options);
 		}
 
 		$conf->plugin_photo->sizes->$name->type = $newConf['sizes'][$name]['type'];				
@@ -69,8 +75,8 @@ $checkSize = function($name) use ($myConf, $newConf, &$conf, $checkNumber)
 		$width  = $newConf['sizes'][$name]['width'];
 		$height = $newConf['sizes'][$name]['height'];
 
-		$width  = $checkNumber($width,  10, 2000, "'width' value need to be a number.");
-		$height = $checkNumber($height, 10, 2000, "'height' value need to be a number.");
+		$width  = $checkNumber($width,  10, 2000, 'width');
+		$height = $checkNumber($height, 10, 2000, 'height');
 
 		// $change == false => $myConf->..->width/height exists before
 		if (!$change && $width  != $myConf->sizes->$name->width)  $change = true;
@@ -83,7 +89,7 @@ $checkSize = function($name) use ($myConf, $newConf, &$conf, $checkNumber)
 	{		
 		$size = $newConf['sizes'][$name]['size'];
 		
-		$size = $checkNumber($size, 10, 2000, "'size' value need to be a number.");
+		$size = $checkNumber($size, 10, 2000, 'size');
 		
 		if (!$change && $size != $myConf->sizes->$name->size) $change = true;
 		
@@ -104,7 +110,7 @@ try
 	$change = $change || $checkSize('resized');
 	$change = $change || $checkSize('thumb');
 
-	$conf->plugin_photo->quality = $checkNumber($newConf['quality'], 40, 100, "'quality' value need to be a number between 40 and 100.");
+	$conf->plugin_photo->quality = $checkNumber($newConf['quality'], 40, 100, 'quality');
 
 	if ($change)
 	{
@@ -113,7 +119,7 @@ try
 	
 	$conf->save();
 	
-	$event->response = array('message' => 'configuration updated.');
+	$event->response = array('message' => 'configuration updated');
 }
 catch(ApiException $e)
 {

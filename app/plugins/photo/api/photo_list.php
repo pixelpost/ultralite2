@@ -3,18 +3,16 @@
 namespace pixelpost\plugins\photo;
 
 use pixelpost;
-use pixelpost\plugins\api\Exception as ApiException;
+use pixelpost\plugins\api\Exception as ApiError;
+use pixelpost\plugins\auth\Plugin as Auth;
+
+// check grants
+if (!Auth::is_granted('read')) throw new ApiError\Ungranted('photo.list');
 
 // check if the request is correct
-if (!isset($event->request->fields))
-{
-	throw new ApiException('bad_request', "'api.photo.list' method need a specified 'fields' field.");
-}
+if (!isset($event->request->fields)) throw new ApiError\FieldRequired('photo.list', 'fields');
 
-if (count($event->request->fields) == 0)
-{
-	throw new ApiException('bad_request', "'api.photo.get' method need a specified at least one 'fields'.");
-}
+if (count($event->request->fields) == 0) throw new ApiError\FieldEmpty('fields');
 
 $options = pixelpost\Filter::object_to_array($event->request);
 
@@ -24,11 +22,11 @@ if (isset($options['pager']))
 {
 	if (!isset($options['pager']['page']))
 	{
-		throw new ApiException('bad_format', "'pager' require a field 'page'.");
+		throw new ApiError\FieldRequired('photo.list', 'pager::page');
 	}
 	if (!isset($options['pager']['max-per-page']))
 	{
-		throw new ApiException('bad_format', "'pager' require a field 'max-per-page'.");
+		throw new ApiError\FieldRequired('photo.list', 'pager::max-per-page');
 	}	
 }
 
@@ -41,11 +39,11 @@ if (isset($options['filter']) &&
 
 	if (pixelpost\Filter::validate_date($start))
 	{
-		throw new ApiException('bad_format', "'start' need to be a valid RFC3339 date.");			
+		throw new ApiError\FieldNotValid('start', 'invalid RFC3339 date');
 	}
 	if (pixelpost\Filter::validate_date($end))
 	{
-		throw new ApiException('bad_format', "'start' need to be a valid RFC3339 date.");
+		throw new ApiError\FieldNotValid('start', 'invalid RFC3339 date');
 	}
 
 	pixelpost\Filter::str_to_date($start);

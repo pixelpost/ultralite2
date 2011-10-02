@@ -3,7 +3,11 @@
 namespace pixelpost\plugins\photo;
 
 use pixelpost;
-use pixelpost\plugins\api\Exception as ApiException;
+use pixelpost\plugins\api\Exception as ApiError;
+use pixelpost\plugins\auth\Plugin as Auth;
+
+// check grants
+if (!Auth::is_granted('read')) throw new ApiError\Ungranted('photo.count');
 
 // check if the request is correct
 $options = pixelpost\Filter::object_to_array($event->request);
@@ -17,11 +21,11 @@ if (isset($options['filter']) &&
 
 	if (pixelpost\Filter::validate_date($start))
 	{
-		throw new ApiException('bad_format', "'start' need to be a valid RFC3339 date.");			
+		throw new ApiError\FieldNotValid('start', 'required RFC3339 date');
 	}
 	if (pixelpost\Filter::validate_date($end))
 	{
-		throw new ApiException('bad_format', "'start' need to be a valid RFC3339 date.");
+		throw new ApiError\FieldNotValid('end', 'required RFC3339 date');
 	}
 
 	pixelpost\Filter::str_to_date($start);
