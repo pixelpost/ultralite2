@@ -262,5 +262,44 @@ class Plugin implements pixelpost\PluginInterface
 		return $event->response;
 	}
 
+	/**
+	 * Make a call to a Api methode
+	 * 
+	 * @param  string $method
+	 * @param  array  $request
+	 * @return array 
+	 */
+	public function call_api_method($method, $request)
+	{
+		$method = 'api.' . $method;
+		
+		if (is_array($request)) $request = pixelpost\Filter::array_to_object($array);
+		
+		try
+		{
+			// make the call
+			$call = pixelpost\Event::signal($method, array('request' => $request));
+
+			// check if the call is processed
+			if (!$call->is_processed())
+			{
+				throw new \Exception('event `'. $method .'` is not processed');
+			}
+			// check if the response exists
+			if (!isset($call->response))
+			{
+				throw new \Exception('event `'. $method .'` not provide a response');
+			}
+			
+			// return the response
+			return $call->response;
+		}
+		// handle all pixelpost\plugins\api\Exception can be thrown
+		// if you don't the user receive the error message of your internal call
+		catch(Exception $e)
+		{
+			throw new \Exception('event `'. $method .'` thrown an exception', 0, $e);
+		}
+	}
 }
 
