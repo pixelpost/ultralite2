@@ -42,34 +42,7 @@ class CodecGet
 		$this->returnType = array_shift($urlParams);
 		
 		// retrieve posted or query data
-		$data = $request->get_query();
-		
-		foreach($data as $key => $value)
-		{
-			$keys = explode(':', $key);
-			$count  = count($keys) - 1;
-
-			if ($count < 1) continue;
-
-			unset($data[$key]);
-
-			$actual = & $data;
-
-			for($i = 0; $i <= $count; $i++)
-			{
-				if ($i == $count)
-				{
-					$actual[$keys[$i]] = $value;
-					continue;
-				}
-
-				if (!isset($actual[$keys[$i]])) $actual[$keys[$i]] = array();
-
-				$actual = & $actual[$keys[$i]];
-			}				
-
-			unset($actual);
-		}
+		$data = ($request->is_post()) ? $request->get_post() : $request->get_query();
 		
 		$req = array('method' => $method, 'request' => $data);
 		
