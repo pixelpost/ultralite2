@@ -175,11 +175,17 @@ class Api
 	
 	public static function photo_size(pixelpost\Event $event)
 	{
+		if (!pixelpost\plugins\auth\Auth::is_granted('read')) 
+			throw new pixelpost\plugins\api\Exception\Ungranted('photo.size');
+		
 		$event->response = pixelpost\Config::create()->plugin_photo->sizes;		
 	}
 	
 	public static function config_get(pixelpost\Event $event)
 	{
+		if (!pixelpost\plugins\auth\Auth::is_granted('read')) 
+			throw new pixelpost\plugins\api\Exception\Ungranted('photo.config.set');
+		
 		$event->response = pixelpost\Config::create()->plugin_photo;		
 	}
 	

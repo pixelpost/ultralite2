@@ -6,6 +6,8 @@ use pixelpost;
 use pixelpost\plugins\api\Exception as ApiError;
 use pixelpost\plugins\auth\Plugin as Auth;
 
+if (!Auth::is_granted('write')) throw new ApiError\Ungranted('photo.set');
+
 $request = $event->request;
 
 // check if the request is correct
