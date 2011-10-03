@@ -232,7 +232,7 @@ class Plugin implements pixelpost\PluginInterface
 
 		if (!property_exists($request, 'request'))
 		{
-			throw new Exception('bad_format', 'The request need to provide a \'request\' property');
+			$event->request = new \stdClass();
 		}
 
 		// get the requested api method
