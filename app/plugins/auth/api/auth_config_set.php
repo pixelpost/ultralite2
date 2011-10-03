@@ -3,12 +3,9 @@
 namespace pixelpost\plugins\auth;
 
 use pixelpost;
-use pixelpost\plugins\api\Exception as ApiException;
+use pixelpost\plugins\api\Exception;
 
-if (!Plugin::is_granted('config'))
-{
-	throw new ApiException('unauthorized', 'You have not the rights necessary to call this method.');
-}
+if (!Plugin::is_granted('config')) throw new Exception\Ungranted('auth.config.set');
 
 if (isset($event->request->lifetime))
 {
@@ -16,7 +13,7 @@ if (isset($event->request->lifetime))
 
 	if (!is_numeric($lifetime))
 	{
-		throw new ApiException('bad_lifetime', "The 'lifetime' need to be a integer.");
+		throw new Exception\FieldNotValid('lifetime', 'not an integer');
 	}
 
 	$conf = pixelpost\Config::create();

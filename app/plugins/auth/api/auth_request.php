@@ -3,12 +3,9 @@
 namespace pixelpost\plugins\auth;
 
 use pixelpost;
-use pixelpost\plugins\api\Exception as ApiException;
+use pixelpost\plugins\api\Exception;
 
-if (!isset($event->request->username))
-{
-	throw new ApiException('bad_request', "'auth.request' need a 'username' field.");
-}
+if (!isset($event->request->username)) throw new Exception\FieldRequired('auth.request', 'username');
 
 // check the user in database
 try
@@ -17,7 +14,7 @@ try
 }
 catch(ModelExceptionNoResult $e)
 {
-	throw new ApiException('bad_username', "Requested authentification failed.");			
+	throw new Exception('bad_username', "Requested authentification failed.");
 }
 
 // retrieve configuration

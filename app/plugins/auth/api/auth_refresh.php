@@ -3,12 +3,9 @@
 namespace pixelpost\plugins\auth;
 
 use pixelpost;
-use pixelpost\plugins\api\Exception as ApiException;
+use pixelpost\plugins\api\Exception;
 
-if (!isset($event->request->token))
-{
-	throw new ApiException('bad_request', "'auth.refresh' need a 'token' field.");
-}
+if (!isset($event->request->token)) throw new Exception\FieldRequired('auth.refresh', 'token');
 
 try
 {
@@ -16,7 +13,7 @@ try
 }
 catch(ModelExceptionNoResult $e)
 {
-	throw new ApiException('bad_token', "The 'token' provided is invalid.");
+	throw new Exception\FieldNotValid('token');
 }
 
 // retrieve user

@@ -3,16 +3,11 @@
 namespace pixelpost\plugins\auth;
 
 use pixelpost;
-use pixelpost\plugins\api\Exception as ApiException;
+use pixelpost\plugins\api\Exception;
 
-if (!isset($event->request->challenge))
-{
-	throw new ApiException('bad_request', "'auth.token' need a 'challenge' field.");
-}
-if (!isset($event->request->signature))
-{
-	throw new ApiException('bad_request', "'auth.token' need a 'signature' field.");
-}
+if (!isset($event->request->challenge))	throw new Exception\FieldRequired('auth.token', 'challenge');
+
+if (!isset($event->request->signature))	throw new Exception\FieldRequired('auth.token', 'signature');
 
 // check the challenge in database
 try
@@ -24,7 +19,7 @@ try
 }
 catch(ModelExceptionNoResult $e)
 {
-	throw new ApiException('bad_challenge', "The 'challenge' field is invalid.");			
+	throw new Exception\FieldNotValid('challenge');
 }
 
 $now = new \DateTime();
@@ -32,7 +27,8 @@ $now = new \DateTime();
 if ($now > $challenge['expire'])
 {
 	Model::challenge_del($challenge['id']);
-	throw new ApiException('bad_challenge', '');						
+	
+	throw new Exception\FieldNotValid('challenge');
 }
 
 // retrieve user and the password correspondig to the challenge
