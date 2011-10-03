@@ -76,10 +76,11 @@ class Model
 		$db->exec('CREATE TABLE auth_token (id INTEGER PRIMARY KEY,
 			token TEXT, challenge TEXT, user_id INTEGER, created INTEGER);');
 		
-		$db->exec('INSERT INTO auth_grant (name) VALUES ("read");');
-		$db->exec('INSERT INTO auth_grant (name) VALUES ("write");');
-		$db->exec('INSERT INTO auth_grant (name) VALUES ("config");');
-		$db->exec('INSERT INTO auth_grant (name) VALUES ("delete");');
+		$db->exec('INSERT INTO auth_grant (name) VALUES ("read");');   // read content
+		$db->exec('INSERT INTO auth_grant (name) VALUES ("write");');  // set / add content
+		$db->exec('INSERT INTO auth_grant (name) VALUES ("delete");'); // del content
+		$db->exec('INSERT INTO auth_grant (name) VALUES ("config");'); // change configuration
+		$db->exec('INSERT INTO auth_grant (name) VALUES ("admin");');  // change user, grants
 	}
 
 	/**
@@ -220,7 +221,7 @@ class Model
 	/**
 	 * List all user in database.
 	 * 
-	 * @return array The list of user constains an array with 'key', 'name' 
+	 * @return array The list of user constains an array with 'id', 'name' 
 	 */
 	public static function user_list()
 	{

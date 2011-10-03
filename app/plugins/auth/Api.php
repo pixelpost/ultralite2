@@ -45,4 +45,29 @@ class Api
 	{
 		include __DIR__ . SEP . 'api' . SEP . 'auth_config_set.php';
 	}
+	
+	public static function auth_user_add(pixelpost\Event $event)
+	{
+		include __DIR__ . SEP . 'api' . SEP . 'auth_user_add.php';
+	}
+	
+	public static function auth_user_set(pixelpost\Event $event)
+	{
+		include __DIR__ . SEP . 'api' . SEP . 'auth_user_set.php';
+	}
+	
+	public static function auth_user_get(pixelpost\Event $event)
+	{
+		include __DIR__ . SEP . 'api' . SEP . 'auth_user_get.php';
+	}
+	
+	public static function auth_user_del(pixelpost\Event $event)
+	{
+		include __DIR__ . SEP . 'api' . SEP . 'auth_user_del.php';
+	}
+	
+	public static function auth_user_list(pixelpost\Event $event)
+	{
+		include __DIR__ . SEP . 'api' . SEP . 'auth_user_list.php';
+	}
 }

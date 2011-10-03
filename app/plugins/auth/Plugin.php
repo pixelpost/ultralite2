@@ -107,13 +107,13 @@ class Plugin implements pixelpost\PluginInterface
 		pixelpost\Event::register('api.auth.refresh',    $apiClass . '::auth_refresh');
 		pixelpost\Event::register('api.auth.config.get', $apiClass . '::auth_config_get');
 		pixelpost\Event::register('api.auth.config.set', $apiClass . '::auth_config_set');
+		pixelpost\Event::register('api.auth.user.add',   $apiClass . '::auth_user_add');
+		pixelpost\Event::register('api.auth.user.set',   $apiClass . '::auth_user_set');
+		pixelpost\Event::register('api.auth.user.get',   $apiClass . '::auth_user_get');
+		pixelpost\Event::register('api.auth.user.del',   $apiClass . '::auth_user_del');
+		pixelpost\Event::register('api.auth.user.list',  $apiClass . '::auth_user_list');
 		
 		// TODO add thoses events
-		//pixelpost\Event::register('api.auth.user.add', '...');
-		//pixelpost\Event::register('api.auth.user.set', '...');
-		//pixelpost\Event::register('api.auth.user.get', '...');
-		//pixelpost\Event::register('api.auth.user.del', '...');
-		//pixelpost\Event::register('api.auth.user.list', '...');
 		//pixelpost\Event::register('api.auth.grant.add', '...');
 		//pixelpost\Event::register('api.auth.grant.set', '...');
 		//pixelpost\Event::register('api.auth.grant.get', '...');
