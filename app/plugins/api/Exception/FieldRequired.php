@@ -10,7 +10,7 @@ namespace pixelpost\plugins\api\Exception;
  * @version    0.0.1
  * @since      File available since Release 1.0.0
  */
-class FieldRequired extends pixelpost\plugins\api\Exception
+class FieldRequired extends \pixelpost\plugins\api\Exception
 {
 	/**
 	 * Create the Exception
