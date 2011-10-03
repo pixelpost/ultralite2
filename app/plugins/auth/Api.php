@@ -70,4 +70,39 @@ class Api
 	{
 		include __DIR__ . SEP . 'api' . SEP . 'auth_user_list.php';
 	}
+	
+	public static function auth_user_grant_add(pixelpost\Event $event)
+	{
+		include __DIR__ . SEP . 'api' . SEP . 'auth_user_grant_add.php';
+	}
+	
+	public static function auth_user_grant_del(pixelpost\Event $event)
+	{
+		include __DIR__ . SEP . 'api' . SEP . 'auth_user_grant_del.php';
+	}
+	
+	public static function auth_grant_add(pixelpost\Event $event)
+	{
+		include __DIR__ . SEP . 'api' . SEP . 'auth_grant_add.php';
+	}
+	
+	public static function auth_grant_set(pixelpost\Event $event)
+	{
+		include __DIR__ . SEP . 'api' . SEP . 'auth_grant_set.php';
+	}
+	
+	public static function auth_grant_get(pixelpost\Event $event)
+	{
+		include __DIR__ . SEP . 'api' . SEP . 'auth_grant_get.php';
+	}
+	
+	public static function auth_grant_del(pixelpost\Event $event)
+	{
+		include __DIR__ . SEP . 'api' . SEP . 'auth_grant_del.php';
+	}
+	
+	public static function auth_grant_list(pixelpost\Event $event)
+	{
+		include __DIR__ . SEP . 'api' . SEP . 'auth_grant_list.php';
+	}
 }

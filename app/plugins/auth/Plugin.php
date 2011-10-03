@@ -15,7 +15,19 @@ use pixelpost;
  * auth.refresh
  * auth.config.get
  * auth.config.set
- *
+ * auth.user.add
+ * auth.user.set
+ * auth.user.get
+ * auth.user.del
+ * auth.user.list
+ * auth.user.grant.add
+ * auth.user.grant.del
+ * auth.grant.add
+ * auth.grant.set
+ * auth.grant.get
+ * auth.grant.del
+ * auth.grant.list
+ * 
  * @copyright  2011 Alban LEROUX <seza@paradoxal.org>
  * @license    http://creativecommons.org/licenses/by-sa/3.0/ Creative Commons
  * @version    0.0.1
@@ -112,13 +124,13 @@ class Plugin implements pixelpost\PluginInterface
 		pixelpost\Event::register('api.auth.user.get',   $apiClass . '::auth_user_get');
 		pixelpost\Event::register('api.auth.user.del',   $apiClass . '::auth_user_del');
 		pixelpost\Event::register('api.auth.user.list',  $apiClass . '::auth_user_list');
-		
-		// TODO add thoses events
-		//pixelpost\Event::register('api.auth.grant.add', '...');
-		//pixelpost\Event::register('api.auth.grant.set', '...');
-		//pixelpost\Event::register('api.auth.grant.get', '...');
-		//pixelpost\Event::register('api.auth.grant.del', '...');
-		//pixelpost\Event::register('api.auth.grant.list', '...');
+		pixelpost\Event::register('api.auth.grant.add',  $apiClass . '::auth_grant_add');
+		pixelpost\Event::register('api.auth.grant.set',  $apiClass . '::auth_grant_set');
+		pixelpost\Event::register('api.auth.grant.get',  $apiClass . '::auth_grant_get');
+		pixelpost\Event::register('api.auth.grant.del',  $apiClass . '::auth_grant_del');
+		pixelpost\Event::register('api.auth.grant.list', $apiClass . '::auth_grant_list');
+		pixelpost\Event::register('api.auth.user.grant.add', $apiClass . '::auth_user_grant_add');
+		pixelpost\Event::register('api.auth.user.grant.del', $apiClass . '::auth_user_grant_del');
 	}
 	
 	/**

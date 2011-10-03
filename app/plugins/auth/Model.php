@@ -313,7 +313,7 @@ class Model
 	 * Retrieve a grant from database.
 	 * 
 	 * @param  string $name The grant name
-	 * @return array        The array contains 'id'
+	 * @return int          The grant id
 	 */
 	public static function grant_get($name)
 	{
@@ -327,7 +327,7 @@ class Model
 		if ($result === false) throw new ModelExceptionSqlError();
 		if (empty($result))    throw new ModelExceptionNoResult();		
 		
-		return $result;		
+		return intval($result);		
 	}
 
 	/**
@@ -358,7 +358,7 @@ class Model
 	 * 
 	 * @param  int $userId  The user id
 	 * @param  int $grantId The grant id
-	 * @return int          The link id
+	 * @return int          The link id or 0 if the link exists
 	 */
 	public static function user_grant_link($userId, $grantId)
 	{
@@ -366,6 +366,11 @@ class Model
 
 		pixelpost\Filter::is_int($userId);
 		pixelpost\Filter::is_int($grantId);
+
+		$query = 'SELECT COUNT(id) FROM auth_user_grant WHERE user_id = %d AND grant_id = %d;';
+		$query = sprintf($query, $userId, $grantId);
+		
+		if (intval($db->querySingle($query)) > 0) return 0;
 		
 		$query = 'INSERT INTO auth_user_grant (user_id, grant_id) VALUES (%d, %d);';
 		$query = sprintf($query, $userId, $grantId);
