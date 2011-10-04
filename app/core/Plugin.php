@@ -232,9 +232,11 @@ class Plugin
 					\RecursiveIteratorIterator::CHILD_FIRST) as $file)
 		{
 			$method = $file->isDir() ? "rmdir" : 'unlink';
-			$medhod($file->getPathName());
+			$method($file->getPathName());
 		}
 
+		rmdir(PLUG_PATH . SEP . $plugin);
+		
 		return true;
 	}
 
