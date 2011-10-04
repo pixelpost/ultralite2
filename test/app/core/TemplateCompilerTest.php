@@ -434,6 +434,22 @@ EOF;
 	/**
 	 * @covers pixelpost\TemplateCompiler::extract_var
 	 */
+	public function test_extract_var_in_paren()
+	{
+		$test   = '1 + 2 + (foo == bar) + 23';
+
+		$mock = $this->getMock('pixelpost\Request'); // whatever the class
+		$mock->expects($this->exactly(3)) // 1 for (...), 1 for foo, 1 for bar
+			 ->method('auto');
+		
+		$callback = function($data) use ($mock) { return $mock->auto($data); };
+		
+		$this->object->extract_var($test, $callback);
+	}
+
+	/**
+	 * @covers pixelpost\TemplateCompiler::extract_var
+	 */
 	public function test_extract_var_match_object()
 	{
 		$test   = '1 + 2 + foo.bar + 23';

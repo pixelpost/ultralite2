@@ -22,44 +22,37 @@ class TemplateCompiler
 	const INLINE_NOTAG = 3; // {[ .. ]}
 	
 	/**
-	 * The template data
-	 * 
-	 * @var string
+	 * @var string The templates path
+	 */
+	public $path   = '';
+	
+	/**
+	 * @var string The template data
 	 */
 	public $tpl    = '';
 	
 	/**
-	 * All template raw blocks
-	 * 
-	 * @var array 
+	 * @var array All template raw blocks
 	 */
 	public $raw    = array();
 	
 	/**
-	 * All template blocks
-	 * 
-	 * @var array
+	 * @var array All template blocks
 	 */
 	public $block  = array();
 	
 	/**
-	 * Escaped quoted string are store here
-	 * 
-	 * @var array 
+	 * @var array Escaped quoted string are store here
 	 */
 	public $quote  = array();
 	
 	/**
-	 * Escaped squared [...] data are store here
-	 * 
-	 * @var array 
+	 * @var array Escaped squared [...] data are store here
 	 */
 	public $square = array();
 	
 	/**
-	 * Escaped parened (...) data are store here
-	 * 
-	 * @var array 
+	 * @var array Escaped parened (...) data are store here
 	 */
 	public $paren  = array();
 
@@ -484,7 +477,7 @@ class TemplateCompiler
 		
         if ($filename == '') throw Error::create(20);
 		
-        $file = PLUG_PATH . SEP . $filename;
+        $file = $this->path . $filename;
 
         if (!file_exists($file)) throw Error::create(21, array($file));
 
@@ -522,7 +515,7 @@ class TemplateCompiler
 			
 			if ($filename == '') throw Error::create(22);
 			
-            $file = PLUG_PATH . SEP . $filename;
+            $file = $this->path . $filename;
 
 			if (!file_exists($file)) throw Error::create(23, array($file));
 			
@@ -594,6 +587,7 @@ class TemplateCompiler
 		{
 			$me->escape_square($item);
 			array_walk($me->square, $callback);			
+			$callback($item);
 			$me->unescape_square($item);
 		});
 		

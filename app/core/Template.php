@@ -13,27 +13,36 @@ namespace pixelpost;
 class Template
 {
 	/**
-	 * Is cache Raw Template file is authorized ?
-	 * 
-	 * @var bool
+	 * @var bool Is cache Raw Template file is authorized ?
 	 */
     protected $_cacheRawTemplate = true;
 
 	/**
-	 * The App configuration
-	 * 
-	 * @var Config
+	 * @var Config The App configuration
 	 */
 	protected $_config = null;
 
 	/**
+	 * @var String The template path
+	 */
+	protected $_tplPath = '';
+
+	/**
+	 * @var String The template cache path
+	 */
+	protected $_tplCache = '';
+	
+	/**
 	 * Create a new Template
 	 * 
-	 * @return self 
+	 * @return Template 
 	 */
 	public static function create()
 	{
-		return new self;
+		$tpl = new self;
+		$tpl->set_template_path(PLUG_PATH . SEP);
+		$tpl->set_template_cache_path(PRIV_PATH . SEP . 'cache' . SEP);
+		return $tpl;
 	}
 
 	/**
@@ -50,6 +59,34 @@ class Template
 		
         return $this;
     }
+
+	/**
+	 * Change the template path
+	 * 
+	 * @param string $path 
+	 */
+	public function set_template_path($path)
+	{
+		Filter::assume_string($var);
+		
+		$this->_tplPath = $path . ((substr($path, -1) == SEP) ? '' : SEP);
+		
+		return $this;
+	}
+	
+	/**
+	 * Change the cache template path
+	 * 
+	 * @param string $path 
+	 */
+	public function set_template_cache_path($path)
+	{
+		Filter::assume_string($var);
+		
+		$this->_tplCache = $path . ((substr($path, -1) == SEP) ? '' : SEP);
+		
+		return $this;
+	}
 	
 	/**
 	 * Return the App configuration object (pixelpost\config::create())
@@ -338,7 +375,8 @@ class Template
 	protected function _compile($templateFile)
 	{
 		$tpl = new TemplateCompiler();
-		$tpl->tpl = file_get_contents($templateFile);
+		$tpl->path = $this->_tplPath;
+		$tpl->tpl  = file_get_contents($templateFile);
 
         $tpl->escape_raw_block();
         $tpl->remove_comment();
@@ -373,24 +411,40 @@ class Template
         {
 			$templateFile = str_replace('/', SEP, $templateFile);
 			
-			$tpl   = PLUG_PATH . SEP . $templateFile;
-			$cache = PRIV_PATH . SEP . 'cache' . SEP . $templateFile;
+			$tpl   = $this->_tplPath . $templateFile;
+			$cache = $this->_tplCache . $templateFile;
 
 			if (!file_exists($tpl)) throw new Error(16, array($tpl));
 
-			// if cache is available and valid
+			// if cache is not available, cached file is not created, cache has expired
 			if (!$this->_cacheRawTemplate || !file_exists($cache) || filemtime($cache) < filemtime($tpl))
 			{
+				// create the raw content
 				$raw = $this->_compile($tpl);
+				
+				// cache is disabled; get a temp file; erase the cache filename
+				if (!$this->_cacheRawTemplate)
+				{
+					$cache = tempnam(realpath(sys_get_temp_dir()), 'pp_tpl_cache_');
+				}
+				// else check if cache dir exists
+				else
+				{
+					$path = dirname($cache);
+					if (!file_exists($path)) mkdir($path, 0775, true);
+				}
 
-				$path = dirname($cache);
-
-				if (!file_exists($path)) mkdir($path, 0775, true);
-
+				// store the raw content in the file (temp or cache)
 				file_put_contents($cache, $raw);
+				
+				// load the file
+				include $cache;
+				
+				// if cache is disabled we clean up
+				if (!$this->_cacheRawTemplate) unlink($cache);
 			}
-
-			include $cache;			
+			// else load directly the cached file
+			else include $cache;				
         }
         catch(\Exception $e) { ob_end_clean(); throw $e; }
 
