@@ -92,9 +92,11 @@ class Plugin implements pixelpost\PluginInterface
 					new \RecursiveDirectoryIterator(ROOT_PATH . SEP . $photoDir), 
 					\RecursiveIteratorIterator::CHILD_FIRST) as $file)
 		{
-			$method = $file->isDir() ? "rmdir" : 'unlink';			
-			$medhod($file->getPathName());
+			$method = $file->isDir() ? 'rmdir' : 'unlink';
+			$method($file->getPathName());
 		}
+		
+		rmdir(ROOT_PATH . SEP . $photoDir);
 		
 		return true;
 	}
