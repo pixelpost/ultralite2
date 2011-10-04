@@ -73,25 +73,9 @@ class Plugin implements pixelpost\PluginInterface
 
 		// retrieve the requested admin page
 		$page = $urlParams[1];
-
-		// the data send with the event
-		$eventData = array('request' => $event->request);
-
-		// check page don't need auth
-		switch($page)
-		{
-			case 'login' : $auth = true;           break;
-			default      : $auth = self::isAuth(); break;
-		}
-
-		// a little check, redirect to index if user is auth
-		if ($auth && $page == 'login' && $page == 'auth') $page = 'index';
-		
-		// check if user is registred
-		$eventName = ($auth) ? 'admin.' . $page : 'admin.auth';
 		
 		// send the signal that an ADMIN method is requested
-		$reponseEvent = pixelpost\Event::signal($eventName, $eventData);			
+		$reponseEvent = pixelpost\Event::signal('admin.' . $eventName, $event);			
 		
 		// check if there is a response or send a 404 webpage
 		if (!$reponseEvent->is_processed())

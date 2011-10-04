@@ -13,7 +13,7 @@ class Page
 	{
 		require __DIR__ . SEP . 'page' . SEP . '404.php';
 	}
-	
+		
 	public static function page_api_test(pixelpost\Event $event)
 	{
 		require __DIR__ . SEP . 'page' . SEP . 'api_test.php';
