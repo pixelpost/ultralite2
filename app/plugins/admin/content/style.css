@@ -79,9 +79,37 @@ fieldset label {
 	color:black;
 	display:inline-block;
 	width:25%;
+	font-size:90%;
+	cursor:pointer;
 }
 
-fieldset input, fieldset textarea {
-	border:0;
+fieldset input, fieldset textarea, fieldset select {
+	background-color: white;
+	border:3px solid white;
 	width: 60%;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
 }
+
+fieldset button {
+	margin-left:20px;
+}
+
+button {
+	cursor:pointer;
+}
+
+.btn {
+	display:inline-block;
+	padding:5px 10px;
+	border:4px solid  #8CC8F0;
+	background-color: #8CC8F0;
+	color: white;
+	font-weight: bold;	
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+}
+
+a.btn, a.btn:link, a.btn:visited, a.btn:hover, a.btn:active { text-decoration: none; }

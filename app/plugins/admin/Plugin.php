@@ -47,18 +47,13 @@ class Plugin implements pixelpost\PluginInterface
 
 	public static function register()
 	{
-		pixelpost\Event::register('request.admin', '\\' . __CLASS__ . '::on_request');
-		pixelpost\Event::register('admin.version', '\\' . __CLASS__ . '::on_version');
-		pixelpost\Event::register('admin.index',   '\\' . __CLASS__ . '::on_page_index');
-		pixelpost\Event::register('admin.404',     '\\' . __CLASS__ . '::on_page_404');
-		pixelpost\Event::register('admin.api-test','\\' . __CLASS__ . '::on_api_test');
+		pixelpost\Event::register('request.admin',     '\\' . __CLASS__ . '::on_request');
+		pixelpost\Event::register('api.admin.version', '\\' . __CLASS__ . '::on_version');
+		pixelpost\Event::register('admin.index',       '\\' . __CLASS__ . '::on_page_index');
+		pixelpost\Event::register('admin.404',         '\\' . __CLASS__ . '::on_page_404');
+		pixelpost\Event::register('admin.api-test',    '\\' . __CLASS__ . '::on_api_test');
 	}
 	
-	public static function on_version(pixelpost\Event $event)
-	{
-		$event->response = array('version' => self::version());
-	}
-
 	/**
 	 * Treat a new request comming from event 'request.admin' and check the second
 	 * part of the requested URL to find what admin page is asked for.
@@ -82,9 +77,22 @@ class Plugin implements pixelpost\PluginInterface
 		// the data send with the event
 		$eventData = array('request' => $event->request);
 
-		// send the signal that an ADMIN method is requested
-		$reponseEvent = pixelpost\Event::signal('admin.' . $page, $eventData);
+		// check page don't need auth
+		switch($page)
+		{
+			case 'login' : $auth = true;           break;
+			default      : $auth = self::isAuth(); break;
+		}
 
+		// a little check, redirect to index if user is auth
+		if ($auth && $page == 'login' && $page == 'auth') $page = 'index';
+		
+		// check if user is registred
+		$eventName = ($auth) ? 'admin.' . $page : 'admin.auth';
+		
+		// send the signal that an ADMIN method is requested
+		$reponseEvent = pixelpost\Event::signal($eventName, $eventData);			
+		
 		// check if there is a response or send a 404 webpage
 		if (!$reponseEvent->is_processed())
 		{
@@ -95,20 +103,4 @@ class Plugin implements pixelpost\PluginInterface
 		// continue processing of request.admin for third party plugins
 		return true;
 	}
-
-	public static function on_page_index(pixelpost\Event $event)
-	{
-		include __DIR__ . SEP . 'page' . SEP . 'home.php';
-	}
-
-	public static function on_page_404(pixelpost\Event $event)
-	{
-		echo "<h1>Oops 404 error</h1>";
-	}
-
-	public static function on_api_test(pixelpost\Event $event)
-	{
-		include __DIR__ . SEP . 'page' . SEP . 'api_test.php';
-	}
-
 }
