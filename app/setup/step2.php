@@ -2,6 +2,8 @@
 
 require __DIR__ . SEP . 'Dependency.php';
 
+use pixelpost\plugins\auth\Model as Auth;
+
 try
 {	
 	$error = '';
@@ -84,6 +86,9 @@ try
 	
 	// retrieve the title
 	$conf->title = $post['title'];
+	
+	// retrieve the email
+	$conf->email = $post['email'];
 
 	// create an uniq id for this installation
 	$conf->uid = md5(uniqid() . microtime() . $request->get_request_url());
@@ -112,8 +117,15 @@ try
 			$e = pixelpost\Plugin::get_last_error();
 			throw new Exception("Error during plugin '$plugin' setup. error: $e.");
 		}
-	}		
-} 
+	}
+	
+	// add user / password (not use api because api require grant access)
+	$userId = Auth::user_add($post['username'], $post['password']);
+
+	// for our admin user, add all grant access to him
+	foreach(Auth::grant_list() as $grant) Auth::user_grant_link($userId, $grant['id']);
+	
+}
 catch(Exception $e)
 {	
 	$error = $e->getMessage() . ', on line: ' . $e->getLine() . ' : ' . $e->getFile();
@@ -126,42 +138,14 @@ catch(Exception $e)
 	if ($rollbackTo >= 1) rmdir(PRIV_PATH);
 }
 
-?>
-<!DOCTYPE html>
-<html>
-	<head>
-		<title>Pixelpost Setup</title>
-		<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
-	</head>
-	<body>
-		
-		<?php if ($error != '') : #------------------------------------------ ?>
+$template = ($error != '') ? 'step2-fail.tpl' : 'step2-success.tpl';
 
-		<h1>Oops !</h1>
-		<p>
-			<?php echo $error ?>
-		</p>
+$tpl = pixelpost\Template::create();
 
-        <form method="POST">
-		<p>
-		    <input type="hidden" name="title" value="<?php echo $_POST['title'] ?>" />
-		    <input type="hidden" name="timezone" value="<?php echo $_POST['timezone'] ?>" />
-			<button type="submit">TRY AGAIN</button>			
-		</p>
-		</form>
-		
-		<?php else :  #------------------------------------------------------ ?>
-		
-		<h1>Congratulation !</h1>
-		<p>
-			Pixelpost is correctly installed.
-		</p>
+$tpl->set_cache_raw_template(false)->set_template_path(__DIR__ . SEP . 'tpl');
 
-		<p>
-			<a href="<?php echo $conf->url . $conf->plugin_router->admin ?>/">FINISH</a>
-		</p>
-		
-		<?php endif; #------------------------------------------------------- ?>
-		
-	</body>
-</html>
+$tpl->error = $error;
+$tpl->data  = pixelpost\Filter::array_to_object($post);
+$tpl->home  = $conf->url . $conf->plugin_router->admin . '/';
+
+$tpl->publish($template);

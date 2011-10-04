@@ -6,7 +6,7 @@ namespace pixelpost;
 // Step 1. A little of PHP conf
 error_reporting(E_ALL | E_STRICT);
 
-ini_set('date.timezone',                 'GMT');
+ini_set('date.timezone',                 'UTC');
 ini_set('default_socket_timeout',        '10');
 ini_set('default_mimetype',              'text/html');
 ini_set('default_charset',               'UTF-8');

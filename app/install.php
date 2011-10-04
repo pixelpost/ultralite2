@@ -7,6 +7,7 @@ $step = 1;
 $minStep = 1;
 $maxStep = 2;
 $isConfFileExists = true;
+$phpTZ = ini_get('date.timezone');
 
 try 
 {

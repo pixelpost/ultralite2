@@ -33,64 +33,16 @@ else
 	}
 }
 
-?>
-<!DOCTYPE html>
-<html>
-	<head>
-		<title>Pixelpost Setup</title>
-		<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
-	</head>
-	<body>
-		<h1>Welcome !</h1>
-		<p>
-			Pixelpost will be installed in two minutes...
-		</p>
-		
-		<?php if (count($warnings) > 0) : #---------------------------------- ?>
+$template = (count($warnings) > 0) ? 'step1-fail.tpl' : 'step1-form.tpl';
 
-		<h2>Please take care about :</h2>
-		
-		<ul>
-			<?php
-			foreach($warnings as $message)
-			{
-				printf('<li>%s</li>', $message);
-			}
-			?>
-		</ul>
+$tpl = pixelpost\Template::create();
 
-		<p>
-			<a href="./install.php?step=1">VERIFY AGAIN</a>			
-		</p>
-		
-		<?php else :  #------------------------------------------------------ ?>
-		
-		<form method="POST" action="./install.php?step=2">
-			<fieldset>
-				<legend>Configuration</legend>
-				<ol>
-					<li>
-						<label for="title">Title:</label>
-						<input id="title" name="title" placeholder="My Photoblog" required />
-					</li>
-					<li>
-						<label for="timezone">Timezone:</label>
-						<select id="timezone" name="timezone" required>
-							<?php
-							foreach(DateTimeZone::listIdentifiers() as $tz)
-								printf('<option>%s</option>', $tz);
-							?>
-						<select>
-					</li>
-				</ol>
-			</fieldset>
-			<fieldset>
-				<button type="submit">CONTINUE</button>
-			</fieldset>
-		</form>
-		
-		<?php endif; #------------------------------------------------------- ?>
-		
-	</body>
-</html>
+$tpl->set_cache_raw_template(false)->set_template_path(__DIR__ . SEP . 'tpl');
+
+$tpl->warnings  = $warnings;
+$tpl->phpTZ     = $phpTZ; 		
+$tpl->timezones = DateTimeZone::listIdentifiers();
+
+$tpl->publish($template);
+
 	
