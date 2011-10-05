@@ -2,6 +2,8 @@
 
 namespace pixelpost\plugins\admin;
 
+use pixelpost;
+
 class Page
 {
 	public static function page_index(pixelpost\Event $event)

@@ -7,12 +7,6 @@ use pixelpost;
 /**
  * ADMIN routers for pixelpost admin urls.
  *
- * Tracks Event :
- * - 'request.admin'
- *
- * Sends Event :
- * - 'admin.*'
- *
  * @copyright  2011 Alban LEROUX <seza@paradoxal.org>
  * @license    http://creativecommons.org/licenses/by-sa/3.0/ Creative Commons
  * @version    0.0.1
@@ -47,11 +41,17 @@ class Plugin implements pixelpost\PluginInterface
 
 	public static function register()
 	{
-		pixelpost\Event::register('request.admin',     '\\' . __CLASS__ . '::on_request');
-		pixelpost\Event::register('api.admin.version', '\\' . __CLASS__ . '::on_version');
-		pixelpost\Event::register('admin.index',       '\\' . __CLASS__ . '::on_page_index');
-		pixelpost\Event::register('admin.404',         '\\' . __CLASS__ . '::on_page_404');
-		pixelpost\Event::register('admin.api-test',    '\\' . __CLASS__ . '::on_api_test');
+		$self = '\\' . __CLASS__;
+		$api  = '\\' . __NAMESPACE__ . '\\Api';
+		$page = '\\' . __NAMESPACE__ . '\\Page';
+		
+		pixelpost\Event::register('request.admin',     $self . '::admin_router');
+		
+		pixelpost\Event::register('api.admin.version', $api  . '::api_version');
+		
+		pixelpost\Event::register('admin.index',       $page . '::page_index');
+		pixelpost\Event::register('admin.404',         $page . '::page_404');
+		pixelpost\Event::register('admin.api-test',    $page . '::page_api_test');
 	}
 	
 	/**
@@ -66,7 +66,7 @@ class Plugin implements pixelpost\PluginInterface
 	 * @param  pixelpost\Event $event
 	 * @return bool
 	 */
-	public static function on_request(pixelpost\Event $event)
+	public static function admin_router(pixelpost\Event $event)
 	{
 		// retrieve the urls params and assume the two first exists
 		$urlParams = $event->request->get_params() + array('admin', 'index');
@@ -74,13 +74,16 @@ class Plugin implements pixelpost\PluginInterface
 		// retrieve the requested admin page
 		$page = $urlParams[1];
 		
+		// event data
+		$data = array('request' => $event->request);
+		
 		// send the signal that an ADMIN method is requested
-		$reponseEvent = pixelpost\Event::signal('admin.' . $eventName, $event);			
+		$reponseEvent = pixelpost\Event::signal('admin.' . $page, $data);
 		
 		// check if there is a response or send a 404 webpage
 		if (!$reponseEvent->is_processed())
 		{
-			pixelpost\Event::signal('admin.404');
+			pixelpost\Event::signal('admin.404', $data);
 			return false;
 		}
 

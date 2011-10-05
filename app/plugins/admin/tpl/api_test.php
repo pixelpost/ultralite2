@@ -33,7 +33,7 @@
 		</ol>
 	</fieldset>
 	<fieldset>
-		<button type="submit">Submit</button>
+		<button class="btn" type="submit">Submit</button>
 	</fieldset>
 </form>
 <h2>Response</h2>

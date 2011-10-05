@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>{% block Title %}{{ config().title }} admin: {% endblock %}</title>
+		<title>{% block Title %}{{ config().title }}{% endblock %}</title>
 		<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
 		<base href="{{ @ADMIN_URL }}" />
 		<link rel="stylesheet" media="screen" type="text/css" href="{{ @CONTENT_URL }}admin/content/style.css" />
