@@ -6,27 +6,6 @@ use pixelpost;
 
 /**
  * Auth management for pixelpost.
- *
- * Tracks Event :
- *
- * auth.version
- * auth.request
- * auth.token
- * auth.refresh
- * auth.config.get
- * auth.config.set
- * auth.user.add
- * auth.user.set
- * auth.user.get
- * auth.user.del
- * auth.user.list
- * auth.user.grant.add
- * auth.user.grant.del
- * auth.grant.add
- * auth.grant.set
- * auth.grant.get
- * auth.grant.del
- * auth.grant.list
  * 
  * @copyright  2011 Alban LEROUX <seza@paradoxal.org>
  * @license    http://creativecommons.org/licenses/by-sa/3.0/ Creative Commons
@@ -36,30 +15,22 @@ use pixelpost;
 class Plugin implements pixelpost\PluginInterface
 {
 	/**
-	 * The token provided by the api call
-	 * 
-	 * @var string
+	 * @var string The token provided by the api call
 	 */
 	protected static $_token     = '';
 	
 	/**
-	 * The signature provided by the api call
-	 * 
-	 * @var string
+	 * @var string The signature provided by the api call
 	 */
 	protected static $_signature = '';
 	
 	/**
-	 * The authentified username if auth success
-	 * 
-	 * @var string
+	 * @var string The authentified username if auth success
 	 */
 	protected static $_username  = '';
 	
 	/**
-	 * The authentified userId if auth success
-	 * 
-	 * @var int
+	 * @var int The authentified userId if auth success
 	 */
 	protected static $_userId    = 0;
 	
@@ -70,7 +41,7 @@ class Plugin implements pixelpost\PluginInterface
 	
 	public static function depends()
 	{
-		return array('api' => '0.0.1');
+		return array('api' => '0.0.1', 'router' => '0.0.1');
 	}	
 
 	public static function install()
@@ -108,10 +79,14 @@ class Plugin implements pixelpost\PluginInterface
 
 	public static function register()
 	{
-		$selfClass = '\\' . __CLASS__;
-		$apiClass  = '\\' . __NAMESPACE__ . '\\Api';
-		
+		$selfClass   = '\\' . __CLASS__;
+		$apiClass    = '\\' . __NAMESPACE__ . '\\Api';
+		$adminClass  = '\\' . __NAMESPACE__ . '\\Admin';
+
+		// check api auth before api event method is called 
 		pixelpost\Event::register('request.api.decoded', $selfClass . '::request_api_decoded');
+		// check admin auth before admin event method is called 
+		pixelpost\Event::register('request.admin',       $selfClass . '::request_admin', 99);
 		
 		pixelpost\Event::register('api.auth.version',    $apiClass . '::auth_version');
 		pixelpost\Event::register('api.auth.request',    $apiClass . '::auth_request');
@@ -131,6 +106,9 @@ class Plugin implements pixelpost\PluginInterface
 		pixelpost\Event::register('api.auth.grant.list', $apiClass . '::auth_grant_list');
 		pixelpost\Event::register('api.auth.user.grant.add', $apiClass . '::auth_user_grant_add');
 		pixelpost\Event::register('api.auth.user.grant.del', $apiClass . '::auth_user_grant_del');
+		
+		pixelpost\Event::register('admin.template.footer', $adminClass . '::template_footer');		
+		pixelpost\Event::register('admin.template.css',    $adminClass . '::template_css');		
 	}
 	
 	/**
@@ -145,6 +123,57 @@ class Plugin implements pixelpost\PluginInterface
 		{
 			self::$_token     = $event->request->token;
 			self::$_signature = $event->request->signature;
+		}
+	}
+	
+	/**
+	 * Verify if a user is authentified for admin pages. if not print the login
+	 * pages and break the request.admin chain (cause the original admin page
+	 * called is not generated).
+	 * 
+	 * @param pixelpost\Event $event 
+	 * @return bool
+	 */
+	public static function request_admin(pixelpost\Event $event)
+	{
+		// retrieve the web admin page called
+		list(,$page) = $event->request->get_params() + array('admin', 'index');
+		
+		// skip page don't need authentification to be checked
+		switch($page)
+		{
+		case '404':
+			return true;
+		case 'auth-login': 
+			WebAuth::login($event->request); 
+			return false;
+		case 'auth-forget':
+			WebAuth::forget($event->request); 
+			return false;
+		case 'auth-reset':
+			WebAuth::reset($event->request); 
+			return false;
+		case 'auth-disconnect':
+			WebAuth::disconnect($event->request); 
+			return false;
+		default:
+			// check if user is authentificated
+			if (WebAuth::check($event->request->get_host(), $id, $name))
+			{
+				// register the identification (permit to internal api call to be
+				// authentified too).
+				self::$_userId   = $id;
+				self::$_username = $name;
+				// call admin page
+				return true;
+			}
+			else
+			{
+				// publish authentification form
+				WebAuth::auth();
+				// stop signal request.admin chain (admin plugin is not called).
+				return false;
+			}
 		}
 	}
 
@@ -176,7 +205,7 @@ class Plugin implements pixelpost\PluginInterface
 	public static function is_auth()
 	{
 		// check if user is allready authentified
-		if (self::$_userId != '')    return true;
+		if (self::$_userId != 0)    return true;
 		
 		// check if we have authentification data
 		if (self::$_token == '')     return false;

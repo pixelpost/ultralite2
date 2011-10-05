@@ -199,7 +199,7 @@ class Model
 	 * Retrieve a user data by its id.
 	 * 
 	 * @param  string $userId The user id
-	 * @return array          Data in a array with key: 'id', 'pass'
+	 * @return array          Data in a array with key: 'name', 'pass'
 	 */
 	public static function user_get_by_id($userId)
 	{

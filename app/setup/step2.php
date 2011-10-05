@@ -1,8 +1,8 @@
 <?php
 
-require __DIR__ . SEP . 'Dependency.php';
+use pixelpost\plugins\auth;
 
-use pixelpost\plugins\auth\Model as Auth;
+require __DIR__ . SEP . 'Dependency.php';
 
 try
 {	
@@ -71,12 +71,12 @@ try
 	$conf = pixelpost\Config::load(PRIV_PATH . SEP . 'config.json');
 
 	// retreive the userdir
-	$path = explode('/', $request->get_path()); 
+	$userdir = $request->get_params(); 
 
-	array_pop($path); // remove install.php
-	array_pop($path); // remove app
+	array_pop($userdir); // remove install.php
+	array_pop($userdir); // remove app
 
-	$conf->userdir = implode('/', $path);
+	$conf->userdir = implode('/', $userdir);
 
 	// retreive the website url
 	$conf->url = $request->set_userdir($conf->userdir)->get_base_url();
@@ -119,17 +119,27 @@ try
 		}
 	}
 	
+	$rollbackTo = 7;
+	
 	// add user / password (not use api because api require grant access)
-	$userId = Auth::user_add($post['username'], $post['password']);
+	$userName = $post['username'];
+	$userPass = $post['password'];
+	$userId   = auth\Model::user_add($userName, $userPass);
 
 	// for our admin user, add all grant access to him
-	foreach(Auth::grant_list() as $grant) Auth::user_grant_link($userId, $grant['id']);
+	foreach(auth\Model::grant_list() as $grant) 
+	{
+		auth\Model::user_grant_link($userId, $grant['id']);
+	}
 	
+	// authentificate the user
+	auth\WebAuth::register($userName, $userPass, $userId, $request->get_host());
 }
 catch(Exception $e)
 {	
 	$error = $e->getMessage() . ', on line: ' . $e->getLine() . ' : ' . $e->getFile();
 	
+	if ($rollbackTo >= 7) pixelpost\plugins\photo\Plugin::uninstall();
 	if ($rollbackTo >= 6) unlink(PRIV_PATH . SEP . 'sqlite3.db');
 	if ($rollbackTo >= 5) unlink(ROOT_PATH . SEP . 'index.php');
 	if ($rollbackTo >= 4) unlink(PRIV_PATH . SEP . '.htaccess');
