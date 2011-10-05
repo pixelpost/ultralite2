@@ -17,7 +17,8 @@ if (trim($event->request->grant) == '') throw new Exception\FieldEmpty('grant');
 
 try
 {
-	list($userId, $password) = Model::user_get_by_name($event->request->user);
+	// create $user_id and $user_password
+	extract(Model::user_get_by_name($event->request->user), EXTR_PREFIX_ALL, 'user_');
 }
 catch(ModelExceptionNoResult $e)
 {
@@ -33,6 +34,6 @@ catch(ModelExceptionNoResult $e)
 	throw new Exception\FieldNonExists('grant');
 }
 
-Model::user_grant_del($userId, $grantId);
+Model::user_grant_del($user_id, $grantId);
 
 $event->response = array('message' => 'user have no longer the grant access');

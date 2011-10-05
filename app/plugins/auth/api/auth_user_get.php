@@ -15,7 +15,8 @@ if (trim($event->request->user) == '') throw new Exception\FieldEmpty('user');
 
 try
 {
-	list($id, $password) = Model::user_get_by_name($event->request->user);
+	// create $id and $password
+	extract(Model::user_get_by_name($event->request->user));
 }
 catch(ModelExceptionNoResult $e)
 {

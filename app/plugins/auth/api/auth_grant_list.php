@@ -12,14 +12,14 @@ if (isset($event->request->user))
 	// return grants of a user
 	try
 	{
-		list($userId, $password) = Model::user_get($event->request->user);
+		extract(Model::user_get_by_name($event->request->user));
 	}
 	catch(ModelExceptionNoResult $e)
 	{
 		throw new Exception\FieldNonExists('user');
 	}
 	
-	$event->response = array('grant' => Model::user_grant_list_by_user($userId));
+	$event->response = array('grant' => Model::user_grant_list_by_user($id));
 }
 else
 {

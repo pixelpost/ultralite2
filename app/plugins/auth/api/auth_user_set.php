@@ -23,12 +23,13 @@ if (isset($event->request->password)) $password = $event->request->password;
 if ($username !== false && trim($username) == '') throw new Exception\FieldEmpty('name');
 if ($password !== false && trim($password) == '') throw new Exception\FieldEmpty('password');
 
-if ($username !== false && $username == $event->request->username) $username  = false;
+if ($username !== false && $username == $event->request->user) $username  = false;
 
 // check if username exists
 try
 {
-	list($userId, $userPassword) = Model::user_get_by_name($event->request->user);
+	// create $user_id and $user_password
+	extract(Model::user_get_by_name($event->request->user), EXTR_PREFIX_ALL, 'user_');
 }
 catch(ModelExceptionNoResult $e) 
 {	
@@ -49,8 +50,8 @@ if ($username !== false)
 
 // update the user
 if ($username === false) $username = $event->request->user;
-if ($password === false) $password = $userPassword;
+if ($password === false) $password = $user_password;
 
-Model::user_update($userId, $username, $password);
+Model::user_update($user_id, $username, $password);
 
 $event->response = array('message' => 'user updated');
