@@ -31,6 +31,25 @@ else
 
 		$warnings[] = '`' . ROOT_PATH . SEP . $messageVeryLong;					
 	}
+	
+	// check if GD is installed in version 2
+	if (!defined('GD_MAJOR_VERSION'))
+	{
+		$warnings[] = 'GD 2 library is not installed.';
+	}
+
+	if (GD_MAJOR_VERSION < 2)
+	{
+		$warnings[] = 'GD library is too old, need at least version 2.0.0, '
+		            . 'your GD version is actually ' . GD_VERSION . '.';
+	}
+	
+	// check if sqlite3 is present (some distribution like debian
+	// provide sqlite3 support in a separated paquet.
+	if (!class_exists('SQLite3'))
+	{
+		$warnings[] = 'SQLite3 support is not installed.';		
+	}
 }
 
 $template = (count($warnings) > 0) ? 'step1-fail.tpl' : 'step1-form.tpl';
