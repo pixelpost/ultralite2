@@ -71,11 +71,14 @@ class Plugin implements pixelpost\PluginInterface
 		// retrieve the urls params and assume the two first exists
 		$urlParams = $event->request->get_params() + array('admin', 'index');
 
+		// remove 'admin' from the array
+		array_shift($urlParams);
+		
 		// retrieve the requested admin page
-		$page = $urlParams[1];
+		$page = array_shift($urlParams);
 		
 		// event data
-		$data = array('request' => $event->request);
+		$data = array('request' => $event->request, 'params' => $urlParams);
 		
 		// send the signal that an ADMIN method is requested
 		$reponseEvent = pixelpost\Event::signal('admin.' . $page, $data);
