@@ -365,6 +365,25 @@ class FilterTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
+	 * @covers pixelpost\Filter::object_to_array
+	 */
+	public function test_object_to_array_with_numeric_index()
+	{
+		$foo = (object) array('foo', 'bar', 'baz');
+		
+		$array = Filter::object_to_array($foo);
+		
+		$this->assertTrue(is_array($array));
+		$this->assertTrue(array_key_exists(0, $array));
+		$this->assertTrue(array_key_exists(1, $array));
+		$this->assertTrue(array_key_exists(2, $array));
+
+		$this->assertSame('foo', $array[0]);
+		$this->assertSame('bar', $array[1]);
+		$this->assertSame('baz', $array[2]);
+	}
+
+	/**
 	 * @covers pixelpost\Filter::str_to_date
 	 */
 	public function test_str_to_date()

@@ -377,7 +377,9 @@ class Filter
 	{
 		$func = '\\' . __CLASS__ . '::' . __FUNCTION__;
 
-		if (is_object($object)) $object = get_object_vars($object);
+		// use get_object_vars don't work correctly if object properties are 
+		// numbers.
+		if (is_object($object)) $object = (array) $object;
 
 		if (is_array($object)) return array_map($func, $object);
 
