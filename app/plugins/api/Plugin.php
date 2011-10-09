@@ -273,7 +273,7 @@ class Plugin implements pixelpost\PluginInterface
 	{
 		$method = 'api.' . $method;
 		
-		if (is_array($request)) $request = pixelpost\Filter::array_to_object($array);
+		if (is_array($request)) $request = pixelpost\Filter::array_to_object($request);
 		
 		try
 		{
