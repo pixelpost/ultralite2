@@ -269,7 +269,7 @@ class Plugin implements pixelpost\PluginInterface
 	 * @param  array  $request
 	 * @return array 
 	 */
-	public function call_api_method($method, $request)
+	public static function call_api_method($method, $request)
 	{
 		$method = 'api.' . $method;
 		
