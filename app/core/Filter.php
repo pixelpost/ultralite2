@@ -353,6 +353,21 @@ class Filter
 	}
 
 	/**
+	 * Convert multidimentionnal array to arrayObject
+	 * 
+	 * @param array $array
+	 * @return ArrayObject
+	 */
+	public static function array_to_arrayObject($array)
+	{
+		$func = '\\' . __CLASS__ . '::' . __FUNCTION__;
+		
+		if (is_array($array)) return new \ArrayObject(array_map($func, $array), \ArrayObject::ARRAY_AS_PROPS);
+		
+		return $array;
+	}
+
+	/**
 	 * Convert multidimentionnal array to object
 	 * 
 	 * @param array $array
