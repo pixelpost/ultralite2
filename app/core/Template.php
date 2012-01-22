@@ -108,9 +108,9 @@ class Template
 	 */
     public function assign($var, $value = null)
     {
-        if (is_string($var))     $this->$var = $value;
+        if (is_string($var))     $this->$var = Filter::array_to_arrayObject($value);
         elseif (!is_array($var)) throw Error::create(11);
-        else                     foreach ($var as $key => $val) $this->$key = $val;
+        else                     foreach ($var as $key => $val) $this->$key = Filter::array_to_arrayObject($val);
 		
         return $this;
     }
@@ -232,7 +232,7 @@ class Template
 	 * @param array $array
 	 * @return array 
 	 */
-    protected function filter_array_sort(array $array)
+    protected function _filter_array_sort(array $array)
     {
         asort($array);
         return $array;
