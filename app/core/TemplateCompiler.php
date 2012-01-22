@@ -628,8 +628,14 @@ class TemplateCompiler
 					case '#' : $var = '$' . substr($var, 1); break; // local
 					default  : $var = '$this->' . $var; break;      // template
 				}
-				
-				$var = str_replace('.', '->', $var);
+								
+				$addBraceToHyphensName = function($item)
+				{
+					return (strpos('-', $item) === false) ? $item : '{' . $item . '}';
+				};
+
+				$var = implode('->', array_map($addBraceToHyphensName, explode('.', $var)));
+										
 				break;
 		}
 				
@@ -773,68 +779,70 @@ class TemplateCompiler
 	 */
     public function replace_tag(&$data, $openTag, $closeTag, \Closure $todo, $includedFirst = false, $startAt = 0, $includeLvl = 0)
     {
-		// the len of the openTag, closeTag, data
-		$openLen  = mb_strlen($openTag, 'UTF-8');
-		$closeLen = mb_strlen($closeTag, 'UTF-8');
-		$dataLen  = mb_strlen($data, 'UTF-8');
-		
-		// Let's go we find the first open tag after $startAt position.
-        $start = mb_strpos($data, $openTag, $startAt, 'UTF-8');
+		// this is like a tail reccursion
+		while (true) :
+			
+			// the len of the openTag, closeTag, data
+			$openLen  = mb_strlen($openTag, 'UTF-8');
+			$closeLen = mb_strlen($closeTag, 'UTF-8');
+			$dataLen  = mb_strlen($data, 'UTF-8');
 
-		// No open tag we return were we are in the scan.
-        if ($start === false) return $startAt;
+			// Let's go we find the first open tag after $startAt position.
+			$start = mb_strpos($data, $openTag, $startAt, 'UTF-8');
 
-		// the content start after the start tag (we exclude it).
-		$startAt = $start + $openLen;
+			// No open tag we return were we are in the scan.
+			if ($start === false) return $startAt;
 
-		// now we find the close tag or eat all the 
-		// rest of data if there no close tag.
-        $stop = mb_strpos($data, $closeTag, $startAt, 'UTF-8') ?: $dataLen;
+			// the content start after the start tag (we exclude it).
+			$startAt = $start + $openLen;
 
-		// if we should take care of included tag
-        if ($includedFirst)
-        {
-			// we look for the next open tag
-            $nextStart = mb_strpos($data, $openTag, $startAt, 'UTF-8');
+			// now we find the close tag or eat all the 
+			// rest of data if there no close tag.
+			$stop = mb_strpos($data, $closeTag, $startAt, 'UTF-8') ?: $dataLen;
 
-			// if an other open tag exists and its position is before our close tag
-            if ($nextStart !== false && $nextStart < $stop)
-            {
-				// we recurse by starting after our open tag
-				// and get were the recursion ended in the data.
-                $startAt = $this->replace_tag($data, $openTag, $closeTag, $todo, $includedFirst, $startAt, ++$includeLvl);
+			// if we should take care of included tag
+			if ($includedFirst)
+			{
+				// we look for the next open tag
+				$nextStart = mb_strpos($data, $openTag, $startAt, 'UTF-8');
 
-                --$includeLvl;
-				
-				// and we redo the search of a close tag
-                $stop = mb_strpos($data, $closeTag, $startAt, 'UTF-8') ?: $dataLen;
-            }
-        }
+				// if an other open tag exists and its position is before our close tag
+				if ($nextStart !== false && $nextStart < $stop)
+				{
+					// we recurse by starting after our open tag
+					// and get were the recursion ended in the data.
+					$startAt = $this->replace_tag($data, $openTag, $closeTag, $todo, $includedFirst, $startAt, ++$includeLvl);
 
-		// where start the content to replace and it's len
-		$contentStart = $start + $openLen;
-		$contentLen   = $stop - $contentStart; 
-				
-		// we get the data to replace
-		$content = mb_substr($data, $contentStart, $contentLen, 'UTF-8');
+					--$includeLvl;
 
-		// retreive the replacement data
-		$content = $todo($content, $openTag, $closeTag);
+					// and we redo the search of a close tag
+					$stop = mb_strpos($data, $closeTag, $startAt, 'UTF-8') ?: $dataLen;
+				}
+			}
 
-		// and replace it into the string (we don't use substr_replace()
-		// because there is no mb_substr_replace() function).		
-		$data = mb_substr($data, 0, $start, 'UTF-8') 
-			  . $content 
-			  . mb_substr($data, $stop + $closeLen, $dataLen, 'UTF-8');
-		
-		// the new point to start the search
-		$startAt = $start + mb_strlen($content, 'UTF-8');
+			// where start the content to replace and it's len
+			$contentStart = $start + $openLen;
+			$contentLen   = $stop - $contentStart; 
 
-		// if we are not in recursion, we follow our research
-		if ($includeLvl == 0) 
-			$startAt = $this->replace_tag($data, $openTag, $closeTag, $todo, $includedFirst, $startAt, 0);
+			// we get the data to replace
+			$content = mb_substr($data, $contentStart, $contentLen, 'UTF-8');
+
+			// retreive the replacement data
+			$content = $todo($content, $openTag, $closeTag);
+
+			// and replace it into the string (we don't use substr_replace()
+			// because there is no mb_substr_replace() function).		
+			$data = mb_substr($data, 0, $start, 'UTF-8') 
+				  . $content 
+				  . mb_substr($data, $stop + $closeLen, $dataLen, 'UTF-8');
+
+			// the new point to start the search
+			$startAt = $start + mb_strlen($content, 'UTF-8');
+
+			// if we are not in recursion, we follow our research
+			if ($includeLvl != 0) return $startAt;
 		
 		// and we search again
-        return  $startAt;
+        endwhile;
     }
 }
