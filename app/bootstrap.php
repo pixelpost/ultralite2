@@ -64,17 +64,17 @@ spl_autoload_register(function($className)
 {
     // the main namespace, all other is ignored
     $nsPrefix = 'pixelpost\\';
-	
+
 	// we need to keep $className, so we work on $class
 	$class    = $className;
 
     // some security checking
     if (strpos($class, '/') !== false) return false;
     if (strpos($class, '.') !== false) return false;
-    
+
     // remove the beginning backslash
     if (substr($class, 0, 1) == '\\') $class = substr($class, 1);
-    
+
     // check if the class start with the main namespace
     if (substr($class, 0, strlen($nsPrefix)) != $nsPrefix) return false;
 
@@ -88,8 +88,8 @@ spl_autoload_register(function($className)
     $class = array_pop($items);
 
     // create the related path
-    $path = (count($items) == 0) ? 'Core' : implode('\\', $items);  
-    
+    $path = (count($items) == 0) ? 'Core' : implode('\\', $items);
+
     // create the absolute path with the complete file name
     $file = APP_PATH . SEP . str_replace('\\', SEP, $path) . SEP . $class . '.php';
 
@@ -98,7 +98,7 @@ spl_autoload_register(function($className)
 
     // include him...
     require_once $file;
-    
+
     // return if the class is loaded...
     return class_exists($className);
 });

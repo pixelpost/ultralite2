@@ -779,12 +779,14 @@ class TemplateCompiler
 	 */
     public function replace_tag(&$data, $openTag, $closeTag, \Closure $todo, $includedFirst = false, $startAt = 0, $includeLvl = 0)
     {
+		// the len of the openTag, closeTag
+		$openLen  = mb_strlen($openTag, 'UTF-8');
+		$closeLen = mb_strlen($closeTag, 'UTF-8');
+		
 		// this is like a tail reccursion
 		while (true) :
 			
-			// the len of the openTag, closeTag, data
-			$openLen  = mb_strlen($openTag, 'UTF-8');
-			$closeLen = mb_strlen($closeTag, 'UTF-8');
+			// the len of data
 			$dataLen  = mb_strlen($data, 'UTF-8');
 
 			// Let's go we find the first open tag after $startAt position.
@@ -807,7 +809,7 @@ class TemplateCompiler
 				$nextStart = mb_strpos($data, $openTag, $startAt, 'UTF-8');
 
 				// if an other open tag exists and its position is before our close tag
-				if ($nextStart !== false && $nextStart < $stop)
+				while ($nextStart !== false && $nextStart < $stop)
 				{
 					// we recurse by starting after our open tag
 					// and get were the recursion ended in the data.
@@ -815,6 +817,10 @@ class TemplateCompiler
 
 					--$includeLvl;
 
+					// calc the new data length
+					$dataLen = mb_strlen($data, 'UTF-8');
+					// calc the new start tag
+					$nextStart = mb_strpos($data, $openTag, $startAt, 'UTF-8');
 					// and we redo the search of a close tag
 					$stop = mb_strpos($data, $closeTag, $startAt, 'UTF-8') ?: $dataLen;
 				}

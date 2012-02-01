@@ -731,4 +731,35 @@ EOF;
 		
 		$this->assertSame($result, $test);
 	}
+
+	/**
+     * Fix bug with followed inner paren where
+	 * this statement for example "( (1) (2) )" is matched like :
+	 *
+     * match 0: "(1)"
+     * match 1: "( $0 (2)"
+     * match 2: "$1 )"
+	 *
+	 * The correct match is :
+     *
+     * match 0: "(1)"
+     * match 1: "(2)"
+     * match 2: "( $0 $1 )"
+	 *
+	 * @covers Hype\Lib\Template\Compiler::replace_tag
+	 */
+	public function test_replace_tag_included_tag_followed()
+	{
+		$test   = 'a(a(1)a(2)a)a';
+		$result = 'a([a([1])a([2])a])a';
+
+		$callback = function($data, $open, $close)
+		{
+			return sprintf('([%s])', $data);
+		};
+
+		$this->object->replace_tag($test, '(', ')', $callback, true);
+
+		$this->assertSame($result, $test);
+	}
 }
