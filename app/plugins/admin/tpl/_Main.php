@@ -25,7 +25,7 @@
 						foreach($event->response as $item)
 						{
 							echo $item;
-						}			
+						}
 					?>
 					<li><a href="api-test">api test</a></li>
 				</ul>
@@ -46,6 +46,7 @@
 			?>
 		</footer>
 		<script type="text/javascript" src="http://code.jquery.com/jquery-1.6.4.min.js"></script>
+		<script type="text/javascript" src="{{ @CONTENT_URL }}admin/content/lib.js"></script>
 		<?php
 			$event = \pixelpost\Event::signal('admin.template.js', array('response' => array()));
 			foreach($event->response as $item)

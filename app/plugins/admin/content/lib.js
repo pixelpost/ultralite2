@@ -1,6 +1,7 @@
+// functions
 function utf8_encode(argString) {
-    // Encodes an ISO-8859-1 string to UTF-8  
-    // 
+    // Encodes an ISO-8859-1 string to UTF-8
+    //
     // version: 1109.2015
     // discuss at: http://phpjs.org/functions/utf8_encode
     // +   original by: Webtoolkit.info (http://www.webtoolkit.info/)
@@ -17,17 +18,17 @@ function utf8_encode(argString) {
     if (argString === null || typeof argString === "undefined") {
         return "";
     }
- 
+
     var string = (argString + ''); // .replace(/\r\n/g, "\n").replace(/\r/g, "\n");
     var utftext = "",
         start, end, stringl = 0;
- 
+
     start = end = 0;
     stringl = string.length;
     for (var n = 0; n < stringl; n++) {
         var c1 = string.charCodeAt(n);
         var enc = null;
- 
+
         if (c1 < 128) {
             end++;
         } else if (c1 > 127 && c1 < 2048) {
@@ -43,17 +44,17 @@ function utf8_encode(argString) {
             start = end = n + 1;
         }
     }
- 
+
     if (end > start) {
         utftext += string.slice(start, stringl);
     }
- 
+
     return utftext;
 }
 
 function md5 (str) {
-    // Calculate the md5 hash of a string  
-    // 
+    // Calculate the md5 hash of a string
+    //
     // version: 1109.2015
     // discuss at: http://phpjs.org/functions/md5
     // +   original by: Webtoolkit.info (http://www.webtoolkit.info/)
@@ -66,11 +67,11 @@ function md5 (str) {
     // *     example 1: md5('Kevin van Zonneveld');
     // *     returns 1: '6e658d4bfcb59cc13f96c14450ac40b9'
     var xl;
- 
+
     var rotateLeft = function (lValue, iShiftBits) {
         return (lValue << iShiftBits) | (lValue >>> (32 - iShiftBits));
     };
- 
+
     var addUnsigned = function (lX, lY) {
         var lX4, lY4, lX8, lY8, lResult;
         lX8 = (lX & 0x80000000);
@@ -91,7 +92,7 @@ function md5 (str) {
             return (lResult ^ lX8 ^ lY8);
         }
     };
- 
+
     var _F = function (x, y, z) {
         return (x & y) | ((~x) & z);
     };
@@ -104,27 +105,27 @@ function md5 (str) {
     var _I = function (x, y, z) {
         return (y ^ (x | (~z)));
     };
- 
+
     var _FF = function (a, b, c, d, x, s, ac) {
         a = addUnsigned(a, addUnsigned(addUnsigned(_F(b, c, d), x), ac));
         return addUnsigned(rotateLeft(a, s), b);
     };
- 
+
     var _GG = function (a, b, c, d, x, s, ac) {
         a = addUnsigned(a, addUnsigned(addUnsigned(_G(b, c, d), x), ac));
         return addUnsigned(rotateLeft(a, s), b);
     };
- 
+
     var _HH = function (a, b, c, d, x, s, ac) {
         a = addUnsigned(a, addUnsigned(addUnsigned(_H(b, c, d), x), ac));
         return addUnsigned(rotateLeft(a, s), b);
     };
- 
+
     var _II = function (a, b, c, d, x, s, ac) {
         a = addUnsigned(a, addUnsigned(addUnsigned(_I(b, c, d), x), ac));
         return addUnsigned(rotateLeft(a, s), b);
     };
- 
+
     var convertToWordArray = function (str) {
         var lWordCount;
         var lMessageLength = str.length;
@@ -147,7 +148,7 @@ function md5 (str) {
         lWordArray[lNumberOfWords - 1] = lMessageLength >>> 29;
         return lWordArray;
     };
- 
+
     var wordToHex = function (lValue) {
         var wordToHexValue = "",
             wordToHexValue_temp = "",
@@ -159,7 +160,7 @@ function md5 (str) {
         }
         return wordToHexValue;
     };
- 
+
     var x = [],
         k, AA, BB, CC, DD, a, b, c, d, S11 = 7,
         S12 = 12,
@@ -177,14 +178,14 @@ function md5 (str) {
         S42 = 10,
         S43 = 15,
         S44 = 21;
- 
+
     str = this.utf8_encode(str);
     x = convertToWordArray(str);
     a = 0x67452301;
     b = 0xEFCDAB89;
     c = 0x98BADCFE;
     d = 0x10325476;
- 
+
     xl = x.length;
     for (k = 0; k < xl; k += 16) {
         AA = a;
@@ -260,8 +261,38 @@ function md5 (str) {
         c = addUnsigned(c, CC);
         d = addUnsigned(d, DD);
     }
- 
+
     var temp = wordToHex(a) + wordToHex(b) + wordToHex(c) + wordToHex(d);
- 
+
     return temp.toLowerCase();
 }
+
+// objects
+iterator = function (list, context) {
+    // vars
+    var self     = this;
+    var total    = list.length;
+    var current  = null;
+    var key      = 0;
+    // check context
+    if (!context) context = {};
+    // event handler
+    this.on_start    = context.on_start    ? context.on_start    : function() {};
+    this.on_end      = context.on_end      ? context.on_end      : function() {};
+    this.on_progress = context.on_progress ? context.on_progress : function() {};
+    // methods
+    this.list    = function() { return list; };
+    this.context = function() { return context; };
+    this.current = function() { return current; };
+    this.key     = function() { return key; };
+    this.next    = function() {
+        if (key >= total) return self.on_end(self);
+
+        ((current = list[key++]) ? self.on_progress : self.next)(self);
+    };
+    this.iterate = function() {
+        // contructors
+        self.on_start(self);
+        self.next();
+    };
+};

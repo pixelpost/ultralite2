@@ -264,7 +264,7 @@ class Filter
 	public static function validate_date($param, $format = '')
 	{
 		if ($format != '') return (bool) date_create_from_format ($format, $param);
-			
+
 		return !(strtotime($param) === false);
 	}
 
@@ -354,45 +354,45 @@ class Filter
 
 	/**
 	 * Convert multidimentionnal array to arrayObject
-	 * 
+	 *
 	 * @param array $array
 	 * @return ArrayObject
 	 */
 	public static function array_to_arrayObject($array)
 	{
 		$func = '\\' . __CLASS__ . '::' . __FUNCTION__;
-		
+
 		if (is_array($array)) return new \ArrayObject(array_map($func, $array), \ArrayObject::ARRAY_AS_PROPS);
-		
+
 		return $array;
 	}
 
 	/**
 	 * Convert multidimentionnal array to object
-	 * 
+	 *
 	 * @param array $array
-	 * @return stdClass 
+	 * @return stdClass
 	 */
 	public static function array_to_object($array)
 	{
 		$func = '\\' . __CLASS__ . '::' . __FUNCTION__;
-		
+
 		if (is_array($array)) return (object) array_map($func, $array);
-		
+
 		return $array;
 	}
-	
+
 	/**
 	 * Convert multidimantionnal object to array
-	 * 
+	 *
 	 * @param stdClass $object
-	 * @return array 
+	 * @return array
 	 */
 	public static function object_to_array($object)
 	{
 		$func = '\\' . __CLASS__ . '::' . __FUNCTION__;
 
-		// use get_object_vars don't work correctly if object properties are 
+		// use get_object_vars don't work correctly if object properties are
 		// numbers.
 		if (is_object($object)) $object = (array) $object;
 
@@ -400,29 +400,29 @@ class Filter
 
 		return $object;
 	}
-	
+
 	/**
 	 * Convert a string to a Datetime object
-	 * 
-	 * @param string $date 
+	 *
+	 * @param string $date
 	 */
 	public static function str_to_date(&$date)
 	{
 		$date = new \DateTime($date);
 	}
-	
+
 	/**
 	 * Compare two version number formater like A.B.C where:
 	 * A is the major version (BC break possible)
 	 * B is the minor version (Non BC beak)
 	 * C is the bug fixes release version
-	 * 
+	 *
 	 * Return true if $new is upper to $old
 	 * Return null if $new is equal to $old
 	 * Return false if $old is upper to $new
-	 * 
+	 *
 	 * @param type $old
-	 * @param type $new 
+	 * @param type $new
 	 * @return mixed
 	 */
 	public static function compare_version($old, $new)
@@ -432,10 +432,10 @@ class Filter
 
 		$old = intval(vsprintf("%02s%02s%02s", explode('.', $old)));
 		$new = intval(vsprintf("%02s%02s%02s", explode('.', $new)));
-		
+
 		if ($new > $old) return true;
 		if ($new == $old) return null;
-		
+
 		return false;
 	}
 
