@@ -7,7 +7,7 @@ if ($isConfFileExists)
 	$warnings[] = 'Found a config file, you should run update.php script';
 }
 else
-{		
+{
 	// check if root path is writable
 	if (is_writable(ROOT_PATH) == false)
 	{
@@ -17,7 +17,7 @@ else
 	// check if private folder already exists
 	if (file_exists(PRIV_PATH))
 	{
-		$warnings[] = '`' . PRIV_PATH . '` already exists (config file and database, will not be created).';		
+		$warnings[] = '`' . PRIV_PATH . '` already exists (config file and database, will not be created).';
 	}
 
 	// check if a .htaccess file allready exists
@@ -29,9 +29,9 @@ else
 						  . ' Take a look on `app/setup/htaccess_sample` '
 						  . ' file for manual install.';
 
-		$warnings[] = '`' . ROOT_PATH . SEP . $messageVeryLong;					
+		$warnings[] = '`' . ROOT_PATH . SEP . $messageVeryLong;
 	}
-	
+
 	// check if GD is installed in version 2
 	if (!defined('GD_MAJOR_VERSION'))
 	{
@@ -43,12 +43,12 @@ else
 		$warnings[] = 'GD library is too old, need at least version 2.0.0, '
 		            . 'your GD version is actually ' . GD_VERSION . '.';
 	}
-	
+
 	// check if sqlite3 is present (some distribution like debian
 	// provide sqlite3 support in a separated paquet.
 	if (!class_exists('SQLite3'))
 	{
-		$warnings[] = 'SQLite3 support is not installed.';		
+		$warnings[] = 'SQLite3 support is not installed.';
 	}
 }
 
@@ -59,9 +59,8 @@ $tpl = pixelpost\Template::create();
 $tpl->set_cache_raw_template(false)->set_template_path(__DIR__ . SEP . 'tpl');
 
 $tpl->warnings  = $warnings;
-$tpl->phpTZ     = $phpTZ; 		
+$tpl->phpTZ     = $phpTZ;
 $tpl->timezones = DateTimeZone::listIdentifiers();
 
 $tpl->publish($template);
 
-	

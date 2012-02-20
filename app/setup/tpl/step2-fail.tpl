@@ -13,7 +13,7 @@
 	<input type="hidden" name="username" value="{{ data.username }}" />
 	<input type="hidden" name="password" value="{{ data.password }}" />
 	<input type="hidden" name="email" value="{{ data.email }}" />
-	<button class="btn" type="submit">TRY AGAIN</button>			
+	<button class="btn" type="submit">TRY AGAIN</button>
 </p>
 </form>
 {% endblock %}

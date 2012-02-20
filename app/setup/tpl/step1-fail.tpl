@@ -12,6 +12,6 @@
 	{% endfor %}
 </ul>
 <p>
-	<a class="btn" href="install.php?step=1">VERIFY AGAIN</a>			
+	<a class="btn" href="install.php?step=1">VERIFY AGAIN</a>
 </p>
 {% endblock %}

@@ -45,10 +45,10 @@
 <script type="text/javascript">
 	// for security we non transmit the password in clear text.
 	$(document).ready(function() {
-		$('form').submit(function(event) { 
-			var p = $('#password'); 
-			p.val(md5(p.val())); 
-		}); 
+		$('form').submit(function(event) {
+			var p = $('#password');
+			p.val(md5(p.val()));
+		});
 	});
 </script>
 {% endblock %}

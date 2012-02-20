@@ -5,16 +5,16 @@ use pixelpost\plugins\auth;
 require __DIR__ . SEP . 'Dependency.php';
 
 try
-{	
+{
 	$error = '';
 	$rollbackTo = 0;
-	
+
 	// create the private directory
 	if (mkdir(PRIV_PATH, 0775) == false)
 	{
 		throw new Exception('Cannot create `' . PRIV_PATH . '`.');
 	}
-	
+
 	$rollbackTo = 1;
 
 	// copy the config file
@@ -27,7 +27,7 @@ try
 	}
 
 	$rollbackTo = 2;
-	
+
 	// copy the .htaccess file
 	$src = APP_PATH . SEP . 'setup' . SEP . 'htaccess_sample';
 	$dst = ROOT_PATH . SEP . '.htaccess';
@@ -38,7 +38,7 @@ try
 	}
 
 	$rollbackTo = 3;
-	
+
 	// copy the private/.htaccess file
 	$src = APP_PATH . SEP . 'setup' . SEP . 'htaccess_priv_sample';
 	$dst = PRIV_PATH . SEP . '.htaccess';
@@ -47,9 +47,9 @@ try
 	{
 		throw new Exception('Cannot copy `'. $src . '` to `' . $dst . '`.');
 	}
-	
+
 	$rollbackTo = 4;
-	
+
 	// copy the index.php file
 	$src = APP_PATH . SEP . 'setup' . SEP . 'index_sample.php';
 	$dst = ROOT_PATH . SEP . 'index.php';
@@ -60,18 +60,18 @@ try
 	}
 
 	$rollbackTo = 5;
-	
+
 	// Load the request
 	$request = pixelpost\Request::create()->auto();
-	
+
 	// retrieve the posted data
 	$post = $request->get_post();
-	
+
 	// Load the config file
 	$conf = pixelpost\Config::load(PRIV_PATH . SEP . 'config.json');
 
 	// retreive the userdir
-	$userdir = $request->get_params(); 
+	$userdir = $request->get_params();
 
 	array_pop($userdir); // remove install.php
 	array_pop($userdir); // remove app
@@ -80,13 +80,13 @@ try
 
 	// retreive the website url
 	$conf->url = $request->set_userdir($conf->userdir)->get_base_url();
-	
+
 	// retrieve the timezone
 	$conf->timezone = $post['timezone'];
-	
+
 	// retrieve the title
 	$conf->title = $post['title'];
-	
+
 	// retrieve the email
 	$conf->email = $post['email'];
 
@@ -95,21 +95,21 @@ try
 
 	// set the version number of the installation
 	$conf->version = VERSION;
-	
+
 	// save the configuration file
 	$conf->save();
 
 	// create the database
 	$db = pixelpost\Db::create();
-	
+
 	$rollbackTo = 6;
 
 	// detect all plugins already in the package (and store the list in conf)
 	pixelpost\Plugin::detect();
-	
+
 	// create the install plugin order
 	$manager = new DependencyManager(array_keys(pixelpost\Filter::object_to_array($conf->plugins)));
-		
+
 	foreach($manager->process() as $plugin)
 	{
 		if (pixelpost\Plugin::active($plugin) == false)
@@ -118,27 +118,27 @@ try
 			throw new Exception("Error during plugin '$plugin' setup. error: $e.");
 		}
 	}
-	
+
 	$rollbackTo = 7;
-	
+
 	// add user / password (not use api because api require grant access)
 	$userName = $post['username'];
 	$userPass = $post['password'];
 	$userId   = auth\Model::user_add($userName, $userPass);
 
 	// for our admin user, add all grant access to him
-	foreach(auth\Model::grant_list() as $grant) 
+	foreach(auth\Model::grant_list() as $grant)
 	{
 		auth\Model::user_grant_link($userId, $grant['id']);
 	}
-	
+
 	// authentificate the user
 	auth\WebAuth::register($userName, $userPass, $userId, $request->get_host());
 }
 catch(Exception $e)
-{	
+{
 	$error = $e->getMessage() . ', on line: ' . $e->getLine() . ' : ' . $e->getFile();
-	
+
 	if ($rollbackTo >= 7) pixelpost\plugins\photo\Plugin::uninstall();
 	if ($rollbackTo >= 6) unlink(PRIV_PATH . SEP . 'sqlite3.db');
 	if ($rollbackTo >= 5) unlink(ROOT_PATH . SEP . 'index.php');
