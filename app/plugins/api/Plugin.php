@@ -278,7 +278,10 @@ class Plugin implements pixelpost\PluginInterface
 		try
 		{
 			// make the call
-			$call = pixelpost\Event::signal($method, array('request' => $request));
+			$call = pixelpost\Event::signal($method, array(
+				'request'      => $request,
+				'http_request' => pixelpost\Request::create()->auto()
+			));
 
 			// check if the call is processed
 			if (!$call->is_processed())
