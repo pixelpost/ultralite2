@@ -34,30 +34,30 @@ class Plugin implements pixelpost\PluginInterface
 	public static function depends()
 	{
 		return array();
-	}	
-	
+	}
+
 	public static function install()
 	{
 		$configuration = '{
-			"api"   : "api", 
+			"api"   : "api",
 			"admin" : "admin"
 		}';
-		
+
 		$conf = pixelpost\Config::create();
 		$conf->plugin_router = json_decode($configuration);
 		$conf->save();
-		
+
 		return true;
 	}
 
 	public static function uninstall()
 	{
 		$conf = pixelpost\Config::create();
-		
+
 		unset($conf->plugin_router);
-		
+
 		$conf->save();
-		
+
 		return true;
 	}
 
@@ -69,10 +69,10 @@ class Plugin implements pixelpost\PluginInterface
 	public static function register()
 	{
 		$conf = pixelpost\Config::create();
-		
+
 		define('API_URL',   WEB_URL . $conf->plugin_router->api   . '/', true);
 		define('ADMIN_URL', WEB_URL . $conf->plugin_router->admin . '/', true);
-		
+
 		pixelpost\Event::register('router.version', '\\' . __CLASS__ . '::router_version');
 		pixelpost\Event::register('request.new',    '\\' . __CLASS__ . '::on_request');
 	}

@@ -24,11 +24,11 @@ class Plugin implements pixelpost\PluginInterface
 	{
 		return '0.0.1';
 	}
-	
+
 	public static function depends()
 	{
 		return array();
-	}	
+	}
 
 	public static function install()
 	{
@@ -55,7 +55,7 @@ class Plugin implements pixelpost\PluginInterface
 	{
 		$event->response = array('version' => self::version());
 	}
-	
+
 	public static function error_new(pixelpost\Event $event)
 	{
 		$error = $event->exception;
