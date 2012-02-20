@@ -18,11 +18,11 @@ class Plugin implements pixelpost\PluginInterface
 	{
 		return '0.0.1';
 	}
-	
+
 	public static function depends()
 	{
 		return array('router' => '0.0.1');
-	}	
+	}
 
 	public static function install()
 	{
@@ -44,16 +44,16 @@ class Plugin implements pixelpost\PluginInterface
 		$self = '\\' . __CLASS__;
 		$api  = '\\' . __NAMESPACE__ . '\\Api';
 		$page = '\\' . __NAMESPACE__ . '\\Page';
-		
+
 		pixelpost\Event::register('request.admin',     $self . '::admin_router');
-		
+
 		pixelpost\Event::register('api.admin.version', $api  . '::api_version');
-		
+
 		pixelpost\Event::register('admin.index',       $page . '::page_index');
 		pixelpost\Event::register('admin.404',         $page . '::page_404');
 		pixelpost\Event::register('admin.api-test',    $page . '::page_api_test');
 	}
-	
+
 	/**
 	 * Treat a new request comming from event 'request.admin' and check the second
 	 * part of the requested URL to find what admin page is asked for.
@@ -73,16 +73,16 @@ class Plugin implements pixelpost\PluginInterface
 
 		// remove 'admin' from the array
 		array_shift($urlParams);
-		
+
 		// retrieve the requested admin page
 		$page = array_shift($urlParams);
-		
+
 		// event data
 		$data = array('request' => $event->request, 'params' => $urlParams);
-		
+
 		// send the signal that an ADMIN method is requested
 		$reponseEvent = pixelpost\Event::signal('admin.' . $page, $data);
-		
+
 		// check if there is a response or send a 404 webpage
 		if (!$reponseEvent->is_processed())
 		{

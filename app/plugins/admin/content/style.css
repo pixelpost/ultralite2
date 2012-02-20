@@ -22,7 +22,7 @@ header a {
 }
 
 header a:hover {
-	border-bottom-color: grey;	
+	border-bottom-color: grey;
 }
 
 footer {
@@ -52,7 +52,7 @@ footer {
 }
 
 .widget:hover {
-	border-bottom-color: grey;	
+	border-bottom-color: grey;
 }
 
 .widget strong {
@@ -68,10 +68,10 @@ fieldset {
 
 textarea { vertical-align:top; }
 
-legend { 
+legend {
 	padding-top:30px;
-	margin-bottom: 15px; 
-	color:white; 
+	margin-bottom: 15px;
+	color:white;
 	font-weight: bold;
 }
 
@@ -115,7 +115,7 @@ button {
 	border:4px solid  #8CC8F0;
 	background-color: #8CC8F0;
 	color: white;
-	font-weight: bold;	
+	font-weight: bold;
 	-webkit-border-radius: 3px;
 	-moz-border-radius: 3px;
 	border-radius: 3px;

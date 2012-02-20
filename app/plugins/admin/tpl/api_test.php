@@ -20,7 +20,7 @@
 					<option value="3">GET return XML</option>
 					<option value="4">POST return JSON</option>
 					<option value="5">POST return XML</option>
-				</select> 
+				</select>
 			</li>
 			<li>
 				<label for="method">Method:</label>
@@ -41,8 +41,8 @@
 
 </div>
 {% endblock Content %}
-		
-		
+
+
 {% block Js %}
 <script type="text/javascript">
 	$(document).ready(function()
@@ -96,16 +96,16 @@
 				reqUrl  = reqUrl + 'get/' + method + '/xml/';
 				reqData = request;
 			}
-    			
+
 			$.ajax({
 			  'type'       : reqType,
 			  "url"        : reqUrl,
 			  "data"       : reqData,
 			  "dataType"   : "text",
 			  "processData": false,
-			  "success"    : function(response) 
-  			    { 
-					$('#response').text(response); 
+			  "success"    : function(response)
+  			    {
+					$('#response').text(response);
 			    }
 			});
 		});
