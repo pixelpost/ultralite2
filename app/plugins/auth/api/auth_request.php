@@ -18,17 +18,17 @@ catch(ModelExceptionNoResult $e)
 }
 
 // retrieve configuration
-$conf = pixelpost\Config::create();
+$lifetime = pixelpost\Config::create()->plugin_auth->lifetime;
 
 // create the challenge
 $auth = new Auth();
-$challenge = $auth->set_lifetime($conf->plugin_auth->lifetime)
+$challenge = $auth->set_lifetime($lifetime)
 				  ->set_domain($event->http_request->get_host())
 				  ->set_username($event->request->username)
 				  ->set_password_hash($user['pass'])
 				  ->get_challenge();
 
 // store it in database
-Model::challenge_add($challenge, $user['id'], $conf->plugin_auth->lifetime);
+Model::challenge_add($challenge, $user['id'], $lifetime);
 
 $event->response = array('challenge' => $challenge, 'lifetime' => $lifetime);
