@@ -22,8 +22,8 @@ try
 {
 	$grantId = Model::grant_get($event->request->grant);
 }
-catch(ModelExceptionNoResult $e) 
-{	
+catch(ModelExceptionNoResult $e)
+{
 	throw new Exception\FieldNonExists('grant');
 }
 

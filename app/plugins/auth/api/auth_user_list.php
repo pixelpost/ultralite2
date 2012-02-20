@@ -19,7 +19,7 @@ if (isset($event->request->grant))
 	{
 		throw new Exception\FieldNonExists('grant');
 	}
-	
+
 	$event->response = array('user' => Model::user_grant_list_by_grant($grantId));
 }
 else

@@ -6,7 +6,7 @@ use pixelpost;
 
 /**
  * Auth management for pixelpost.
- * 
+ *
  * @copyright  2011 Alban LEROUX <seza@paradoxal.org>
  * @license    http://creativecommons.org/licenses/by-sa/3.0/ Creative Commons
  * @version    0.0.1
@@ -18,57 +18,57 @@ class Plugin implements pixelpost\PluginInterface
 	 * @var string The token provided by the api call
 	 */
 	protected static $_token     = '';
-	
+
 	/**
 	 * @var string The signature provided by the api call
 	 */
 	protected static $_signature = '';
-	
+
 	/**
 	 * @var string The authentified username if auth success
 	 */
 	protected static $_username  = '';
-	
+
 	/**
 	 * @var int The authentified userId if auth success
 	 */
 	protected static $_userId    = 0;
-	
+
 	public static function version()
 	{
 		return '0.0.1';
 	}
-	
+
 	public static function depends()
 	{
 		return array('api' => '0.0.1', 'router' => '0.0.1');
-	}	
+	}
 
 	public static function install()
 	{
 		$configuration = '{ "lifetime" : 300 }';
-		
+
 		$conf = pixelpost\Config::create();
-		
+
 		$conf->plugin_auth = json_decode($configuration);
-		
+
 		$conf->save();
-		
+
 		Model::table_create();
-		
+
 		return true;
 	}
 
 	public static function uninstall()
 	{
 		$conf = pixelpost\Config::create();
-		
+
 		unset($conf->plugin_auth);
-		
+
 		$conf->save();
-		
+
 		Model::table_delete();
-		
+
 		return true;
 	}
 
@@ -83,11 +83,11 @@ class Plugin implements pixelpost\PluginInterface
 		$apiClass    = '\\' . __NAMESPACE__ . '\\Api';
 		$adminClass  = '\\' . __NAMESPACE__ . '\\Admin';
 
-		// check api auth before api event method is called 
+		// check api auth before api event method is called
 		pixelpost\Event::register('request.api.decoded', $selfClass . '::request_api_decoded');
-		// check admin auth before admin event method is called 
+		// check admin auth before admin event method is called
 		pixelpost\Event::register('request.admin',       $selfClass . '::request_admin', 99);
-		
+
 		pixelpost\Event::register('api.auth.version',    $apiClass . '::auth_version');
 		pixelpost\Event::register('api.auth.request',    $apiClass . '::auth_request');
 		pixelpost\Event::register('api.auth.token',      $apiClass . '::auth_token');
@@ -106,15 +106,15 @@ class Plugin implements pixelpost\PluginInterface
 		pixelpost\Event::register('api.auth.grant.list', $apiClass . '::auth_grant_list');
 		pixelpost\Event::register('api.auth.user.grant.add', $apiClass . '::auth_user_grant_add');
 		pixelpost\Event::register('api.auth.user.grant.del', $apiClass . '::auth_user_grant_del');
-		
-		pixelpost\Event::register('admin.template.footer', $adminClass . '::template_footer');		
-		pixelpost\Event::register('admin.template.css',    $adminClass . '::template_css');		
+
+		pixelpost\Event::register('admin.template.footer', $adminClass . '::template_footer');
+		pixelpost\Event::register('admin.template.css',    $adminClass . '::template_css');
 	}
-	
+
 	/**
 	 * Store token and signature data if they are present in a api request
-	 * 
-	 * @param pixelpost\Event $event 
+	 *
+	 * @param pixelpost\Event $event
 	 */
 	public static function request_api_decoded(pixelpost\Event $event)
 	{
@@ -125,36 +125,36 @@ class Plugin implements pixelpost\PluginInterface
 			self::$_signature = $event->request->signature;
 		}
 	}
-	
+
 	/**
 	 * Verify if a user is authentified for admin pages. if not print the login
 	 * pages and break the request.admin chain (cause the original admin page
 	 * called is not generated).
-	 * 
-	 * @param pixelpost\Event $event 
+	 *
+	 * @param pixelpost\Event $event
 	 * @return bool
 	 */
 	public static function request_admin(pixelpost\Event $event)
 	{
 		// retrieve the web admin page called
 		list(,$page) = $event->request->get_params() + array('admin', 'index');
-		
+
 		// skip page don't need authentification to be checked
 		switch($page)
 		{
 		case '404':
 			return true;
-		case 'auth-login': 
-			WebAuth::login($event->request); 
+		case 'auth-login':
+			WebAuth::login($event->request);
 			return false;
 		case 'auth-forget':
-			WebAuth::forget($event->request); 
+			WebAuth::forget($event->request);
 			return false;
 		case 'auth-reset':
-			WebAuth::reset($event->request); 
+			WebAuth::reset($event->request);
 			return false;
 		case 'auth-disconnect':
-			WebAuth::disconnect($event->request); 
+			WebAuth::disconnect($event->request);
 			return false;
 		default:
 			// check if user is authentificated
@@ -179,7 +179,7 @@ class Plugin implements pixelpost\PluginInterface
 
 	/**
 	 * Return the authentified username or an empty string
-	 * 
+	 *
 	 * @return string
 	 */
 	public static function get_username()
@@ -189,24 +189,24 @@ class Plugin implements pixelpost\PluginInterface
 
 	/**
 	 * Return the authentified userId or 0
-	 * 
+	 *
 	 * @return string
 	 */
 	public static function get_user_id()
 	{
 		return self::$_userId;
 	}
-	
+
 	/**
 	 * Return if a user is authentified
-	 * 
-	 * @return bool 
+	 *
+	 * @return bool
 	 */
 	public static function is_auth()
 	{
 		// check if user is allready authentified
 		if (self::$_userId != 0)    return true;
-		
+
 		// check if we have authentification data
 		if (self::$_token == '')     return false;
 		if (self::$_signature == '') return false;
@@ -220,10 +220,10 @@ class Plugin implements pixelpost\PluginInterface
 		{
 			throw new ApiException('bad_token', 'This token is invalid.');
 		}
-		
+
 		// retrieve user data
 		$user = Model::user_get_by_id($token['user_id']);
-		
+
 		// retrieve configuration
 		$conf = pixelpost\Config::create();
 
@@ -238,33 +238,33 @@ class Plugin implements pixelpost\PluginInterface
 
 		// check signature
 		if (self::$_signature != $signature) return false;
-		
+
 		// check if the token is perempted.
 		if (self::$_token != $auth->get_token())
 		{
 			throw new ApiException('old_token', 'This token have expired.');
 		}
-		
+
 		// store authentified username and id
 		self::$_username = $user['name'];
-		self::$_userId   = $token['user_id'];		
+		self::$_userId   = $token['user_id'];
 	}
-	
+
 	/**
 	 * Return if a user is granted to $grantRequested
 	 * Possible grants are : read | write | config | delete
-	 * 
-	 * @return bool 
+	 *
+	 * @return bool
 	 */
 	public static function is_granted($grantRequested)
 	{
 		// check the authentification
 		if (!self::is_auth()) return false;
-		
+
 		// retrieve all user's grant
 		try
 		{
-			$grants = Model::user_grant_list_by_user(self::$_userId);		
+			$grants = Model::user_grant_list_by_user(self::$_userId);
 		}
 		catch(ModelExceptionNoResult $e)
 		{
@@ -273,12 +273,12 @@ class Plugin implements pixelpost\PluginInterface
 
 		// check if the user is granted to $grantRequested
 		$granted = false;
-		
+
 		foreach($grants as $grant)
 		{
 			if ($grant['name'] == $grantRequested) return true;
 		}
-		
+
 		return false;
 	}
 }

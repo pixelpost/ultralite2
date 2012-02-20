@@ -12,7 +12,7 @@ class Admin
 				->assign('user', Plugin::get_username())
 				->render('auth/tpl/admin-footer.php');
 	}
-	
+
 	public static function template_css(pixelpost\Event $event)
 	{
 		$event->response[] = pixelpost\Template::create()

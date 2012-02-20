@@ -15,10 +15,10 @@ use pixelpost;
 class WebAuth
 {
 	/**
-	 * Return the user name stored in cookie if exists else return an empty 
+	 * Return the user name stored in cookie if exists else return an empty
 	 * string
-	 * 
-	 * @return string 
+	 *
+	 * @return string
 	 */
 	protected static function _get_user()
 	{
@@ -28,32 +28,32 @@ class WebAuth
 	}
 
 	/**
-	 * Return the user key stored in cookie if exists else return an empty 
+	 * Return the user key stored in cookie if exists else return an empty
 	 * string
-	 * 
-	 * @return string 
-	 */	
+	 *
+	 * @return string
+	 */
 	protected static function _get_key()
 	{
 		if (!isset($_COOKIE['PPK'])) return '';
 		if (false === $key = base64_decode($_COOKIE['PPK'])) return '';
 		return $key;
 	}
-	
+
 	/**
 	 * Generate a new challenge
-	 * 
+	 *
 	 * @return string
 	 */
 	protected static function _gen_challenge()
 	{
 		return str_shuffle((md5(strrev(microtime()) . uniqid() . rand(1, 3000))));
 	}
-	
+
 	/**
 	 * Check if a user name exists in database, set argument $id, $pass and
 	 * return true if exists, else return false
-	 * 
+	 *
 	 * @param  string $user
 	 * @param  int    $id
 	 * @param  string $pass
@@ -64,64 +64,64 @@ class WebAuth
 		try
 		{
 			extract(Model::user_get_by_name($user));
-		}	
+		}
 		catch (ModelExceptionNoResult $e)
 		{
 			return false;
 		}
-		
+
 		return true;
 	}
-	
+
 	/**
 	 * Check if a user id exists in database, set argument $name, $pass and
 	 * return true if exists, else return false
-	 * 
+	 *
 	 * @param  int    $id
 	 * @param  string $name
 	 * @param  string $pass
-	 * @return bool 
+	 * @return bool
 	 */
 	protected static function _check_userid($id, &$name, &$pass)
 	{
 		try
 		{
 			extract(Model::user_get_by_id($id));
-		}	
+		}
 		catch (ModelExceptionNoResult $e)
 		{
 			return false;
 		}
-		
+
 		return true;
 	}
 
 	/**
 	 * Return a Auth object with username, password_hash, domain allready set.
-	 *  
+	 *
 	 * @param  string $user
 	 * @param  string $pass
 	 * @param  string $domain
-	 * @return Auth 
+	 * @return Auth
 	 */
 	protected static function _get_auth($user, $pass, $domain)
 	{
 		$auth = new Auth();
 		$auth->set_username($user)
 			 ->set_password_hash($pass)
-			 ->set_domain($domain);	
-		
+			 ->set_domain($domain);
+
 		return $auth;
 	}
-	
+
 	/**
-	 * Generate an authentification key 
-	 * 
+	 * Generate an authentification key
+	 *
 	 * @param  int    $id
 	 * @param  string $user
 	 * @param  string $pass
 	 * @param  string $domain
-	 * @return string 
+	 * @return string
 	 */
 	protected static function _gen_auth_key($id, $user, $pass, $domain)
 	{
@@ -129,27 +129,27 @@ class WebAuth
 		$secret   = self::_get_auth($user, $pass, $domain)->get_secret();
 		$lifetime = 3600 * 4; // 4 hours validity
 		$nonce    = ceil(time() / $lifetime) * $lifetime;
-		
+
 		return md5($secret . $id . $user . $pass . $nonce);
 	}
-	
+
 	/**
-	 * Generate a reset key 
-	 * 
+	 * Generate a reset key
+	 *
 	 * @param  int    $id
 	 * @param  string $user
 	 * @param  string $pass
-	 * @return string 
+	 * @return string
 	 */
 	protected static function _gen_reset_key($id, $user, $pass)
 	{
 		// get Auth class
 		$lifetime = 3600 * 48; // 2 days validity
 		$nonce    = ceil(time() / $lifetime) * $lifetime;
-		
+
 		return strrev(md5('reset' . $id . $user . $pass . $nonce));
 	}
-	
+
 	/**
 	 * Publish the authentification form
 	 */
@@ -160,39 +160,39 @@ class WebAuth
 			->assign('priv', self::_gen_challenge())
 			->publish('auth/tpl/auth.php');
 	}
-	
+
 	/**
 	 * Check if a user is authentified, if true, feel $id, $user and return true
 	 * else return false
-	 * 
+	 *
 	 * @param  string $domain
 	 * @param  int $id
 	 * @param  string $user
-	 * @return bool 
+	 * @return bool
 	 */
 	public static function check($domain, &$id, &$user)
 	{
 		// retrieve cookie data (see admin login page how the auth is generated)
 		if ('' === $user = self::_get_user()) return false;
 		if ('' === $key  = self::_get_key())  return false;
-		
+
 		// check if user exists (and get it's password)
 		if (!self::_check_username($user, $id, $pass)) return false;
 
 		// check if key is valid
 		if ($key != self::_gen_auth_key($id, $user, $pass, $domain)) return false;
-		
+
 		return true;
 	}
 
 	/**
 	 * Register a user, return true if the user is well registred else false
-	 * 
+	 *
 	 * @param  string $user
 	 * @param  string $pass
 	 * @param  int    $id
 	 * @param  string $domain
-	 * @return true 
+	 * @return true
 	 */
 	public static function register($user, $pass, $id, $domain)
 	{
@@ -206,26 +206,26 @@ class WebAuth
 		$user   = base64_encode($user);
 
 		if (headers_sent()) return false;
-		
+
 		if ($domain == 'localhost') $domain = null;
-			
-		setcookie('PPU', $user, $expire, $path, $domain, false, true);	
+
+		setcookie('PPU', $user, $expire, $path, $domain, false, true);
 		setcookie('PPK', $key,  0,       $path, $domain, false, true);
 		return true;
 	}
-	
+
 	/**
-	 * Receive data from authentification form (see auth() method). 
-	 * Verify if the couple user / pass is valid or not. 
-	 * 
+	 * Receive data from authentification form (see auth() method).
+	 * Verify if the couple user / pass is valid or not.
+	 *
 	 * If user is valid, he is registred (see: register() method).
-	 * 
-	 * This method return JSON data. 
+	 *
+	 * This method return JSON data.
 	 * See it's usage in authentification form in javascript code.
-	 * 
-	 * @param pixelpost\Request $request 
+	 *
+	 * @param pixelpost\Request $request
 	 */
-	public static function login(pixelpost\Request $request) 
+	public static function login(pixelpost\Request $request)
 	{
 		try
 		{
@@ -266,28 +266,28 @@ class WebAuth
 
 			if (!self::register($user, $pass, $id, $request->get_host()))
 			{
-				throw new \Exception('auth invalid');				
+				throw new \Exception('auth invalid');
 			}
-			
-			echo json_encode(array('status' => 'valid', 'message' => 'auth valid'));	
+
+			echo json_encode(array('status' => 'valid', 'message' => 'auth valid'));
 		}
 		catch(\Exception $e)
 		{
 			echo json_encode(array('status' => 'error', 'message' => $e->getMessage()));
-		}		
+		}
 	}
-	
+
 	/**
-	 * Receive data from authentification form (see auth() method). 
-	 * Verify if the user exists or not. 
-	 * 
-	 * If user exists, send an email to the admin specified a request for 
+	 * Receive data from authentification form (see auth() method).
+	 * Verify if the user exists or not.
+	 *
+	 * If user exists, send an email to the admin specified a request for
 	 * password reset with a link to do it.
-	 * 
-	 * This method return JSON data. 
+	 *
+	 * This method return JSON data.
 	 * See it's usage in authentification form in javascript code.
-	 * 
-	 * @param pixelpost\Request $request 
+	 *
+	 * @param pixelpost\Request $request
 	 */
 	public static function forget(pixelpost\Request $request)
 	{
@@ -313,7 +313,7 @@ class WebAuth
 			{
 				throw new \Exception('an email to the admin is sent');
 			}
-			
+
 			// send an email to the admin with a reset link
 			$email = pixelpost\Config::create()->email;
 
@@ -321,27 +321,27 @@ class WebAuth
 				->assign('user', $user)
 				->assign('key', self::_gen_reset_key($id, $user, $pass) . $id)
 				->render('auth/tpl/forget.php');
-			
+
 			mail($email, 'Pixelpost reset password request', $content);
-			
+
 			throw new \Exception('an email to the admin is sent');
 		}
 		catch(\Exception $e)
 		{
-			echo json_encode(array('message' => $e->getMessage()));	
-		}		
+			echo json_encode(array('message' => $e->getMessage()));
+		}
 	}
-	
+
 	/**
 	 * Publish a reset password form if the link is valid unless redirect to
 	 * the admin 404 page.
-	 * 
-	 * If the form is filled, return json data to specify if the password is 
-	 * well reset or not. When the password is reset, the user is registred 
+	 *
+	 * If the form is filled, return json data to specify if the password is
+	 * well reset or not. When the password is reset, the user is registred
 	 * (see register() method) and redirected to the admin home page.
-	 * 
+	 *
 	 * @param pixelpost\Request $request
-	 * @return type 
+	 * @return type
 	 */
 	public static function reset(pixelpost\Request $request)
 	{
@@ -349,16 +349,16 @@ class WebAuth
 		{
 			// get url parameters
 			$params = $request->get_params();
-			
+
 			array_shift($params);  // skip admin fragment
 			array_shift($params);  // skip reset fragment
 
 			// get key url parameters
-			$key = array_shift($params); 
+			$key = array_shift($params);
 
 			// if we have not key
 			if ($key === false || strlen($key) < 33) throw new \Exception();
-			
+
 			// get the user id from the key
 			$id  = intval(substr($key, 32));
 			$key = substr($key, 0, 32);
@@ -390,42 +390,42 @@ class WebAuth
 
 					// check if it is not empty
 					if ($pass == '') throw new \Exception('password is empty');
-					
+
 					// change the password in database
 					Model::user_update($id, $user, $pass);
-					
+
 					self::register($user, $pass, $id, $request->get_host());
 				}
-								
-				echo json_encode(array('status' => 'valid', 'message' => 'password is reset'));					
+
+				echo json_encode(array('status' => 'valid', 'message' => 'password is reset'));
 			}
 			catch(\Exception $e)
 			{
-				echo json_encode(array('status' => 'error', 'message' => $e->getMessage()));					
-			}			
+				echo json_encode(array('status' => 'error', 'message' => $e->getMessage()));
+			}
 		}
 		catch(\Exception $e)
 		{
 			header('Location: ' . ADMIN_URL . '404', 301);
-			exit();									
+			exit();
 		}
 	}
-	
+
 	/**
 	 * Disconnect a user and redirect him to the admin home page.
-	 * 
-	 * @param pixelpost\Request $request 
+	 *
+	 * @param pixelpost\Request $request
 	 */
 	public static function disconnect(pixelpost\Request $request)
 	{
 		$conf   = pixelpost\Config::create();
 		$path   = '/' . $conf->userdir . '/' . $conf->plugin_router->admin . '/';
-		$expire = time() - (365 * 24 * 3600);		
+		$expire = time() - (365 * 24 * 3600);
 		$domain = $request->get_host();
-		
+
 		if ($domain == 'localhost') $domain = null;
-		
+
 		setcookie('PPK', null, 0, $path, $domain, true);
-		header('Location: ' . ADMIN_URL, 302);		
+		header('Location: ' . ADMIN_URL, 302);
 	}
 }

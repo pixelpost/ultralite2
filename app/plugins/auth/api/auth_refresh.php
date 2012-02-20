@@ -35,4 +35,4 @@ $signature = $auth->get_signature();
 // all is good, we store the token
 Model::token_add($token, $event->request->challenge, $challenge['user_id']);
 
-$event->response = array('token' => $token, 'signature' => $signature);		
+$event->response = array('token' => $token, 'signature' => $signature);

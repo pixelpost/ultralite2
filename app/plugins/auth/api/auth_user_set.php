@@ -31,8 +31,8 @@ try
 	// create $user_id and $user_password
 	extract(Model::user_get_by_name($event->request->user), EXTR_PREFIX_ALL, 'user_');
 }
-catch(ModelExceptionNoResult $e) 
-{	
+catch(ModelExceptionNoResult $e)
+{
 	throw new Exception\FieldNonExists('user');
 }
 

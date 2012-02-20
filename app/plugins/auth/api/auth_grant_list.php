@@ -18,7 +18,7 @@ if (isset($event->request->user))
 	{
 		throw new Exception\FieldNonExists('user');
 	}
-	
+
 	$event->response = array('grant' => Model::user_grant_list_by_user($id));
 }
 else

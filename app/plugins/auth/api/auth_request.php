@@ -10,7 +10,7 @@ if (!isset($event->request->username)) throw new Exception\FieldRequired('auth.r
 // check the user in database
 try
 {
-	$user = Model::user_get_by_name($event->request->username);			
+	$user = Model::user_get_by_name($event->request->username);
 }
 catch(ModelExceptionNoResult $e)
 {
@@ -31,4 +31,4 @@ $challenge = $auth->set_lifetime($conf->plugin_auth->lifetime)
 // store it in database
 Model::challenge_add($challenge, $user['id'], $conf->plugin_auth->lifetime);
 
-$event->response = array('challenge' => $challenge, 'lifetime' => $lifetime);		
+$event->response = array('challenge' => $challenge, 'lifetime' => $lifetime);

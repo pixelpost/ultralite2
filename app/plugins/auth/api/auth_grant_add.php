@@ -14,7 +14,7 @@ if (trim($event->request->name) == '') throw new Exception\FieldEmpty('name');
 try
 {
 	Model::grant_get($event->request->username);
-	
+
 	throw new Exception\FieldNotValid('name', 'grant already exists');
 }
 catch(ModelExceptionNoResult $e) {}

@@ -27,7 +27,7 @@ $now = new \DateTime();
 if ($now > $challenge['expire'])
 {
 	Model::challenge_del($challenge['id']);
-	
+
 	throw new Exception\FieldNotValid('challenge');
 }
 
@@ -53,4 +53,4 @@ if ($event->request->signature != $auth->get_signature())
 // all is good, we store the token
 Model::token_add($token, $event->request->challenge, $challenge['user_id']);
 
-$event->response = array('token' => $token);				
+$event->response = array('token' => $token);

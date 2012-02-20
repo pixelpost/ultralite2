@@ -18,7 +18,7 @@ if (trim($event->request->password) == '') throw new Exception\FieldEmpty('passw
 try
 {
 	Model::user_get_by_name($event->request->user);
-	
+
 	throw new Exception\FieldNotValid('user', 'user already exists');
 }
 catch(ModelExceptionNoResult $e) {}
