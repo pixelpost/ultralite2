@@ -438,5 +438,25 @@ class Filter
 		
 		return false;
 	}
+
+	/**
+	* Return shortland size value (e.g 8M, 512K) in bytes.
+	*
+	* @param string $size
+	* @return int
+	*/
+	public static function shortland_size_to_bytes($size)
+	{
+		$size = trim($size);
+
+		switch (strtolower($size[strlen($size) - 1]))
+		{
+			case 'g': $size *= 1024;
+			case 'm': $size *= 1024;
+			case 'k': $size *= 1024;
+		}
+
+		return $size;
+	}
 }
 
