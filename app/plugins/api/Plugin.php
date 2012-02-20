@@ -26,11 +26,11 @@ class Plugin implements pixelpost\PluginInterface
 	{
 		return '0.0.1';
 	}
-	
+
 	public static function depends()
 	{
 		return array('router' => '0.0.1');
-	}	
+	}
 
 	public static function install()
 	{
@@ -49,10 +49,10 @@ class Plugin implements pixelpost\PluginInterface
 
 	public static function register()
 	{
-		pixelpost\Event::register('request.api', '\\' . __CLASS__ . '::on_api_request');		
-		pixelpost\Event::register('api.version', '\\' . __CLASS__ . '::api_version');		
+		pixelpost\Event::register('request.api', '\\' . __CLASS__ . '::on_api_request');
+		pixelpost\Event::register('api.version', '\\' . __CLASS__ . '::api_version');
 	}
-	
+
 	public static function api_version(pixelpost\Event $event)
 	{
 		$event->response = array('version' => self::version());
@@ -162,7 +162,7 @@ class Plugin implements pixelpost\PluginInterface
 		// namespace when the class name is dynamic
 		// so we need to provide the full class name.
 		$className = __NAMESPACE__ . '\\' . $className;
-		
+
 		return new $className();
 	}
 
@@ -175,19 +175,19 @@ class Plugin implements pixelpost\PluginInterface
 	 */
 	public static function format_error(\Exception $error)
 	{
-		$message = (DEBUG) 
+		$message = (DEBUG)
 		         ? $error->getMessage() . ': [' . $error->getLine() . ']:' . $error->getFile()
 				 : $error->getMessage();
-		
-		$code    = ($error instanceof Exception) 
-		         ? $error->getShortMessage() 
+
+		$code    = ($error instanceof Exception)
+		         ? $error->getShortMessage()
 			     : $error->getCode();
-		
+
 		return array(
 			'status'  => 'error',
 			'code'    => $code,
 			'message' => $message,
-		);			
+		);
 	}
 
 	/**
@@ -206,7 +206,7 @@ class Plugin implements pixelpost\PluginInterface
 
 	/**
 	 * Check an api request is well formated and process the request:
-	 * 
+	 *
 	 * 1. send the api event corresponding to the method request
 	 * 2. return the event response if exists
 	 *
@@ -214,13 +214,13 @@ class Plugin implements pixelpost\PluginInterface
 	 * @param \pixelpost\Request $http    The HTTP request provided by request.new
 	 */
 	public static function process(\stdClass $request, \pixelpost\Request $http)
-	{		
+	{
 		// create the data who are propagated int the event
 		$datas = array('request' => $request, 'http_request' => $http);
 
 		// we send an the significate the api data is decoded
 		$event = pixelpost\Event::signal('request.api.decoded', $datas);
-		
+
 		// whatever if event is processed or not, we just retrieve the request
 		$request = $event->request;
 
@@ -240,7 +240,7 @@ class Plugin implements pixelpost\PluginInterface
 		{
 			throw new Exception('empty_method', 'The method field is empty.');
 		}
-		
+
 		// create the data who are propagated int the event
 		$datas = array('request' => $request->request, 'http_request' => $http);
 
@@ -258,23 +258,23 @@ class Plugin implements pixelpost\PluginInterface
 		{
 			throw new Exception('internal_error', "Oops ! there is actually a problem.");
 		}
-		
+
 		return $event->response;
 	}
 
 	/**
 	 * Make a call to a Api methode
-	 * 
+	 *
 	 * @param  string $method
 	 * @param  array  $request
-	 * @return array 
+	 * @return array
 	 */
 	public static function call_api_method($method, $request)
 	{
 		$method = 'api.' . $method;
-		
+
 		if (is_array($request)) $request = pixelpost\Filter::array_to_object($request);
-		
+
 		try
 		{
 			// make the call
@@ -290,7 +290,7 @@ class Plugin implements pixelpost\PluginInterface
 			{
 				throw new \Exception('event `'. $method .'` not provide a response');
 			}
-			
+
 			// return the response
 			return $call->response;
 		}

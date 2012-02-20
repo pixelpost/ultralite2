@@ -14,14 +14,14 @@ class Ungranted extends \pixelpost\plugins\api\Exception
 {
 	/**
 	 * Create the Exception
-	 * 
-	 * @param string $apiMethod 
+	 *
+	 * @param string $apiMethod
 	 */
 	public function __construct($apiMethod)
 	{
 		$code    = 'unauthorized';
 		$message = 'You have not the necessary rights to use `%s` method.';
-		
+
 		parent::__construct($code, sprintf($message, $apiMethod));
-	}		
+	}
 }

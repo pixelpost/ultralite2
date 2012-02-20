@@ -14,13 +14,13 @@ class Internal extends \pixelpost\plugins\api\Exception
 {
 	/**
 	 * Create the Exception
-	 * 
-	 * @param string $message 
+	 *
+	 * @param string $message
 	 */
 	public function __construct($message)
 	{
 		$code    = 'internal_error';
-		
+
 		parent::__construct($code, $message);
-	}		
+	}
 }

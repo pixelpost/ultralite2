@@ -14,7 +14,7 @@ class FieldOutBounds extends \pixelpost\plugins\api\Exception
 {
 	/**
 	 * Create the Exception
-	 * 
+	 *
 	 * @param string $field
 	 * @param int    $min
 	 * @param int    $max
@@ -23,7 +23,7 @@ class FieldOutBounds extends \pixelpost\plugins\api\Exception
 	{
 		$code    = 'bad_data';
 		$message = 'Field `%s` need to be a number between %d and %d.';
-		
+
 		parent::__construct($code, sprintf($message, $min, $max));
-	}		
+	}
 }

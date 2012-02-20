@@ -14,23 +14,23 @@ class FieldNonExists extends \pixelpost\plugins\api\Exception
 {
 	/**
 	 * Create the Exception
-	 * 
-	 * @param string $field 
+	 *
+	 * @param string $field
 	 * @param string $value
 	 */
 	public function __construct($field, $value = null)
 	{
 		$code    = 'bad_data';
-		
+
 		if (is_null($value))
 		{
-			$message = 'The specified `%s` not exists.';		
+			$message = 'The specified `%s` not exists.';
 		}
 		else
 		{
-			$message = 'The specified `%s` with value `' . $value . '` not exists.';				
+			$message = 'The specified `%s` with value `' . $value . '` not exists.';
 		}
-		
+
 		parent::__construct($code, sprintf($message, $field));
-	}		
+	}
 }

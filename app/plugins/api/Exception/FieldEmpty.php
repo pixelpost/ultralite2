@@ -14,14 +14,14 @@ class FieldEmpty extends \pixelpost\plugins\api\Exception
 {
 	/**
 	 * Create the Exception
-	 * 
+	 *
 	 * @param string $field
 	 */
 	public function __construct($field)
 	{
 		$code    = 'bad_request';
 		$message = 'The field `%s` is empty.';
-		
+
 		parent::__construct($code, sprintf($message, $field));
-	}		
+	}
 }

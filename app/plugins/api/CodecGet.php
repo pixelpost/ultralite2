@@ -18,12 +18,12 @@ class CodecGet
 {
 
 	protected $returnType = 'json';
-	
+
 	/**
 	 * Decode the request and return an PHP stdClass containing the requested
 	 * data.
 	 *
-	 * @param  pixelpost\Request 
+	 * @param  pixelpost\Request
 	 * @return stdClass
 	 */
 	public function decode(pixelpost\Request $request)
@@ -40,12 +40,12 @@ class CodecGet
 
 		// the third url param is the return type
 		$this->returnType = array_shift($urlParams);
-		
+
 		// retrieve posted or query data
 		$data = ($request->is_post()) ? $request->get_post() : $request->get_query();
-		
+
 		$req = array('method' => $method, 'request' => $data);
-		
+
 		return pixelpost\Filter::array_to_object($req);
 	}
 

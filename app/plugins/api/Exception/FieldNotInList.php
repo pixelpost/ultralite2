@@ -14,7 +14,7 @@ class FieldNotInList extends \pixelpost\plugins\api\Exception
 {
 	/**
 	 * Create the Exception
-	 * 
+	 *
 	 * @param string $field
 	 * @param array  $list
 	 */
@@ -22,7 +22,7 @@ class FieldNotInList extends \pixelpost\plugins\api\Exception
 	{
 		$code    = 'bad_data';
 		$message = 'Field `%s` need to be one of this value: %s.';
-		
+
 		parent::__construct($code, sprintf($message, implode(' | ', $message)));
-	}		
+	}
 }

@@ -21,7 +21,7 @@ class CodecJson implements CodecInterface
 	 * Decode the request and return an PHP stdClass containing the requested
 	 * data.
 	 *
-	 * @param pixelpost\Request 
+	 * @param pixelpost\Request
 	 * @return stdClass
 	 */
 	public function decode(pixelpost\Request $request)

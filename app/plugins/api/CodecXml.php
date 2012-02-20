@@ -21,7 +21,7 @@ class CodecXml implements CodecInterface
 	 * Decode the request and return an PHP stdClass containing the requested
 	 * data.
 	 *
-	 * @param  pixelpost\Request 
+	 * @param  pixelpost\Request
 	 * @return stdClass
 	 */
 	public function decode(pixelpost\Request $request)
@@ -99,7 +99,7 @@ class CodecXml implements CodecInterface
 			$key = pixelpost\Filter::format_for_xml($key);
 
 			if (is_object($value)) $value = pixelpost\Filter::object_to_array($value);
-			
+
 			if (is_array($value))
 			{
 				$value = $this->array_to_xml($value);
