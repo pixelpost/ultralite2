@@ -2,7 +2,9 @@
 
 namespace pixelpost\plugins\router;
 
-use pixelpost;
+use pixelpost\Config,
+	pixelpost\PluginInterface,
+	pixelpost\Event;
 
 /**
  * Base router for pixelpost.
@@ -23,7 +25,7 @@ use pixelpost;
  * @version    0.0.1
  * @since      File available since Release 1.0.0
  */
-class Plugin implements pixelpost\PluginInterface
+class Plugin implements PluginInterface
 {
 
 	public static function version()
@@ -43,7 +45,7 @@ class Plugin implements pixelpost\PluginInterface
 			"admin" : "admin"
 		}';
 
-		$conf = pixelpost\Config::create();
+		$conf = Config::create();
 		$conf->plugin_router = json_decode($configuration);
 		$conf->save();
 
@@ -52,7 +54,7 @@ class Plugin implements pixelpost\PluginInterface
 
 	public static function uninstall()
 	{
-		$conf = pixelpost\Config::create();
+		$conf = Config::create();
 
 		unset($conf->plugin_router);
 
@@ -68,55 +70,58 @@ class Plugin implements pixelpost\PluginInterface
 
 	public static function register()
 	{
-		$conf = pixelpost\Config::create();
+		$conf = Config::create();
 
 		define('API_URL',   WEB_URL . $conf->plugin_router->api   . '/', true);
 		define('ADMIN_URL', WEB_URL . $conf->plugin_router->admin . '/', true);
 
-		pixelpost\Event::register('router.version', '\\' . __CLASS__ . '::router_version');
-		pixelpost\Event::register('request.new',    '\\' . __CLASS__ . '::on_request');
+		Event::register('router.version', '\\' . __CLASS__ . '::router_version');
+		Event::register('request.new',    '\\' . __CLASS__ . '::request_new');
 	}
 
-	public static function router_version(pixelpost\Event $event)
+	public static function router_version(Event $event)
 	{
 		$event->response = array('version' => self::version());
 	}
 
-	public static function on_request(pixelpost\Event $event)
+	public static function request_new(Event $event)
 	{
-		// retrieve the configuration
-		$conf = pixelpost\Config::create();
+		// retrieve the configuration plugin
+		$conf    = Config::create()->plugin_router;
 
-		// get the url paramters, the Request class already split the url (using
-		// slashes) and get_params() is the array result of the split.
-		$urlParams = $event->request->get_params();
+		// get the request and its url paramters
+		$request = $event->request;
+		$params  = $request->get_params() + array('index');
 
-		// no parameter in the url, we add a virtual one
-		if (count($urlParams) == 0) $urlParams[] = 'index';
-
-		// prepare the event data (we just continu to pass the request class
-		// send by the 'request.new' event).
-		$eventData = array('request' => $event->request);
-
-		// make a choice between ADMIN, API, WEB.
-		// ADMIN and API base url are sent in the configuration file
+		// Make a choice between ADMIN, API, WEB.
+		// ADMIN and API base url are in the configuration file,
 		// other words is the WEB interface.
-		switch (array_shift($urlParams))
+		switch (array_shift($params))
 		{
-			case $conf->plugin_router->admin :
-				pixelpost\Event::signal('request.admin', $eventData);
-				break;
-			case $conf->plugin_router->api :
-				pixelpost\Event::signal('request.api', $eventData);
-				break;
-			default :
-				pixelpost\Event::signal('request.web', $eventData);
-				break;
+			case $conf->admin : $event_name = 'request.admin'; break;
+			case $conf->api   : $event_name = 'request.api';   break;
+			default           : $event_name = 'request.web';   break;
 		}
 
-		// we order to stop processing of the event request.new by returning
-		// false
+		// send the event
+		Event::signal($event_name, compact('request', 'params'));
+
+		// we order to stop processing of the event request.new
 		return false;
 	}
 
+	/**
+	 * Route automatically an event by following the params.
+	 *
+	 * The event need data:
+	 * - mixed request
+	 * - array params
+	 * - string event_name
+	 */
+	public static function route(Event $event)
+	{
+		$route = $event->get_name() . '.' . (array_shift($event->params) ?: 'index');
+
+		$event->set_processed($event->redirect($route));
+	}
 }
