@@ -2,7 +2,13 @@
 
 namespace pixelpost\plugins\api;
 
-use pixelpost;
+use
+pixelpost\Event,
+pixelpost\Filter,
+pixelpost\PluginInterface,
+pixelpost\plugin\api\Exception as ApiException,
+Exception,
+stdClass;
 
 /**
  * API router for pixelpost api urls.
@@ -19,7 +25,7 @@ use pixelpost;
  * @version    0.0.1
  * @since      File available since Release 1.0.0
  */
-class Plugin implements pixelpost\PluginInterface
+class Plugin implements PluginInterface
 {
 
 	public static function version()
@@ -49,11 +55,11 @@ class Plugin implements pixelpost\PluginInterface
 
 	public static function register()
 	{
-		pixelpost\Event::register('request.api', '\\' . __CLASS__ . '::on_api_request');
-		pixelpost\Event::register('api.version', '\\' . __CLASS__ . '::api_version');
+		Event::register('request.api', '\\' . __CLASS__ . '::api_request');
+		Event::register('api.version', '\\' . __CLASS__ . '::api_version');
 	}
 
-	public static function api_version(pixelpost\Event $event)
+	public static function api_version(Event $event)
 	{
 		$event->response = array('version' => self::version());
 	}
@@ -71,7 +77,7 @@ class Plugin implements pixelpost\PluginInterface
 	 * @param  pixelpost\Event $event
 	 * @return bool
 	 */
-	public static function on_api_request(pixelpost\Event $event)
+	public static function api_request(Event $event)
 	{
 		// Retrieve the url paramters
 		$urlParams = $event->request->get_params();
@@ -101,25 +107,35 @@ class Plugin implements pixelpost\PluginInterface
 			// decode the requested data
 			$request = $codec->decode($event->request);
 
+			// we tell that api request is decoded
+			$request = Event::signal('api.request.raw', compact('request'))->request;
+
 			// process the request
-			$response = self::process($request, $event->request);
+			$response = self::process($request);
 
 			// get the response and format it
 			$response = self::format_valid($response);
+
+			// we tell that api data is decoded
+			$response = Event::signal('api.response.raw', compact('response'))->response;
 		}
 		// tracks API Exception
-		catch (Exception $error)
+		catch (ApiException $error)
 		{
 			$response = self::format_error($error);
+
+			$response = Event::signal('api.error.raw', compact('response'))->response;
 		}
 		// tracks global Exception
 		catch (\Exception $error)
 		{
 			// a anonymous exception
-			$basic = new Exception('unknown', 'Unknown error.');
+			$basic = new ApiException('unknown', 'Unknown error.');
 
 			// according the DEBUG mode, we send the real error or not
 			$response = self::format_error(DEBUG ? $error : $basic);
+
+			$response = Event::signal('api.error.raw', compact('response'))->response;
 		}
 
 		// send the response to the client
@@ -210,53 +226,42 @@ class Plugin implements pixelpost\PluginInterface
 	 * 1. send the api event corresponding to the method request
 	 * 2. return the event response if exists
 	 *
-	 * @param \stdClass          $request The API data in the request
-	 * @param \pixelpost\Request $http    The HTTP request provided by request.new
+	 * @param \stdClass $request The API data in the request
 	 */
-	public static function process(\stdClass $request, \pixelpost\Request $http)
+	public static function process(stdClass $request)
 	{
-		// create the data who are propagated int the event
-		$datas = array('request' => $request, 'http_request' => $http);
-
-		// we send an the significate the api data is decoded
-		$event = pixelpost\Event::signal('request.api.decoded', $datas);
-
-		// whatever if event is processed or not, we just retrieve the request
-		$request = $event->request;
-
 		// check the request is well formated
 		if (!property_exists($request, 'method'))
 		{
-			throw new Exception('bad_format', 'The request need to provide a \'method\' property');
+			throw new ApiException('no_method', 'The request need to provide a \'method\' property');
 		}
 
 		if (!property_exists($request, 'request'))
 		{
-			$event->request = new \stdClass();
+			$event->request = new stdClass();
 		}
 
 		// get the requested api method
 		if ('' == $method = trim($request->method))
 		{
-			throw new Exception('empty_method', 'The method field is empty.');
+			throw new ApiException('empty_method', 'The method field is empty.');
 		}
 
-		// create the data who are propagated int the event
-		$datas = array('request' => $request->request, 'http_request' => $http);
+		$request = $request->request;
 
 		// send the signal that an API method is requested
-		$event = pixelpost\Event::signal('api.' . $method, $datas);
+		$event = Event::signal('api.' . $method, compact('request'));
 
 		// check if the event is processed (no '404' request)
 		if (!$event->is_processed())
 		{
-			throw new Exception('bad_method', "The '$method' requested method is unsupported.");
+			throw new ApiException('bad_method', "The '$method' requested method is unsupported.");
 		}
 
 		// check if there is a response data in the event
 		if (!property_exists($event, 'response'))
 		{
-			throw new Exception('internal_error', "Oops ! there is actually a problem.");
+			throw new ApiException('internal_error', "Oops ! there is actually a problem.");
 		}
 
 		return $event->response;
@@ -273,25 +278,23 @@ class Plugin implements pixelpost\PluginInterface
 	{
 		$method = 'api.' . $method;
 
-		if (is_array($request)) $request = pixelpost\Filter::array_to_object($request);
+		if (is_array($request)) $request = Filter::array_to_object($request);
 
 		try
 		{
 			// make the call
-			$call = pixelpost\Event::signal($method, array(
-				'request'      => $request,
-				'http_request' => pixelpost\Request::create()->auto()
-			));
+			$call = Event::signal($method, compact('request'));
 
 			// check if the call is processed
 			if (!$call->is_processed())
 			{
-				throw new \Exception('event `'. $method .'` is not processed');
+				throw new Exception('event `'. $method .'` is not processed');
 			}
+
 			// check if the response exists
 			if (!isset($call->response))
 			{
-				throw new \Exception('event `'. $method .'` not provide a response');
+				throw new Exception('event `'. $method .'` not provide a response');
 			}
 
 			// return the response
@@ -299,9 +302,9 @@ class Plugin implements pixelpost\PluginInterface
 		}
 		// handle all pixelpost\plugins\api\Exception can be thrown
 		// if you don't the user receive the error message of your internal call
-		catch(Exception $e)
+		catch(ApiException $e)
 		{
-			throw new \Exception('event `'. $method .'` thrown an exception', 0, $e);
+			throw new Exception('event `'. $method .'` thrown an exception', 0, $e);
 		}
 	}
 }
