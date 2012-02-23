@@ -24,6 +24,10 @@ class Event extends \ArrayObject
 	 * @var bool the event is processed or not
 	 */
 	protected $_processed = false;
+	/**
+	 * @var string the event name
+	 */
+	protected $_name      = '';
 
 	/**
 	 * Create a new Event instance
@@ -85,14 +89,33 @@ class Event extends \ArrayObject
 	 * A listener may explicitly return false to stop the propagation of the
 	 * event to other listeners.
 	 *
+	 * The event is auto forged with submitted array $data.
+	 *
 	 * @param  array $data The data loaded in the Event class.
 	 * @return Event
 	 */
 	public static function signal($eventName, array $data = array())
 	{
+		return self::raise($eventName, self::create($data));
+	}
+
+	/**
+	 * Throw an event. Return the event is thrown which can be contain response
+	 * content or modified content.
+	 * By default if the event have at least one listener, it's state is set to
+	 * processed. A listener can still change this state.
+	 *
+	 * A listener may explicitly return false to stop the propagation of the
+	 * event to other listeners.
+	 *
+	 * @param  Event $event The event will be thrown.
+	 * @return Event
+	 */
+	public static function raise($eventName, Event $event)
+	{
 		Filter::assume_string($eventName);
 
-		$event = self::create($data);
+		$event->set_name($eventName);
 
 		if (!isset(self::$_listen[$eventName])) return $event;
 
@@ -118,12 +141,36 @@ class Event extends \ArrayObject
 	 * Change the 'processed' state of an event.
 	 *
 	 * @param bool $processed By default the value is TRUE
+	 * @return pixelpost\Event
 	 */
 	public function set_processed($processed = true)
 	{
 		Filter::assume_bool($processed);
 
 		$this->_processed = $processed;
+
+		return $this;
+	}
+
+	/**
+	 * Change the event name.
+	 *
+	 * @param string $name The new event name
+	 * @return pixelpost\Event
+	 */
+	public function set_name($name)
+	{
+		$this->_name = $name;
+	}
+
+	/**
+	 * Return the event name.
+	 *
+	 * @return string
+	 */
+	public function get_name()
+	{
+		return $this->_name;
 	}
 
 	/**
@@ -136,5 +183,32 @@ class Event extends \ArrayObject
 		return $this->_processed;
 	}
 
-}
+	/**
+	 * Throw this event to another event name, return if the redirection is_processed
+	 *
+	 * @return bool
+	 */
+	public function redirect($to)
+	{
+		Filter::assume_string($to);
 
+		// backup internal state
+		$name = $this->_name;
+		$proc = $this->_processed;
+
+		// by default the redirection is not processed
+		$this->_processed = false;
+
+		self::raise($to, $this);
+
+		// redirect worked ?
+		$result = $this->_processed;
+
+		// restore internal state
+		$this->_processed = $proc;
+		$this->_name      = $name;
+
+		// return if redirection worked
+		return $result;
+	}
+}
