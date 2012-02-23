@@ -6,7 +6,7 @@ use
 pixelpost\Event,
 pixelpost\Filter,
 pixelpost\PluginInterface,
-pixelpost\plugin\api\Exception as ApiException,
+pixelpost\plugins\api\Exception as ApiException,
 Exception,
 stdClass;
 
@@ -189,13 +189,13 @@ class Plugin implements PluginInterface
 	 * @param \Exception $error
 	 * @return array
 	 */
-	public static function format_error(\Exception $error)
+	public static function format_error(Exception $error)
 	{
 		$message = (DEBUG)
 		         ? $error->getMessage() . ': [' . $error->getLine() . ']:' . $error->getFile()
 				 : $error->getMessage();
 
-		$code    = ($error instanceof Exception)
+		$code    = ($error instanceof ApiException)
 		         ? $error->getShortMessage()
 			     : $error->getCode();
 
