@@ -18,7 +18,7 @@ use pixelpost\Event,
  * @version    0.0.1
  * @since      File available since Release 1.0.0
  */
-class Plugin implements pixelpost\PluginInterface
+class Plugin implements PluginInterface
 {
 
 	public static function version()
