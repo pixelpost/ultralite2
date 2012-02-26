@@ -21,4 +21,4 @@ if (isset($event->request->lifetime))
 	$conf->save();
 }
 
-$event->response = array('message', 'configuration updated');
+$event->response = array('message' => 'configuration updated');
