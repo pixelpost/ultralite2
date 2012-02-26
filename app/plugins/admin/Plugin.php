@@ -2,7 +2,9 @@
 
 namespace pixelpost\plugins\admin;
 
-use pixelpost;
+use pixelpost\plugins\router\Plugin as Router,
+	pixelpost\PluginInterface,
+	pixelpost\Event;
 
 /**
  * ADMIN routers for pixelpost admin urls.
@@ -12,7 +14,7 @@ use pixelpost;
  * @version    0.0.1
  * @since      File available since Release 1.0.0
  */
-class Plugin implements pixelpost\PluginInterface
+class Plugin implements PluginInterface
 {
 	public static function version()
 	{
@@ -45,13 +47,20 @@ class Plugin implements pixelpost\PluginInterface
 		$api  = '\\' . __NAMESPACE__ . '\\Api';
 		$page = '\\' . __NAMESPACE__ . '\\Page';
 
-		pixelpost\Event::register('request.admin',     $self . '::admin_router');
+		Event::register('request.admin',     $self . '::admin_router');
 
-		pixelpost\Event::register('api.admin.version', $api  . '::api_version');
+		Event::register('api.admin.version', $api  . '::api_version');
 
-		pixelpost\Event::register('admin.index',       $page . '::page_index');
-		pixelpost\Event::register('admin.404',         $page . '::page_404');
-		pixelpost\Event::register('admin.api-test',    $page . '::page_api_test');
+		Event::register('admin.index',       $page . '::page_index');
+		Event::register('admin.404',         $page . '::page_404');
+		Event::register('admin.api-test',    $page . '::page_api_test');
+		Event::register('admin.phpinfo',     $self . '::phpinfo');
+	}
+
+	public static function phpinfo(Event $event)
+	{
+		if (DEBUG) phpinfo();
+		else       $event->set_processed(false);
 	}
 
 	/**
@@ -66,31 +75,18 @@ class Plugin implements pixelpost\PluginInterface
 	 * @param  pixelpost\Event $event
 	 * @return bool
 	 */
-	public static function admin_router(pixelpost\Event $event)
+	public static function admin_router(Event $event)
 	{
-		// retrieve the urls params and assume the two first exists
-		$urlParams = $event->request->get_params() + array('admin', 'index');
+		$event->set_name('admin');
 
-		// remove 'admin' from the array
-		array_shift($urlParams);
+		Router::route($event);
 
-		// retrieve the requested admin page
-		$page = array_shift($urlParams);
-
-		// event data
-		$data = array('request' => $event->request, 'params' => $urlParams);
-
-		// send the signal that an ADMIN method is requested
-		$reponseEvent = pixelpost\Event::signal('admin.' . $page, $data);
-
-		// check if there is a response or send a 404 webpage
-		if (!$reponseEvent->is_processed())
+		if (!$event->is_processed())
 		{
-			pixelpost\Event::signal('admin.404', $data);
+			$event->redirect('admin.404');
 			return false;
 		}
 
-		// continue processing of request.admin for third party plugins
-		return true;
+		$event->set_name('request.admin');
 	}
 }

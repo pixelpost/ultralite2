@@ -2,10 +2,11 @@
 
 namespace pixelpost\plugins\admin;
 
-use pixelpost;
+use pixelpost\Template,
+	pixelpost\Event;
 
-$tpl = pixelpost\Template::create();
+$tpl = Template::create();
 
-$tpl->widgets = pixelpost\Event::signal('admin.template.widget', array('response' => array()))->response;
+$tpl->widgets = Event::signal('admin.template.widget', array('response' => array()))->response;
 
 $tpl->publish('admin/tpl/home.php');
