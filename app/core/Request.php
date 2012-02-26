@@ -205,16 +205,7 @@ class Request
 	 */
 	public function set_query(array $params)
 	{
-		if (intval(ini_get('magic_quotes_gpc')))
-		{
-			$this->_query = array();
-			foreach ($params as $i => $v)
-				$this->_query[$i] = stripslashes($v);
-		}
-		else
-		{
-			$this->_query = $params;
-		}
+		$this->_query = $params;
 
 		return $this;
 	}
@@ -227,33 +218,7 @@ class Request
 	 */
 	public function set_post(array $params)
 	{
-		if (intval(ini_get('magic_quotes_gpc')))
-		{
-			$this->_post = array();
-			foreach ($params as $i => $v)
-			{
-				// we not going far away than 2 path deep.
-				if (is_array($v))
-				{
-					foreach ($v as $ii => $val)
-					{
-						if (!is_array($val))
-						{
-							$v[$ii] = \stripslashes($val);
-						}
-					}
-					$this->_post[$i] = $v;
-				}
-				else
-				{
-					$this->_post[$i] = \stripslashes($v);
-				}
-			}
-		}
-		else
-		{
-			$this->_post = $params;
-		}
+		$this->_post = $params;
 
 		return $this;
 	}

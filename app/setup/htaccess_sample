@@ -22,3 +22,7 @@
         ExpiresDefault A3600
     </FilesMatch>
 </IfModule>
+
+<IfModule mod_php5.c>
+    php_flag magic_quotes_gpc Off
+</IfModule>
