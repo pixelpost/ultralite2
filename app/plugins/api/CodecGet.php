@@ -2,7 +2,8 @@
 
 namespace pixelpost\plugins\api;
 
-use pixelpost;
+use pixelpost\Filter,
+	pixelpost\Request;
 
 /**
  * Provide a GET/POST codec for the plugin 'api'
@@ -26,27 +27,42 @@ class CodecGet
 	 * @param  pixelpost\Request
 	 * @return stdClass
 	 */
-	public function decode(pixelpost\Request $request)
+	public function decode(Request $request)
 	{
-		// Retrieve the url paramters
-		$urlParams = $request->get_params();
-
-		// we skip the first and second url param which is 'api' and 'get'
-		array_shift($urlParams);
-		array_shift($urlParams);
-
-		// the third url param is the method requested
-		$method = array_shift($urlParams);
-
-		// the third url param is the return type
-		$this->returnType = array_shift($urlParams);
+		// Retrieve the url data
+		$params = $request->get_params();
 
 		// retrieve posted or query data
-		$data = ($request->is_post()) ? $request->get_post() : $request->get_query();
+		$data = $request->is_post() ? $request->get_post() : $request->get_query();
 
-		$req = array('method' => $method, 'request' => $data);
+		// we skip the first and second url param which is 'api' and 'get'
+		array_shift($params);
+		array_shift($params);
 
-		return pixelpost\Filter::array_to_object($req);
+		// the extra params joined to method
+		$response = array();
+
+		// set the request data
+		$response['request'] = $data;
+
+		// the third url param is the method requested
+		$response['method'] = array_shift($params);
+
+		// the third url param is the return type
+		$this->returnType = array_shift($params);
+
+		// extract extra parameters
+		foreach($params as $param)
+		{
+			if (false !== $pos = strpos($param, ':'))
+			{
+				list($key, $val) = explode(':', $param, 2);
+
+				$response[$key] = $val;
+			}
+		}
+
+		return Filter::array_to_object($response);
 	}
 
 	/**
