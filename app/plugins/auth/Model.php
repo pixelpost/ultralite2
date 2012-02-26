@@ -2,8 +2,10 @@
 
 namespace pixelpost\plugins\auth;
 
-use pixelpost;
-use pixelpost\Db as Db;
+use pixelpost\Conf,
+	pixelpost\Db,
+	pixelpost\Filter,
+	DateTime;
 
 /**
  * All Exception thown by the Model class are ModelException class
@@ -74,7 +76,7 @@ class Model
 			challenge TEXT, user_id INTEGER, expire INTEGER);');
 
 		$db->exec('CREATE TABLE auth_token (id INTEGER PRIMARY KEY,
-			token TEXT, challenge TEXT, user_id INTEGER, created INTEGER);');
+			token TEXT, challenge TEXT, nonce TEXT, user_id INTEGER, created INTEGER);');
 
 		$db->exec('INSERT INTO auth_grant (name) VALUES ("read");');   // read content
 		$db->exec('INSERT INTO auth_grant (name) VALUES ("write");');  // set / add content
@@ -126,25 +128,25 @@ class Model
 	/**
 	 * Delete a user from database
 	 *
-	 * @param  int $userId The user id
-	 * @return int         The number of user deleted
+	 * @param  int $user_id The user id
+	 * @return int          The number of user deleted
 	 */
-	public static function user_del($userId)
+	public static function user_del($user_id)
 	{
 		$db = Db::create();
 
-		pixelpost\Filter::is_int($userId);
+		Filter::is_int($user_id);
 
 		$query = 'DELETE FROM auth_user WHERE id = %d;';
-		$query = sprintf($query, $userId);
+		$query = sprintf($query, $user_id);
 
 		if (!$db->exec($query)) throw new ModelExceptionSqlError();
 
 		try
 		{
-			foreach(self::user_grant_list_by_user($userId) as $grant)
+			foreach(self::user_grant_list_by_user($user_id) as $grant)
 			{
-				self::user_grant_unlink($userId, $grant['id']);
+				self::user_grant_unlink($user_id, $grant['id']);
 			}
 		}
 		catch(ModelExceptionNoResult $e) {}
@@ -155,19 +157,19 @@ class Model
 	/**
 	 * Update a user in database.
 	 *
-	 * @param  int    $userId   The user id
+	 * @param  int    $user_id  The user id
 	 * @param  string $username The user name.
 	 * @param  string $password The hash of the password.
 	 * @return int              The number of user updated
 	 */
-	public static function user_update($userId, $username, $password)
+	public static function user_update($user_id, $username, $password)
 	{
 		$db = Db::create();
 
-		pixelpost\Filter::is_int($userId);
+		Filter::is_int($user_id);
 
 		$query = 'UPDATE auth_user SET name = %s, pass = %s WHERE id = %d;';
-		$query = sprintf($query, Db::escape($username), Db::escape($password), $userId);
+		$query = sprintf($query, Db::escape($username), Db::escape($password), $user_id);
 
 		if (!$db->exec($query)) throw new ModelExceptionSqlError();
 
@@ -198,17 +200,17 @@ class Model
 	/**
 	 * Retrieve a user data by its id.
 	 *
-	 * @param  string $userId The user id
-	 * @return array          Data in a array with key: 'name', 'pass'
+	 * @param  string $user_id The user id
+	 * @return array           Data in a array with key: 'name', 'pass'
 	 */
-	public static function user_get_by_id($userId)
+	public static function user_get_by_id($user_id)
 	{
-		pixelpost\Filter::is_int($userId);
+		Filter::is_int($user_id);
 
 		$db = Db::create();
 
 		$query = 'SELECT name, pass FROM auth_user WHERE id = %d LIMIT 1;';
-		$query = sprintf($query, $userId);
+		$query = sprintf($query, $user_id);
 
 		$result = $db->querySingle($query, true);
 
@@ -227,7 +229,7 @@ class Model
 	{
 		$db = Db::create();
 
-		$query = 'SELECT id, name FROM auth_user ORDER BY username ASC;';
+		$query = 'SELECT id, name FROM auth_user ORDER BY name ASC;';
 
 		$result = $db->query($query);
 
@@ -236,7 +238,7 @@ class Model
 
 		$l = array();
 
-		while(false !== $row = $result->fetchArray(\SQLITE3_ASSOC)) $l[] = $row;
+		while(false !== $row = $result->fetchArray(SQLITE3_ASSOC)) $l[] = $row;
 
 		return $l;
 	}
@@ -262,25 +264,25 @@ class Model
 	/**
 	 * Delete a grant from database.
 	 *
-	 * @param  int $grantId The grant id
+	 * @param  int $grant_id The grant id
 	 * @return int          The number of grants deleted
 	 */
-	public static function grant_del($grantId)
+	public static function grant_del($grant_id)
 	{
 		$db = Db::create();
 
-		pixelpost\Filter::is_int($userId);
+		Filter::is_int($user_id);
 
 		$query = 'DELETE FROM auth_grant WHERE id = %d;';
-		$query = sprintf($query, $grantId);
+		$query = sprintf($query, $grant_id);
 
 		if (!$db->exec($query)) throw new ModelExceptionSqlError();
 
 		try
 		{
-			foreach(self::user_grant_list_by_grant($grantId) as $user)
+			foreach(self::user_grant_list_by_grant($grant_id) as $user)
 			{
-				self::user_grant_unlink($user['id'], $grantId);
+				self::user_grant_unlink($user['id'], $grant_id);
 			}
 		}
 		catch(ModelExceptionNoResult $e) {}
@@ -291,18 +293,18 @@ class Model
 	/**
 	 * Update a grant in database.
 	 *
-	 * @param  int    $grantId  The grant id
+	 * @param  int    $grant_id The grant id
 	 * @param  string $name     The new grant name
 	 * @return int              The number of grant updated
 	 */
-	public static function grant_update($grantId, $name)
+	public static function grant_update($grant_id, $name)
 	{
 		$db = Db::create();
 
-		pixelpost\Filter::is_int($grantId);
+		Filter::is_int($grant_id);
 
 		$query = 'UPDATE auth_grant SET name = %s WHERE id = %d;';
-		$query = sprintf($query, Db::escape($name), $grantId);
+		$query = sprintf($query, Db::escape($name), $grant_id);
 
 		if (!$db->exec($query)) throw new ModelExceptionSqlError();
 
@@ -348,7 +350,7 @@ class Model
 
 		$l = array();
 
-		while(false !== $row = $result->fetchArray(\SQLITE3_ASSOC)) $l[] = $row;
+		while(false !== $row = $result->fetchArray(SQLITE3_ASSOC)) $l[] = $row;
 
 		return $l;
 	}
@@ -356,24 +358,24 @@ class Model
 	/**
 	 * Add a grant to a user.
 	 *
-	 * @param  int $userId  The user id
-	 * @param  int $grantId The grant id
-	 * @return int          The link id or 0 if the link exists
+	 * @param  int $user_id  The user id
+	 * @param  int $grant_id The grant id
+	 * @return int           The link id or 0 if the link exists
 	 */
-	public static function user_grant_link($userId, $grantId)
+	public static function user_grant_link($user_id, $grant_id)
 	{
 		$db = Db::create();
 
-		pixelpost\Filter::is_int($userId);
-		pixelpost\Filter::is_int($grantId);
+		Filter::is_int($user_id);
+		Filter::is_int($grant_id);
 
 		$query = 'SELECT COUNT(id) FROM auth_user_grant WHERE user_id = %d AND grant_id = %d;';
-		$query = sprintf($query, $userId, $grantId);
+		$query = sprintf($query, $user_id, $grant_id);
 
 		if (intval($db->querySingle($query)) > 0) return 0;
 
 		$query = 'INSERT INTO auth_user_grant (user_id, grant_id) VALUES (%d, %d);';
-		$query = sprintf($query, $userId, $grantId);
+		$query = sprintf($query, $user_id, $grant_id);
 
 		if (!$db->exec($query)) throw new ModelExceptionSqlError();
 
@@ -383,19 +385,19 @@ class Model
 	/**
 	 * Remove a grant to a user
 	 *
-	 * @param  int $userId  The user id
-	 * @param  int $grantId The grant id
-	 * @return int          The number of link deleted
+	 * @param  int $user_id  The user id
+	 * @param  int $grant_id The grant id
+	 * @return int           The number of link deleted
 	 */
-	public static function user_grant_unlink($userId, $grantId)
+	public static function user_grant_unlink($user_id, $grant_id)
 	{
 		$db = Db::create();
 
-		pixelpost\Filter::is_int($userId);
-		pixelpost\Filter::is_int($grantId);
+		Filter::is_int($user_id);
+		Filter::is_int($grant_id);
 
 		$query = 'DELETE FROM auth_user_grant WHERE user_id = %d AND grant_id = %d;';
-		$query = sprintf($query, $userId, $grantId);
+		$query = sprintf($query, $user_id, $grant_id);
 
 		if (!$db->exec($query)) throw new ModelExceptionSqlError();
 
@@ -405,82 +407,89 @@ class Model
 	/**
 	 * List user's grants
 	 *
-	 * @param  int   $userId The user id
-	 * @return array         Each item is an array with key 'id', 'name'
+	 * @param  int   $user_id The user id
+	 * @return array          Each item is an array with key 'id', 'name'
 	 */
-	public static function user_grant_list_by_user($userId)
+	public static function user_grant_list_by_user($user_id)
 	{
 		$db = Db::create();
 
-		pixelpost\Filter::is_int($userId);
+		Filter::is_int($user_id);
 
 		$query = 'SELECT g.id, g.name FROM auth_user_grant ug '
 		       . 'LEFT JOIN auth_grant g ON g.id = ug.grant_id '
 			   . 'WHERE ug.user_id = %d;';
 
-		$result = $db->query(sprintf($query, $userId));
+		$result = $db->query(sprintf($query, $user_id));
 
 		if ($result === true)  throw new ModelExceptionNoResult();
 		if ($result === false) throw new ModelExceptionSqlError();
 
 		$l = array();
 
-		while(false !== $row = $result->fetchArray(\SQLITE3_ASSOC)) $l[] = $row;
+		while(false !== $row = $result->fetchArray(SQLITE3_ASSOC)) $l[] = $row;
 
 		return $l;
 	}
 
 	/**
-	 * List user granted to $grantId
+	 * List user granted to $grant_id
 	 *
-	 * @param  int   $grantId The grant id
-	 * @return array          Each item is an array with key 'id', 'name'
+	 * @param  int   $grant_id The grant id
+	 * @return array           Each item is an array with key 'id', 'name'
 	 */
-	public static function user_grant_list_by_grant($grantId)
+	public static function user_grant_list_by_grant($grant_id)
 	{
 		$db = Db::create();
 
-		pixelpost\Filter::is_int($grantId);
+		Filter::is_int($grant_id);
 
 		$query = 'SELECT u.id, u.name FROM auth_user_grant ug '
 		       . 'LEFT JOIN auth_user u ON u.id = ug.user_id '
 			   . 'WHERE ug.grant_id = %d;';
 
-		$result = $db->query(sprintf($query, $grantId));
+		$result = $db->query(sprintf($query, $grant_id));
 
 		if ($result === true)  throw new ModelExceptionNoResult();
 		if ($result === false) throw new ModelExceptionSqlError();
 
 		$l = array();
 
-		while(false !== $row = $result->fetchArray(\SQLITE3_ASSOC)) $l[] = $row;
+		while(false !== $row = $result->fetchArray(SQLITE3_ASSOC)) $l[] = $row;
 
 		return $l;
 	}
 
 	/**
 	 * Add a challenge in database.
+	 * This delete all expired challenge.
 	 *
 	 * @param  string $challenge The challenge
-	 * @param  int    $userId    The user id
+	 * @param  int    $user_id    The user id
 	 * @param  int    $lifetime  The challenge lifetime
 	 * @return int               The challenge id
 	 */
-	public static function challenge_add($challenge, $userId, $lifetime)
+	public static function challenge_add($challenge, $user_id, $lifetime)
 	{
-		pixelpost\Filter::assume_string($challenge);
-		pixelpost\Filter::is_int($userId);
-		pixelpost\Filter::is_int($lifetime);
+		Filter::assume_string($challenge);
+		Filter::is_int($user_id);
+		Filter::is_int($lifetime);
 
-		$date = new \DateTime();
-		$date->modify('+' . $lifetime . 'seconds');
+		$db   = Db::create();
+		$date = new DateTime();
 
+		// delete old challenge
+		$sql = 'DELETE FROM auth_challenge WHERE expire < %s;';
+		$sql = sprintf($sql, Db::escape(Db::date_serialize($date)));
+
+		if (!$db->exec($sql)) throw new ModelExceptionSqlError();
+
+		// add a new one
 		$challenge = Db::escape($challenge);
-		$date      = Db::escape(Db::date_serialize($date));
-		$db        = Db::create();
+		$date      = Db::escape(Db::date_serialize($date->modify('+' . $lifetime . 'seconds')));
 
 		$sql = 'INSERT INTO auth_challenge (challenge, user_id, expire) VALUES (%s, %d, %s);';
-		$sql = sprintf($sql, $challenge, $userId, $date);
+		$sql = sprintf($sql, $challenge, $user_id, $date);
 
 		if (!$db->exec($sql)) throw new ModelExceptionSqlError();
 
@@ -495,7 +504,7 @@ class Model
 	 */
 	public static function challenge_get($challenge)
 	{
-		pixelpost\Filter::assume_string($challenge);
+		Filter::assume_string($challenge);
 
 		$sql = 'SELECT id, user_id, expire FROM auth_challenge WHERE challenge = %s LIMIT 1;';
 		$sql = sprintf($sql, Db::escape($challenge));
@@ -515,17 +524,17 @@ class Model
 	/**
 	 * Remove a challenge from database.
 	 *
-	 * @param  int $challengeId The challenge id
+	 * @param  int $challenge_id The challenge id
 	 * @return int              The number of challenge deleted
 	 */
-	public static function challenge_del($challengeId)
+	public static function challenge_del($challenge_id)
 	{
-		pixelpost\Filter::is_int($challengeId);
+		Filter::is_int($challenge_id);
 
 		$db = Db::create();
 
 		$sql = 'DELETE FROM auth_challenge WHERE id = %d;';
-		$sql = sprintf($sql, $challengeId);
+		$sql = sprintf($sql, $challenge_id);
 
 		if (!$db->exec($sql)) throw new ModelExceptionSqlError();
 
@@ -534,35 +543,38 @@ class Model
 
 	/**
 	 * Add a token in database.
+	 * This is delete all other user's token.
 	 *
 	 * @param  string $token     The token
 	 * @param  string $challenge The challenge
-	 * @param  int    $userId    The user id
+	 * @param  string $nonce     The nonce
+	 * @param  int    $user_id   The user id
 	 * @return int               The token id
 	 */
-	public static function token_add($token, $challenge, $userId)
+	public static function token_add($token, $challenge, $nonce, $user_id)
 	{
-		pixelpost\Filter::assume_string($token);
-		pixelpost\Filter::assume_string($challenge);
-		pixelpost\Filter::is_int($userId);
+		Filter::assume_string($token);
+		Filter::assume_string($challenge);
+		Filter::assume_string($nonce);
+		Filter::is_int($user_id);
 
 		$db        = Db::create();
+
+		// delete other user token
+		$sql = 'DELETE FROM auth_token WHERE user_id = %d;';
+		$sql = sprintf($sql, $user_id);
+
+		if (!$db->exec($sql)) throw new ModelExceptionSqlError();
+
 		$token     = Db::escape($token);
 		$challenge = Db::escape($challenge);
-		$date      = Db::escape(Db::date_serialize(new \DateTime()));
+		$nonce     = Db::escape($nonce);
+		$date      = Db::escape(Db::date_serialize(new DateTime()));
 
-		try
-		{
-			foreach(self::token_list_by_user($userId) as $result)
-			{
-				self::token_del($result['id']);
-			}
-		}
-		catch(ModelExceptionNoResult $e) {}
-
-		$sql = 'INSERT INTO auth_token (token, challenge, user_id, created)
-			VALUES (%s, %s, %d, %s);';
-		$sql = sprintf($sql, $token, $challenge, $userId, $date);
+		// add a new one
+		$sql = 'INSERT INTO auth_token (token, challenge, nonce, user_id, created) '
+			 . 'VALUES (%s, %s, %s, %d, %s);';
+		$sql = sprintf($sql, $token, $challenge, $nonce, $user_id, $date);
 
 		if (!$db->exec($sql)) throw new ModelExceptionSqlError();
 
@@ -570,19 +582,63 @@ class Model
 	}
 
 	/**
+	 * Change the token value of a token
+	 *
+	 * @param  int    $token_id The token Id to change
+	 * @param  string $token    The new token
+	 * @return int
+	 */
+	public static function token_update_token($token_id, $token)
+	{
+		Filter::assume_string($token);
+		Filter::is_int($token_id);
+
+		$db  = Db::create();
+
+		$sql = 'UPDATE auth_token SET token = %s WHERE id = %d;';
+		$sql = sprintf($sql, Db::escape($token), $token_id);
+
+		if (!$db->exec($sql)) throw new ModelExceptionSqlError();
+
+		return $db->changes();
+	}
+
+	/**
+	 * Change the nonce value of a token
+	 *
+	 * @param  int    $token_id The token Id to change
+	 * @param  string $nonce    The new nonce
+	 * @return int
+	 */
+	public static function token_update_nonce($token_id, $nonce)
+	{
+		Filter::assume_string($nonce);
+		Filter::is_int($token_id);
+
+		$db  = Db::create();
+
+		$sql = 'UPDATE auth_token SET nonce = %s WHERE id = %d;';
+		$sql = sprintf($sql, Db::escape($nonce), $token_id);
+
+		if (!$db->exec($sql)) throw new ModelExceptionSqlError();
+
+		return $db->changes();
+	}
+
+	/**
 	 * Retreive user's token from database
 	 *
-	 * @param  int   $userId The user id
-	 * @return array         Each items have key: 'id'
+	 * @param  int   $user_id The user id
+	 * @return array          Each items have key: 'id'
 	 */
-	public static function token_list_by_user($userId)
+	public static function token_list_by_user($user_id)
 	{
-		pixelpost\Filter::is_int($userId);
+		Filter::is_int($user_id);
 
 		$db = Db::create();
 
 		$sql = 'SELECT id FROM auth_token WHERE user_id = %d;';
-		$sql = sprintf($sql, $userId);
+		$sql = sprintf($sql, $user_id);
 
 		$result = $db->query($sql);
 
@@ -591,7 +647,7 @@ class Model
 
 		$l = array();
 
-		while(false !== $row = $result->fetchArray(\SQLITE3_ASSOC)) $l[] = $row;
+		while(false !== $row = $result->fetchArray(SQLITE3_ASSOC)) $l[] = $row;
 
 		return $l;
 	}
@@ -604,11 +660,11 @@ class Model
 	 */
 	public static function token_get($token)
 	{
-		pixelpost\Filter::assume_string($token);
+		Filter::assume_string($token);
 
 		$db  = Db::create();
 
-		$sql = 'SELECT id, challenge, user_id, created FROM auth_token
+		$sql = 'SELECT id, challenge, nonce, user_id, created FROM auth_token
 			WHERE token = %s LIMIT 1;';
 		$sql = sprintf($sql, Db::escape($token));
 
@@ -625,17 +681,17 @@ class Model
 	/**
 	 * Delete a token from database.
 	 *
-	 * @param  int $tokenId The token id
-	 * @return int          Then number of tokens deleted
+	 * @param  int $token_id The token id
+	 * @return int           Then number of tokens deleted
 	 */
-	public static function token_del($tokenId)
+	public static function token_del($token_id)
 	{
-		pixelpost\Filter::is_int($tokenId);
+		Filter::is_int($token_id);
 
 		$db = Db::create();
 
 		$sql = 'DELETE FROM auth_token WHERE id = %d;';
-		$sql = sprintf($sql, $tokenId);
+		$sql = sprintf($sql, $token_id);
 
 		if (!$db->exec($sql)) throw new ModelExceptionSqlError();
 

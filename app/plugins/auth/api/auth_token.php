@@ -2,55 +2,67 @@
 
 namespace pixelpost\plugins\auth;
 
-use pixelpost;
-use pixelpost\plugins\api\Exception;
+use DateTime,
+	pixelpost\Config,
+	pixelpost\plugins\api\Exception\FieldRequired,
+	pixelpost\plugins\api\Exception\FieldNotValid;
 
-if (!isset($event->request->challenge))	throw new Exception\FieldRequired('auth.token', 'challenge');
+// check the request
+if (!isset($event->request->challenge))	throw new FieldRequired('auth.token', 'challenge');
+if (!isset($event->request->signature))	throw new FieldRequired('auth.token', 'signature');
 
-if (!isset($event->request->signature))	throw new Exception\FieldRequired('auth.token', 'signature');
-
-// check the challenge in database
+// check the challenge exists
 try
 {
 	$challenge = Model::challenge_get($event->request->challenge);
-
-	// instantly delete the used challenge
-	Model::challenge_del($challenge['id']);
 }
 catch(ModelExceptionNoResult $e)
 {
-	throw new Exception\FieldNotValid('challenge');
+	throw new FieldNotValid('challenge');
 }
 
-$now = new \DateTime();
+// check the challenge not expire
+$now = new DateTime();
 
 if ($now > $challenge['expire'])
 {
 	Model::challenge_del($challenge['id']);
 
-	throw new Exception\FieldNotValid('challenge');
+	throw new FieldNotValid('challenge');
 }
 
 // retrieve user and the password correspondig to the challenge
 $user = Model::user_get_by_id($challenge['user_id']);
 
 // retrieve configuration
-$conf = pixelpost\Config::create();
+$conf     = Config::create();
+$lifetime = $conf->plugin_auth->lifetime;
+$key      = $conf->uid;
 
+// set auth module
 $auth = new Auth();
-$token = $auth->set_lifetime($conf->plugin_auth->lifetime)
-			  ->set_domain($event->http_request->get_host())
-			  ->set_username($user['name'])
-			  ->set_password_hash($user['pass'])
-			  ->set_challenge($event->request->challenge)
-			  ->get_token();
+$auth->set_lifetime($lifetime)
+	 ->set_key($key)
+	 ->set_username($user['name'])
+	 ->set_password_hash($user['pass'])
+	 ->set_challenge($event->request->challenge);
 
-if ($event->request->signature != $auth->get_signature())
+// generate new token, nonce and check the request signature
+$nonce     = $auth->get_nonce();
+$token     = $auth->get_token();
+$sign      = $auth->get_signature($event->request->challenge);
+$signature = $auth->get_signature($nonce);
+
+if ($sign != $event->request->signature)
 {
-	throw new ApiException('auth_fail', "The authentification failed.");
+	throw new FieldNotValid('signature');
 }
 
-// all is good, we store the token
-Model::token_add($token, $event->request->challenge, $challenge['user_id']);
+// delete the challenge, no one can try to auth himself with it now
+Model::challenge_del($challenge['id']);
 
-$event->response = array('token' => $token, 'signature' => $auth->get_signature());
+// store the token in database
+Model::token_add($token, $event->request->challenge, $nonce, $challenge['user_id']);
+
+// return the response
+$event->response = compact('nonce', 'signature');

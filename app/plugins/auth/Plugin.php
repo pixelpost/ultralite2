@@ -2,7 +2,12 @@
 
 namespace pixelpost\plugins\auth;
 
-use pixelpost;
+use pixelpost,
+	pixelpost\Config,
+	pixelpost\Filter,
+	pixelpost\Event,
+	pixelpost\PluginInterface,
+	pixelpost\plugins\api\Exception as ApiException;
 
 /**
  * Auth management for pixelpost.
@@ -12,27 +17,37 @@ use pixelpost;
  * @version    0.0.1
  * @since      File available since Release 1.0.0
  */
-class Plugin implements pixelpost\PluginInterface
+class Plugin implements PluginInterface
 {
 	/**
-	 * @var string The token provided by the api call
+	 * @var string The api method called
 	 */
-	protected static $_token     = '';
+	protected static $_api_method = '';
 
 	/**
-	 * @var string The signature provided by the api call
+	 * @var int The token id of the auth
 	 */
-	protected static $_signature = '';
+	protected static $_api_token = 0;
+
+	/**
+	 * @var string The token nonce of the auth
+	 */
+	protected static $_api_nonce = '';
 
 	/**
 	 * @var string The authentified username if auth success
 	 */
-	protected static $_username  = '';
+	protected static $_user_name = '';
 
 	/**
-	 * @var int The authentified userId if auth success
+	 * @var string The authentified password hashed if auth success
 	 */
-	protected static $_userId    = 0;
+	protected static $_user_pass = '';
+
+	/**
+	 * @var int The authentified user_id if auth success
+	 */
+	protected static $_user_id  = 0;
 
 	public static function version()
 	{
@@ -48,7 +63,7 @@ class Plugin implements pixelpost\PluginInterface
 	{
 		$configuration = '{ "lifetime" : 300 }';
 
-		$conf = pixelpost\Config::create();
+		$conf = Config::create();
 
 		$conf->plugin_auth = json_decode($configuration);
 
@@ -61,7 +76,7 @@ class Plugin implements pixelpost\PluginInterface
 
 	public static function uninstall()
 	{
-		$conf = pixelpost\Config::create();
+		$conf = Config::create();
 
 		unset($conf->plugin_auth);
 
@@ -82,48 +97,36 @@ class Plugin implements pixelpost\PluginInterface
 		$selfClass   = '\\' . __CLASS__;
 		$apiClass    = '\\' . __NAMESPACE__ . '\\Api';
 		$adminClass  = '\\' . __NAMESPACE__ . '\\Admin';
+		$routerClass = '\pixelpost\plugins\Router\Plugin';
 
 		// check api auth before api event method is called
-		pixelpost\Event::register('request.api.decoded', $selfClass . '::request_api_decoded');
+		Event::register('api.request.raw',  $selfClass . '::api_request');
+		// check api hmac before api response is sent
+		Event::register('api.response.raw', $selfClass . '::api_response');
 		// check admin auth before admin event method is called
-		pixelpost\Event::register('request.admin',       $selfClass . '::request_admin', 99);
+		Event::register('request.admin',    $selfClass . '::request_admin', 99);
 
-		pixelpost\Event::register('api.auth.version',    $apiClass . '::auth_version');
-		pixelpost\Event::register('api.auth.request',    $apiClass . '::auth_request');
-		pixelpost\Event::register('api.auth.token',      $apiClass . '::auth_token');
-		pixelpost\Event::register('api.auth.refresh',    $apiClass . '::auth_refresh');
-		pixelpost\Event::register('api.auth.config.get', $apiClass . '::auth_config_get');
-		pixelpost\Event::register('api.auth.config.set', $apiClass . '::auth_config_set');
-		pixelpost\Event::register('api.auth.user.add',   $apiClass . '::auth_user_add');
-		pixelpost\Event::register('api.auth.user.set',   $apiClass . '::auth_user_set');
-		pixelpost\Event::register('api.auth.user.get',   $apiClass . '::auth_user_get');
-		pixelpost\Event::register('api.auth.user.del',   $apiClass . '::auth_user_del');
-		pixelpost\Event::register('api.auth.user.list',  $apiClass . '::auth_user_list');
-		pixelpost\Event::register('api.auth.grant.add',  $apiClass . '::auth_grant_add');
-		pixelpost\Event::register('api.auth.grant.set',  $apiClass . '::auth_grant_set');
-		pixelpost\Event::register('api.auth.grant.get',  $apiClass . '::auth_grant_get');
-		pixelpost\Event::register('api.auth.grant.del',  $apiClass . '::auth_grant_del');
-		pixelpost\Event::register('api.auth.grant.list', $apiClass . '::auth_grant_list');
-		pixelpost\Event::register('api.auth.user.grant.add', $apiClass . '::auth_user_grant_add');
-		pixelpost\Event::register('api.auth.user.grant.del', $apiClass . '::auth_user_grant_del');
+		Event::register('api.auth.version',        $apiClass . '::auth_version');
+		Event::register('api.auth.request',        $apiClass . '::auth_request');
+		Event::register('api.auth.token',          $apiClass . '::auth_token');
+		Event::register('api.auth.refresh',        $apiClass . '::auth_refresh');
+		Event::register('api.auth.config.get',     $apiClass . '::auth_config_get');
+		Event::register('api.auth.config.set',     $apiClass . '::auth_config_set');
+		Event::register('api.auth.user.add',       $apiClass . '::auth_user_add');
+		Event::register('api.auth.user.set',       $apiClass . '::auth_user_set');
+		Event::register('api.auth.user.get',       $apiClass . '::auth_user_get');
+		Event::register('api.auth.user.del',       $apiClass . '::auth_user_del');
+		Event::register('api.auth.user.list',      $apiClass . '::auth_user_list');
+		Event::register('api.auth.grant.add',      $apiClass . '::auth_grant_add');
+		Event::register('api.auth.grant.set',      $apiClass . '::auth_grant_set');
+		Event::register('api.auth.grant.get',      $apiClass . '::auth_grant_get');
+		Event::register('api.auth.grant.del',      $apiClass . '::auth_grant_del');
+		Event::register('api.auth.grant.list',     $apiClass . '::auth_grant_list');
+		Event::register('api.auth.user.grant.add', $apiClass . '::auth_user_grant_add');
+		Event::register('api.auth.user.grant.del', $apiClass . '::auth_user_grant_del');
 
-		pixelpost\Event::register('admin.template.footer', $adminClass . '::template_footer');
-		pixelpost\Event::register('admin.template.css',    $adminClass . '::template_css');
-	}
-
-	/**
-	 * Store token and signature data if they are present in a api request
-	 *
-	 * @param pixelpost\Event $event
-	 */
-	public static function request_api_decoded(pixelpost\Event $event)
-	{
-		// if we have auth data, we store them.
-		if (isset($event->request->token) && isset($event->request->signature))
-		{
-			self::$_token     = $event->request->token;
-			self::$_signature = $event->request->signature;
-		}
+		Event::register('admin.template.footer', $adminClass . '::template_footer');
+		Event::register('admin.template.css',    $adminClass . '::template_css');
 	}
 
 	/**
@@ -134,7 +137,7 @@ class Plugin implements pixelpost\PluginInterface
 	 * @param pixelpost\Event $event
 	 * @return bool
 	 */
-	public static function request_admin(pixelpost\Event $event)
+	public static function request_admin(Event $event)
 	{
 		// retrieve the web admin page called
 		list(,$page) = $event->request->get_params() + array('admin', 'index');
@@ -158,12 +161,12 @@ class Plugin implements pixelpost\PluginInterface
 			return false;
 		default:
 			// check if user is authentificated
-			if (WebAuth::check($event->request->get_host(), $id, $name))
+			if (WebAuth::check($id, $name))
 			{
 				// register the identification (permit to internal api call to be
 				// authentified too).
-				self::$_userId   = $id;
-				self::$_username = $name;
+				self::$_user_id   = $id;
+				self::$_user_name = $name;
 				// call admin page
 				return true;
 			}
@@ -184,17 +187,17 @@ class Plugin implements pixelpost\PluginInterface
 	 */
 	public static function get_username()
 	{
-		return self::$_username;
+		return self::$_user_name;
 	}
 
 	/**
-	 * Return the authentified userId or 0
+	 * Return the authentified user_id or 0
 	 *
 	 * @return string
 	 */
 	public static function get_user_id()
 	{
-		return self::$_userId;
+		return self::$_user_id;
 	}
 
 	/**
@@ -205,49 +208,98 @@ class Plugin implements pixelpost\PluginInterface
 	public static function is_auth()
 	{
 		// check if user is allready authentified
-		if (self::$_userId != 0)    return true;
+		if (self::$_user_id != 0) return true;
+	}
 
-		// check if we have authentification data
-		if (self::$_token == '')     return false;
-		if (self::$_signature == '') return false;
+	/**
+	 * Check authentication if provided in api request.
+	 *
+	 * @param pixelpost\Event $event
+	 */
+	public static function api_request(Event $event)
+	{
+		// if we a auth request, seems look good with auth data, we store it
+		if (!isset($event->request->token))   return;
+		if (!isset($event->request->hmac))    return;
+		if (!isset($event->request->method))  return;
+		if (!isset($event->request->request)) return;
 
 		// retrieve the token infos
 		try
 		{
-			$token = Model::token_get(self::$_token);
+			$token = Model::token_get($event->request->token);
 		}
 		catch(ModelExceptionNoResult $e)
 		{
-			throw new ApiException('bad_token', 'This token is invalid.');
+			throw new ApiException('bad_token', 'This token is not valid.');
 		}
 
 		// retrieve user data
 		$user = Model::user_get_by_id($token['user_id']);
 
 		// retrieve configuration
-		$conf = pixelpost\Config::create();
+		$conf = Config::create();
 
-		// generate the signature
+		// prepare auth class
 		$auth = new Auth();
-		$signature = $auth->set_lifetime($conf->plugin_auth->lifetime)
-   				          ->set_domain($event->http_request->get_host())
-					      ->set_username($user['name'])
-			              ->set_password_hash($user['pass'])
-				          ->set_challenge($token['challenge'])
-					      ->get_signature();
-
-		// check signature
-		if (self::$_signature != $signature) return false;
+		$auth->set_lifetime($conf->plugin_auth->lifetime)
+			 ->set_key($conf->uid)
+			 ->set_username($user['name'])
+			 ->set_password_hash($user['pass'])
+			 ->set_challenge($token['challenge'])
+			 ->set_nonce($token['nonce']);
 
 		// check if the token is perempted.
-		if (self::$_token != $auth->get_token())
+		if ($auth->get_token() != $event->request->token)
 		{
 			throw new ApiException('old_token', 'This token have expired.');
 		}
 
-		// store authentified username and id
-		self::$_username = $user['name'];
-		self::$_userId   = $token['user_id'];
+		// extract method and request parts of the request
+		$method  = $event->request->method;
+		$request = Filter::object_to_array($event->request->request);
+
+		// check signature
+		if ($auth->hmac($method, $request) != $event->request->hmac)
+		{
+			throw new ApiException('bad_hmac', 'This hmac is not valid.');
+		}
+
+		// store authentified username and id, generate a new nonce
+		self::$_api_token  = $token['id'];
+		self::$_api_nonce  = $token['nonce'];
+		self::$_user_id    = $token['user_id'];
+		self::$_user_name  = $user['name'];
+		self::$_user_pass  = $user['pass'];
+	}
+
+	/**
+	 * Create hmac and nonce in api response if necessary
+	 *
+	 * @param pixelpost\Event $event
+	 */
+	public static function api_response(Event $event)
+	{
+		if (self::$_api_token == 0) return;
+
+		// prepare auth class
+		$auth = new Auth();
+		$auth->set_key(Config::create()->uid)
+			 ->set_password_hash(self::$_user_pass)
+			 ->set_username(self::$_user_name)
+			 ->set_nonce(self::$_api_nonce);
+
+		// create the new nonce
+		$nonce = $auth->get_nonce();
+
+		// hmac the response
+		$hmac  = $auth->hmac($nonce, $event->response['response']);
+
+		// replace the nonce in for this token
+		Model::token_update_nonce(self::$_api_token, $nonce);
+
+		// add the needed data to the response
+		$event->response += compact('nonce', 'hmac');
 	}
 
 	/**
@@ -264,7 +316,7 @@ class Plugin implements pixelpost\PluginInterface
 		// retrieve all user's grant
 		try
 		{
-			$grants = Model::user_grant_list_by_user(self::$_userId);
+			$grants = Model::user_grant_list_by_user(self::$_user_id);
 		}
 		catch(ModelExceptionNoResult $e)
 		{

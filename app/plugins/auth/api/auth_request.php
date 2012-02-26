@@ -2,33 +2,42 @@
 
 namespace pixelpost\plugins\auth;
 
-use pixelpost;
-use pixelpost\plugins\api\Exception;
+use pixelpost\Config,
+	pixelpost\plugins\api\Exception\FieldRequired,
+	pixelpost\plugins\api\Exception\FieldNotValid;
 
-if (!isset($event->request->username)) throw new Exception\FieldRequired('auth.request', 'username');
+// check the request
+if (!isset($event->request->username)) throw new FieldRequired('auth.request', 'username');
 
-// check the user in database
+// check the username exists
 try
 {
 	$user = Model::user_get_by_name($event->request->username);
+
+	// retrieve configuration
+	$conf     = Config::create();
+	$lifetime = $conf->plugin_auth->lifetime;
+	$key      = $conf->uid;
+
+	// set auth module
+	$auth = new Auth();
+	$auth->set_lifetime($lifetime)
+		 ->set_key($key)
+		 ->set_username($event->request->username)
+		 ->set_password_hash($user['pass']);
+
+	// create the challenge
+	$challenge = $auth->get_challenge();
+
+	// store the challenge in database
+	Model::challenge_add($challenge, $user['id'], $lifetime);
 }
 catch(ModelExceptionNoResult $e)
 {
-	throw new Exception('bad_username', "Requested authentification failed.");
+	// netheir tell user don't exists. This is an indication for attacker
+	$challenge = md5(uniqid());
+	$lifetime  = 300;
 }
 
-// retrieve configuration
-$lifetime = pixelpost\Config::create()->plugin_auth->lifetime;
-
-// create the challenge
-$auth = new Auth();
-$challenge = $auth->set_lifetime($lifetime)
-				  ->set_domain($event->http_request->get_host())
-				  ->set_username($event->request->username)
-				  ->set_password_hash($user['pass'])
-				  ->get_challenge();
-
-// store it in database
-Model::challenge_add($challenge, $user['id'], $lifetime);
-
-$event->response = array('challenge' => $challenge, 'lifetime' => $lifetime);
+// return the response
+$event->response = compact('challenge', 'lifetime');
