@@ -705,6 +705,8 @@ class TemplateCompiler
 			case 'join'    :
 				if ($param) return 'implode(' . $param . ', %s)';
 				else        return 'implode(\' \', %s)';
+			// event
+			case 'event'   : return '$this->_event_signal(%s)';
 		}
 
 		return '%s';

@@ -355,6 +355,18 @@ class Template
 	}
 
 	/**
+	 * Call the event $name, pass to the event an empty array named 'response'.
+	 * Finally, return the 'response' array event parameter.
+	 *
+	 * @param string
+	 * @return array
+	 */
+	protected function _event_signal($name)
+	{
+		return Event::signal($name, array('response' => array()))->response;
+	}
+
+	/**
 	 * Internal filter: Format a number to 2 decimal.
 	 *
 	 * @param mixed $data
