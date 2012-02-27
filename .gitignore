@@ -4,6 +4,6 @@
 *.sqlite3
 *.db
 *.un~
-private/config.json
+private/
 photos/
 index.php
