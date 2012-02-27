@@ -127,6 +127,10 @@ class Plugin implements PluginInterface
 
 		Event::register('admin.template.footer', $adminClass . '::template_footer');
 		Event::register('admin.template.css',    $adminClass . '::template_css');
+		Event::register('admin.template.js',     $adminClass . '::template_js');
+
+		Event::register('admin.auth',            $routerClass . '::route');
+		Event::register('admin.auth.api-bridge', $adminClass  . '::page_api_bridge');
 	}
 
 	/**

@@ -21,4 +21,17 @@ class Admin
 	{
 		$event->response[] = Template::create()->render('auth/tpl/admin-css.php');
 	}
+
+	public static function template_js(Event $event)
+	{
+		$event->response[] = Template::create()->render('auth/tpl/admin-js.php');
+	}
+
+	public static function page_api_bridge(Event $event)
+	{
+		// this is use web authentication instead of api authentication to
+		// call api methods.
+		// So, no tokens, no hmac, no nonce. More simple for admin JS calls.
+		$event->redirect('request.api');
+	}
 }

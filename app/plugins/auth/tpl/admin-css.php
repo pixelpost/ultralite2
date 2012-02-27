@@ -1,4 +1,4 @@
-<style type="text/css">
+<style>
 	#disconnect {
 		text-align:right;
 		margin-right:80px;
