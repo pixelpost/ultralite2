@@ -7,26 +7,14 @@
 		<link rel="stylesheet" media="screen" href="{{ @CONTENT_URL }}admin/content/style.css">
 		<link rel="stylesheet" media="screen" href="http://fonts.googleapis.com/css?family=Lato:300">
 		{% block Css %}{% endblock %}
-		<?php
-			$event = \pixelpost\Event::signal('admin.template.css', array('response' => array()));
-			foreach($event->response as $item)
-			{
-				echo $item;
-			}
-		?>
+		{{ 'admin.template.css'|event|join }}
 	</head>
 	<body lang="en">
 		<header>
 			<nav>
 				<ul>
 					<li><a href="index">home</a></li>
-					<?php
-						$event = \pixelpost\Event::signal('admin.template.nav', array('response' => array()));
-						foreach($event->response as $item)
-						{
-							echo $item;
-						}
-					?>
+					{{ 'admin.template.nav'|event|join }}
 					<li><a href="api-test">api test</a></li>
 				</ul>
 			</nav>
@@ -37,23 +25,11 @@
 		</div>
 		<footer>
 			{% block Footer %}{% endblock %}
-			<?php
-				$event = \pixelpost\Event::signal('admin.template.footer', array('response' => array()));
-				foreach($event->response as $item)
-				{
-					echo $item;
-				}
-			?>
+			{{ 'admin.template.footer'|event|join }}
 		</footer>
 		<script src="http://code.jquery.com/jquery-1.6.4.min.js"></script>
 		<script src="{{ @CONTENT_URL }}admin/content/lib.js"></script>
-		<?php
-			$event = \pixelpost\Event::signal('admin.template.js', array('response' => array()));
-			foreach($event->response as $item)
-			{
-				echo $item;
-			}
-		?>
+		{{ 'admin.template.js'|event|join }}
 		{% block Js %}{% endblock %}
 	</body>
 </html>
