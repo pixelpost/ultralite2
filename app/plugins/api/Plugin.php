@@ -79,14 +79,8 @@ class Plugin implements PluginInterface
 	 */
 	public static function api_request(Event $event)
 	{
-		// Retrieve the url paramters
-		$urlParams = $event->request->get_params();
-
-		// we skip the first url param which is 'api'
-		array_shift($urlParams);
-
-		// we work on the second url param
-		$format = array_shift($urlParams);
+		// retreive the format in which the request is sended
+		$format = array_shift($event->params);
 
 		// validate the format or raise an error
 		if (self::is_valid_format($format) == false)
