@@ -297,30 +297,41 @@ class TemplateCompiler
 	{
 		$me = $this;
 
-		$callback = function($data, $open) use ($me)
+		$display_tag = function($data) use ($me)
 		{
-			if ($is_display = ($open == '{% display '))
-			{
-				$name  = $data;
-				$block = '{% child %}';
-			}
-			else
-			{
-				list($name, $block) = explode(' %}', $data, 2);
-				$block = trim($block);
-			}
+			$name  = '{% BLOCK ' . trim($data) . ' %}';
 
-			$name = '{% BLOCK ' . trim($name) . ' %}';
+			if (!isset($me->block[$name])) $me->block[$name] = '';
 
-			$replace = isset($me->block[$name]) ? $me->block[$name] : '';
-
-			$me->block[$name] = str_replace('{% child %}', $replace, $block);
-
-			return $name . ($is_display ? '' : '{% endblock');
+			return $name;
 		};
 
-		$this->replace_tag($this->tpl, '{% display ' , ' %}'        , $callback);
-		$this->replace_tag($this->tpl, '{% block '   , '{% endblock', $callback);
+		$block_tag = function($data) use ($me)
+		{
+			list($data, $block) = explode(' %}', $data, 2);
+
+			$name  = '{% BLOCK ' . trim($data) . ' %}';
+
+			$block = trim($block);
+
+			if (!isset($me->block[$name]))
+			{
+				$me->block[$name] = $block;
+			}
+			elseif (strpos($me->block[$name], '{% parent %}') !== false)
+			{
+				$me->block[$name] = str_replace('{% parent %}', $block, $me->block[$name]);
+			}
+			elseif (strpos($block, '{% child %}') !== false)
+			{
+				$me->block[$name] = str_replace('{% child %}', $me->block[$name], $block);
+			}
+
+			return $name . '{% endblock';
+		};
+
+		$this->replace_tag($this->tpl, '{% display ' , ' %}'        , $display_tag);
+		$this->replace_tag($this->tpl, '{% block '   , '{% endblock', $block_tag);
 		$this->replace_tag($this->tpl, '{% endblock ', '%}'         , function() { return ''; });
 	}
 
