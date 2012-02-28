@@ -286,8 +286,9 @@ class TemplateCompiler
 	 * '{% BLOCK name %}' : 'content of the block', ...
 	 *
 	 * If a block named Z is allready in $block and a new block Z is discovered,
-	 * the {% parent %} tag in the discovered block is replaced by the content
-	 * in the $block[Z].
+	 * the {% child %} tag in the discovered block is replaced by the content
+	 * in the $block[Z]. (Don't forget that child are declared before parent).
+	 *
 	 * Finally, the $block[Z] value is replaced by the new content.
 	 *
 	 * @return type
@@ -296,29 +297,29 @@ class TemplateCompiler
 	{
 		$me = $this;
 
-		$registerBlock = function($name, $block = '', $display = true) use ($me)
+		$callback = function($data, $open) use ($me)
 		{
-			$name  = '{% BLOCK ' . trim($name) . ' %}';
-			$block = trim($block);
-
-			if (!$display && isset($me->block[$name]))
+			if ($is_display = ($open == '{% display '))
 			{
-				$block = str_replace('{% parent %}', $block, $me->block[$name]);
+				$name  = $data;
+				$block = '{% child %}';
+			}
+			else
+			{
+				list($name, $block) = explode(' %}', $data, 2);
+				$block = trim($block);
 			}
 
-			$me->block[$name] = $block;
+			$name = '{% BLOCK ' . trim($name) . ' %}';
 
-			return $name . (($display) ? '' : '{% endblock');
+			$replace = isset($me->block[$name]) ? $me->block[$name] : '';
+
+			$me->block[$name] = str_replace('{% child %}', $replace, $block);
+
+			return $name . ($is_display ? '' : '{% endblock');
 		};
 
-		$callback = function($data) use ($me, $registerBlock)
-		{
-			list($name, $block) = explode(' %}', $data, 2);
-
-			return $registerBlock($name, $block, false);
-		};
-
-		$this->replace_tag($this->tpl, '{% display ' , ' %}'        , $registerBlock);
+		$this->replace_tag($this->tpl, '{% display ' , ' %}'        , $callback);
 		$this->replace_tag($this->tpl, '{% block '   , '{% endblock', $callback);
 		$this->replace_tag($this->tpl, '{% endblock ', '%}'         , function() { return ''; });
 	}
@@ -675,10 +676,6 @@ class TemplateCompiler
 			case 'empty'   : return 'empty(%s)';
 			case 'default' : return '$this->_filter_default(%s, ' . $param . ')';
 			case 'if'      : return '$this->_filter_if(%s, ' . $param . ')';
-			// datetime
-			case 'date'    : return '$this->_filter_date(%s, 0, ' . $param . ')';
-			case 'datetime': return '$this->_filter_date(%s, 1, ' . $param . ')';
-			case 'time'    : return '$this->_filter_date(%s, 2, ' . $param . ')';
 			// string
 			case 'reverse' : return 'strrev(%s)';
 			case 'br'      : return 'nl2br(%s)';
@@ -713,6 +710,12 @@ class TemplateCompiler
 			case 'join'    :
 				if ($param) return 'implode(' . $param . ', %s)';
 				else        return 'implode(\' \', %s)';
+			// datetime
+			case 'date':
+			case 'datetime':
+			case 'time':
+				if (!$param) $param = '\'default\'';
+				return "\$this->_filter_date(%s, '$filter', $param)";
 			// event
 			case 'event'   : return '$this->_event_signal(%s)';
 		}

@@ -212,32 +212,6 @@ EOF;
 	}
 
 	/**
-	 * @covers pixelpost\TemplateCompiler::extract_block
-	 */
-	public function test_extract_block_with_parent()
-	{
-		$test = 'Some text {% block title %}my title{% endblock %} and other '
-			  . '{% block other %}other data{% endblock other %}.';
-
-		$result = 'Some text {% BLOCK title %} and other {% BLOCK other %}.';
-
-		$this->object->tpl = $test;
-
-		$this->object->block['{% BLOCK title %}'] = 'one title';
-		$this->object->block['{% BLOCK other %}'] = 'data and {% parent %}';
-
-		$this->object->extract_block();
-
-		$this->assertArrayHasKey('{% BLOCK title %}', $this->object->block);
-		$this->assertArrayHasKey('{% BLOCK other %}', $this->object->block);
-
-		$this->assertSame('one title', $this->object->block['{% BLOCK title %}']);
-		$this->assertSame('data and other data', $this->object->block['{% BLOCK other %}']);
-
-		$this->assertSame($result, $this->object->tpl);
-	}
-
-	/**
 	 * @covers pixelpost\TemplateCompiler::compile_block
 	 */
 	public function test_compiler_block()
@@ -257,6 +231,92 @@ EOF;
 		$this->assertSame($result, $this->object->tpl);
 	}
 
+	public function test_extract_block_display()
+	{
+		// here we assume that $child_tpl contains a {% extends $parent_tpl %} tag
+		$child_tpl  = '{% block name %}Alban{% endblock %}';
+
+		$parent_tpl = 'Hello, my name is {% display name %}.';
+
+		$result1 = '{% BLOCK name %}';
+		$result2 = 'Hello, my name is {% BLOCK name %}.';
+		$result3 = 'Hello, my name is Alban.';
+
+		$this->object->tpl = $child_tpl;
+
+		$this->object->extract_block();
+
+		$this->assertArrayHasKey('{% BLOCK name %}', $this->object->block);
+		$this->assertSame('Alban', $this->object->block['{% BLOCK name %}']);
+		$this->assertSame($result1, $this->object->tpl);
+
+		$this->object->tpl = $parent_tpl;
+
+		$this->object->extract_block();
+
+		$this->assertArrayHasKey('{% BLOCK name %}', $this->object->block);
+		$this->assertSame('Alban', $this->object->block['{% BLOCK name %}']);
+		$this->assertSame($result2, $this->object->tpl);
+
+		$this->object->compile_block();
+
+		$this->assertSame($result3, $this->object->tpl);
+	}
+
+	public function test_extract_block_display_non_exists()
+	{
+		$tpl = 'Hello, my name is {% display name %}.';
+
+		$result1 = 'Hello, my name is {% BLOCK name %}.';
+		$result2 = 'Hello, my name is .';
+
+		$this->object->tpl = $tpl;
+
+		$this->object->extract_block();
+
+		$this->assertArrayHasKey('{% BLOCK name %}', $this->object->block);
+		$this->assertSame('', $this->object->block['{% BLOCK name %}']);
+		$this->assertSame($result1, $this->object->tpl);
+
+		$this->object->compile_block();
+
+		$this->assertSame($result2, $this->object->tpl);
+	}
+
+	/**
+	 * @covers pixelpost\TemplateCompiler::extract_block
+	 */
+	public function test_extract_block_with_child_tag()
+	{
+		// here we assume that $child_tpl contains a {% extends $parent_tpl %} tag
+		$child_tpl  = '{% block name %}Alban{% endblock %}';
+
+		$parent_tpl = 'Hello, {% block name %}my name is {% child %}{% endblock %}.';
+
+		$result1 = '{% BLOCK name %}';
+		$result2 = 'Hello, {% BLOCK name %}.';
+		$result3 = 'Hello, my name is Alban.';
+
+		$this->object->tpl = $child_tpl;
+
+		$this->object->extract_block();
+
+		$this->assertArrayHasKey('{% BLOCK name %}', $this->object->block);
+		$this->assertSame('Alban', $this->object->block['{% BLOCK name %}']);
+		$this->assertSame($result1, $this->object->tpl);
+
+		$this->object->tpl = $parent_tpl;
+
+		$this->object->extract_block();
+
+		$this->assertArrayHasKey('{% BLOCK name %}', $this->object->block);
+		$this->assertSame('my name is Alban', $this->object->block['{% BLOCK name %}']);
+		$this->assertSame($result2, $this->object->tpl);
+
+		$this->object->compile_block();
+
+		$this->assertSame($result3, $this->object->tpl);
+	}
 
 	/**
 	 * @covers pixelpost\TemplateCompiler::make_if

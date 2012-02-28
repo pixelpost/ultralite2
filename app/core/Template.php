@@ -2,6 +2,8 @@
 
 namespace pixelpost;
 
+use DateTime, DateTimeZone, Exception;
+
 /**
  * Provide template management.
  *
@@ -323,33 +325,46 @@ class Template
 	 * @param string $format
 	 * @return string
 	 */
-	protected function _filter_date(\DateTime $date, $datetime, $format)
+	protected function _filter_date($date, $type, $format, $print_tz = false)
 	{
+		$tz  = new DateTimeZone(Config::create()->timezone);
+		$ftz = ' T';
+
+		if (is_string($date)) $date = new DateTime($date, $tz);
+
+		$date->setTimezone($tz);
+
 		switch($format)
 		{
-			case 'long' :  // Saturday 8th of december 2005, 03:04 PM
-				if     ($datetime == 2)  $format = 'h:i A';
-				elseif ($datetime == 1)  $format = 'l jS \of F Y, h:i A';
-				else					 $format = 'l jS \of F Y';
+			case 'longer' :  // Saturday 8th of december 2005, 03:04 PM
+				if     ($type == 'date')	 $format = 'l jS \of F Y';
+				elseif ($type == 'datetime') $format = 'l jS \of F Y, h:i A';
+				else                         $format = 'h:i A';
 				break;
-			case 'longer' :  // Sat 8th of dec 2005, 03:04 PM
-				if     ($datetime == 2) $format = 'h:i A';
-				elseif ($datetime == 1) $format = 'D jS \of M Y, h:i A';
-				else					$format = 'D jS \of M Y';
+			case 'long' :    // Sat 8th of dec 2005, 03:04 PM
+				if     ($type == 'date')	 $format = 'D jS \of M Y';
+				elseif ($type == 'datetime') $format = 'D jS \of M Y, h:i A';
+				else                         $format = 'h:i A';
 				break;
-			case 'smaller' :  // 8th dec 2005 2005 03:04 PM
-				if     ($datetime == 2) $format = 'h:i A';
-				elseif ($datetime == 1) $format = 'jS F Y h:i A';
-				else					$format = 'jS F Y';
+			case 'default' :
+			case 'small' :   // 8th dec 2005 03:04 PM
+				if     ($type == 'date')	 $format = 'jS F Y';
+				elseif ($type == 'datetime') $format = 'jS F Y h:i A';
+				else                         $format = 'h:i A';
 				break;
-			case 'small' : // 08-12-2005 03:04 PM
-				if     ($datetime == 2) $format = 'h:i A';
-				elseif ($datetime == 1) $format = 'd-m-Y h:i A';
-				else					$format = 'd-m-Y';
+			case 'smaller' : // 08-12-2005 03:04 PM
+				if     ($type == 'date')	 $format = 'd-m-Y';
+				elseif ($type == 'datetime') $format = 'd-m-Y h:i A';
+				else                         $format = 'h:i A';
+				break;
+			case 'iso' :     // 2005-12-08 03:04
+				if     ($type == 'date')	 $format = 'Y-m-d';
+				elseif ($type == 'datetime') $format = 'Y-m-d H:i:s';
+				else                         $format = 'H:i:s';
 				break;
 		}
 
-		$date->setTimezone(Config::create()->timezone);
+		if ($print_tz) $format .= $ftz;
 
 		return $date->format($format);
 	}
@@ -458,7 +473,7 @@ class Template
 			// else load directly the cached file
 			else include $cache;
         }
-        catch(\Exception $e) { ob_end_clean(); throw $e; }
+        catch(Exception $e) { ob_end_clean(); throw $e; }
 
         return ob_get_clean();
     }
