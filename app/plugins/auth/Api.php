@@ -5,7 +5,7 @@ namespace pixelpost\plugins\auth;
 use pixelpost\Event;
 
 /**
- * Provide API methods for managing photo content
+ * Provide API methods for managing auth content
  *
  * @copyright  2011 Alban LEROUX <seza@paradoxal.org>
  * @license    http://creativecommons.org/licenses/by-sa/3.0/ Creative Commons
