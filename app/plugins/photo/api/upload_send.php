@@ -11,7 +11,7 @@ use pixelpost\plugins\auth\Plugin   as Auth,
 if (!Auth::is_granted('write')) throw new ApiError\Ungranted('upload.send');
 
 // input checks requirement
-if (!isset($event->request->id))    throw new ApiError\FieldRequired('upload.send', 'name');
+if (!isset($event->request->id))    throw new ApiError\FieldRequired('upload.send', 'id');
 if (!isset($event->request->chunk)) throw new ApiError\FieldRequired('upload.send', 'chunk');
 if (!isset($event->request->data))  throw new ApiError\FieldRequired('upload.send', 'data');
 

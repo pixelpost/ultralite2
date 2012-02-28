@@ -12,7 +12,7 @@ use pixelpost\plugins\auth\Plugin   as Auth,
 if (!Auth::is_granted('write')) throw new ApiError\Ungranted('upload.end');
 
 // input checks requirement
-if (!isset($event->request->id))    throw new ApiError\FieldRequired('upload.end', 'name');
+if (!isset($event->request->id)) throw new ApiError\FieldRequired('upload.end', 'id');
 
 $id = trim($event->request->id);
 
