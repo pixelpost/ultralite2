@@ -25,6 +25,10 @@ header a:hover {
 	border-bottom-color: grey;
 }
 
+#content {
+	margin-bottom:100px; /* give space to footer */
+}
+
 footer {
 	background-color: black;
 	position: fixed;

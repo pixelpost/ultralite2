@@ -6,7 +6,7 @@
 		<base href="{{ @ADMIN_URL }}">
 		<link rel="stylesheet" media="screen" href="{{ @CONTENT_URL }}admin/content/style.css">
 		<link rel="stylesheet" media="screen" href="http://fonts.googleapis.com/css?family=Lato:300">
-		{% block Css %}{% endblock %}
+		{% display Css %}
 		{{ 'admin.template.css'|event|join }}
 	</head>
 	<body lang="en">
@@ -21,15 +21,15 @@
 			<h1>{% display Title %}</h1>
 		</header>
 		<div id="content">
-			{% block Content %}{% endblock %}
+			{% display Content %}
 		</div>
 		<footer>
-			{% block Footer %}{% endblock %}
+			{% display Footer %}
 			{{ 'admin.template.footer'|event|join }}
 		</footer>
 		<script src="http://code.jquery.com/jquery-1.6.4.min.js"></script>
 		<script src="{{ @CONTENT_URL }}admin/content/lib.js"></script>
 		{{ 'admin.template.js'|event|join }}
-		{% block Js %}{% endblock %}
+		{% display Js %}
 	</body>
 </html>
