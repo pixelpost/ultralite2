@@ -631,10 +631,15 @@ class TemplateCompiler
 
 				$addBraceToHyphensName = function($item)
 				{
-					return (strpos('-', $item) === false) ? $item : '{' . $item . '}';
+					return (strpos($item, '-') === false) ? $item : "{'$item'}";
 				};
 
-				$var = implode('->', array_map($addBraceToHyphensName, explode('.', $var)));
+				if (strpos($var, '.') !== false)
+				{
+					$var = str_replace('->', '<>', $var);
+					$var = implode('->', array_map($addBraceToHyphensName, explode('.', $var)));
+					$var = str_replace('<>', '->', $var);
+				}
 
 				break;
 		}
