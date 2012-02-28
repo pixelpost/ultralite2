@@ -132,6 +132,9 @@ try
 		auth\Model::user_grant_link($userId, $grant['id']);
 	}
 
+	// need ADMIN_URL constant for webAuth
+	define('ADMIN_URL', $conf->url . $conf->plugin_router->admin . '/');
+
 	// authentificate the user
 	auth\WebAuth::register($userName, $userPass, $userId, $request->get_host());
 }
@@ -156,6 +159,6 @@ $tpl->set_cache_raw_template(false)->set_template_path(__DIR__ . SEP . 'tpl');
 
 $tpl->error = $error;
 $tpl->data  = pixelpost\Filter::array_to_object($post);
-$tpl->home  = $conf->url . $conf->plugin_router->admin . '/';
+$tpl->home  = ADMIN_URL;
 
 $tpl->publish($template);
