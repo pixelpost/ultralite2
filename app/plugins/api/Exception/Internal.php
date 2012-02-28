@@ -17,10 +17,10 @@ class Internal extends \pixelpost\plugins\api\Exception
 	 *
 	 * @param string $message
 	 */
-	public function __construct($message)
+	public function __construct($message, \Exception $previous = null)
 	{
 		$code    = 'internal_error';
 
-		parent::__construct($code, $message);
+		parent::__construct($code, $message, $previous);
 	}
 }
