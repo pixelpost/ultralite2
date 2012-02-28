@@ -62,7 +62,7 @@ class TemplateCompiler
 	 */
 	public function replace_php_short_open_tag()
 	{
-        $this->tpl = str_replace(
+		$this->tpl = str_replace(
 			array("\r\n", '<?php', '<?xml', '<?',    '<?php=',     '<#', "?>\n"),
 			array("\n",   '<#php', '<#xml', '<?php', '<?php echo', '<?', "?>\n\n"),
 			$this->tpl);
@@ -73,30 +73,30 @@ class TemplateCompiler
 	 */
 	public function remove_comment()
 	{
-        $this->replace_tag($this->tpl, '{#', '#}', function() { return ''; });
+		$this->replace_tag($this->tpl, '{#', '#}', function() { return ''; });
 	}
 
 	/**
 	 * Protect all escaped string in the template.
 	 */
-    public function escape_escape()
-    {
-        $this->tpl = str_replace(
-            array('{{ \'{{\' }}', '{{ \'}}\' }}', '{{ \'{%\' }}', '{{ \'%}\' }}', '{{ \'{:\' }}', '{{ \':}\' }}'),
-            array('-|<@>|-',      '-|</@>|-',     '-|<*>|-',      '-|</*>|-',     '-|<§>|-',      '-|</§>|-'),
-            $this->tpl);
-    }
+	public function escape_escape()
+	{
+		$this->tpl = str_replace(
+			array('{{ \'{{\' }}', '{{ \'}}\' }}', '{{ \'{%\' }}', '{{ \'%}\' }}', '{{ \'{:\' }}', '{{ \':}\' }}'),
+			array('-|<@>|-',      '-|</@>|-',     '-|<*>|-',      '-|</*>|-',     '-|<§>|-',      '-|</§>|-'),
+			$this->tpl);
+	}
 
 	/**
 	 * Restore all protected escaped string in the template.
 	 */
-    public function unescape_escape()
-    {
-        $this->tpl = str_replace(
-            array('-|<@>|-', '-|</@>|-', '-|<*>|-', '-|</*>|-', '-|<§>|-', '-|</§>|-'),
-            array('{{',      '}}',       '{%',      '%}',       '{:',      ':}'),
-            $this->tpl);
-    }
+	public function unescape_escape()
+	{
+		$this->tpl = str_replace(
+			array('-|<@>|-', '-|</@>|-', '-|<*>|-', '-|</*>|-', '-|<§>|-', '-|</§>|-'),
+			array('{{',      '}}',       '{%',      '%}',       '{:',      ':}'),
+			$this->tpl);
+	}
 
 	/**
 	 * Protect all quote in $data by replacing them by a --#-- form.
@@ -110,53 +110,53 @@ class TemplateCompiler
 	 *
 	 * @param string $data
 	 */
-    public function escape_quote(&$data)
-    {
-        $this->quote = array();
+	public function escape_quote(&$data)
+	{
+		$this->quote = array();
 
-        $me = $this;
+		$me = $this;
 
-        $callback = function($inQuote, $open) use ($me)
-        {
-            $index = '--' . count($me->quote) . '--';
+		$callback = function($inQuote, $open) use ($me)
+		{
+			$index = '--' . count($me->quote) . '--';
 
-            $me->quote[$index] = $open . $inQuote . $open;
+			$me->quote[$index] = $open . $inQuote . $open;
 
-            return $index;
-        };
+			return $index;
+		};
 
-        $double = strpos($data , '"');
-        $simple = strpos($data , '\'');
+		$double = strpos($data , '"');
+		$simple = strpos($data , '\'');
 
-        if ($double === false)
-        {
-            $this->replace_tag($data, '\'', '\'', $callback);
-        }
-        elseif ($simple === false)
-        {
-            $this->replace_tag($data, '"',  '"',  $callback);
-        }
-        elseif ($double < $simple)
-        {
-            $this->replace_tag($data, '"',  '"',  $callback);
-            $this->replace_tag($data, '\'', '\'', $callback);
-        }
-        else
-        {
-            $this->replace_tag($data, '\'', '\'', $callback);
-            $this->replace_tag($data, '"',  '"',  $callback);
-        }
-    }
+		if ($double === false)
+		{
+			$this->replace_tag($data, '\'', '\'', $callback);
+		}
+		elseif ($simple === false)
+		{
+			$this->replace_tag($data, '"',  '"',  $callback);
+		}
+		elseif ($double < $simple)
+		{
+			$this->replace_tag($data, '"',  '"',  $callback);
+			$this->replace_tag($data, '\'', '\'', $callback);
+		}
+		else
+		{
+			$this->replace_tag($data, '\'', '\'', $callback);
+			$this->replace_tag($data, '"',  '"',  $callback);
+		}
+	}
 
 	/**
 	 * Restore all quote in $data previously protected.
 	 *
 	 * @param string $data
 	 */
-    public function unescape_quote(&$data)
-    {
-        $data = str_replace(array_keys($this->quote), array_values($this->quote), $data);
-    }
+	public function unescape_quote(&$data)
+	{
+		$data = str_replace(array_keys($this->quote), array_values($this->quote), $data);
+	}
 
 	/**
 	 * Protect all square in $data by replacing them by a §§#§§ form.
@@ -170,77 +170,77 @@ class TemplateCompiler
 	 *
 	 * @param string $data
 	 */
-    public function escape_square(&$data)
-    {
-        $this->square = array();
+	public function escape_square(&$data)
+	{
+		$this->square = array();
 
-        $me = $this;
+		$me = $this;
 
-        $callback = function($inSquare) use ($me)
-        {
-            $index = '§§' . count($me->square) . '§§';
+		$callback = function($inSquare) use ($me)
+		{
+			$index = '§§' . count($me->square) . '§§';
 
-            $me->square[$index] = '[' . $inSquare . ']';
+			$me->square[$index] = '[' . $inSquare . ']';
 
-            return $index;
-        };
+			return $index;
+		};
 
 		$this->replace_tag($data, '[',  ']',  $callback, true);
-    }
+	}
 
 	/**
 	 * Restore all square previously protected
 	 *
 	 * @param string $data
 	 */
-    public function unescape_square(&$data)
-    {
+	public function unescape_square(&$data)
+	{
 		$this->square = array_reverse($this->square, true);
 
-        $data = str_replace(array_keys($this->square), array_values($this->square), $data);
-    }
+		$data = str_replace(array_keys($this->square), array_values($this->square), $data);
+	}
 
 	/**
 	 * Protect all paren in $data by replacing them by a ::#:: form.
 	 *
 	 * The $paren internal array is fill like:
-	 * '::0::' : '(square 1)',
-	 * '::1::' : '(square 2)',
-	 * '::3::' : '(square 3)', ...
+	 * '::0::' : '(paren 1)',
+	 * '::1::' : '(paren 2)',
+	 * '::3::' : '(paren 3)', ...
 	 *
 	 * Each new call to this method erase all previously protected paren.
 	 *
 	 * @param string $data
 	 */
-    public function escape_paren(&$data)
-    {
-        $this->paren = array();
+	public function escape_paren(&$data)
+	{
+		$this->paren = array();
 
-        $me = $this;
+		$me = $this;
 
-        $callback = function($inSquare) use ($me)
-        {
-            $index = '::' . count($me->paren) . '::';
+		$callback = function($inSquare) use ($me)
+		{
+			$index = '::' . count($me->paren) . '::';
 
-            $me->paren[$index] = '(' . $inSquare . ')';
+			$me->paren[$index] = '(' . $inSquare . ')';
 
-            return $index;
-        };
+			return $index;
+		};
 
 		$this->replace_tag($data, '(',  ')',  $callback, true);
-    }
+	}
 
 	/**
 	 * Restore all paren previously protected
 	 *
 	 * @param string $data
 	 */
-    public function unescape_paren(&$data)
-    {
+	public function unescape_paren(&$data)
+	{
 		$this->paren = array_reverse($this->paren, true);
 
-        $data = str_replace(array_keys($this->paren), array_values($this->paren), $data);
-    }
+		$data = str_replace(array_keys($this->paren), array_values($this->paren), $data);
+	}
 
 	/**
 	 * Escape all raw block in the template.
@@ -254,17 +254,17 @@ class TemplateCompiler
 	 */
 	public function escape_raw_block()
 	{
-        $me = $this;
+		$me = $this;
 
 		$todo = function($data) use ($me)
-        {
-            $index           = '{% RAW ' . count($me->raw) . ' %}';
-            $me->raw[$index] = $data;
+		{
+			$index           = '{% RAW ' . count($me->raw) . ' %}';
+			$me->raw[$index] = $data;
 
-            return $index;
-        };
+			return $index;
+		};
 
-        $this->replace_tag($this->tpl, '{% raw %}', '{% endraw %}', $todo);
+		$this->replace_tag($this->tpl, '{% raw %}', '{% endraw %}', $todo);
 	}
 
 	/**
@@ -272,17 +272,18 @@ class TemplateCompiler
 	 */
 	public function unescape_raw_block()
 	{
-        $this->tpl = str_replace(array_keys($this->raw), array_values($this->raw), $this->tpl);
+		$this->tpl = str_replace(array_keys($this->raw), array_values($this->raw), $this->tpl);
 	}
 
 	/**
 	 * Extract all block content in the template.
 	 * All {% block name %}...{% endblock %} are replaced by {% BLOCK name %}
+	 * All {% display name %} are replaced by {% BLOCK name %}
 	 *
 	 * The internal $block array is fill like:
-	 * 'name' : 'content of the block',
-	 * 'name' : 'content of the block',
-	 * 'name' : 'content of the block', ...
+	 * '{% BLOCK name %}' : 'content of the block',
+	 * '{% BLOCK name %}' : 'content of the block',
+	 * '{% BLOCK name %}' : 'content of the block', ...
 	 *
 	 * If a block named Z is allready in $block and a new block Z is discovered,
 	 * the {% parent %} tag in the discovered block is replaced by the content
@@ -291,45 +292,47 @@ class TemplateCompiler
 	 *
 	 * @return type
 	 */
-    public function extract_block()
-    {
-        $me = $this;
+	public function extract_block()
+	{
+		$me = $this;
 
-        $callback = function($data) use ($me)
-        {
-            list($blockName, $block) = explode(' %}', $data, 2);
+		$registerBlock = function($name, $block = '', $display = true) use ($me)
+		{
+			$name  = '{% BLOCK ' . trim($name) . ' %}';
+			$block = trim($block);
 
-			$blockName = trim($blockName);
+			if (!$display && isset($me->block[$name]))
+			{
+				$block = str_replace('{% parent %}', $block, $me->block[$name]);
+			}
 
-            if (isset($me->block[$blockName]))
-            {
-                $block = str_replace('{% parent %}', $block, $me->block[$blockName]);
-            }
+			$me->block[$name] = $block;
 
-            $me->block[$blockName] = $block;
+			return $name . (($display) ? '' : '{% endblock');
+		};
 
-            return '{% BLOCK ' . $blockName . ' %}{% endblock ';
-        };
+		$callback = function($data) use ($me, $registerBlock)
+		{
+			list($name, $block) = explode(' %}', $data, 2);
 
-        $this->replace_tag($this->tpl, '{% block ', '{% endblock', $callback);
-        $this->replace_tag($this->tpl, '{% endblock ', '%}', function() { return ''; });
-    }
+			return $registerBlock($name, $block, false);
+		};
+
+		$this->replace_tag($this->tpl, '{% display ' , ' %}'        , $registerBlock);
+		$this->replace_tag($this->tpl, '{% block '   , '{% endblock', $callback);
+		$this->replace_tag($this->tpl, '{% endblock ', '%}'         , function() { return ''; });
+	}
 
 	/**
 	 * Replace all {% BLOCK name %} by it's content in the template.
 	 */
-    public function compile_block()
-    {
-        $callback1 = function($value) { return '{% BLOCK '   . $value . ' %}'; };
-        $callback2 = function($value) { return '{% display ' . $value . ' %}'; };
-
-        $this->block  = array_reverse($this->block, true);
-        $names        = array_keys($this->block);
-        $values       = array_values($this->block);
-
-        $this->tpl = str_replace(array_map($callback1, $names), $values, $this->tpl);
-        $this->tpl = str_replace(array_map($callback2, $names), $values, $this->tpl);
-    }
+	public function compile_block()
+	{
+		$this->block = array_reverse($this->block, true);
+		$names       = array_keys($this->block);
+		$values      = array_values($this->block);
+		$this->tpl   = str_replace($names, $values, $this->tpl);
+	}
 
 	/**
 	 * Replace all IF, ELSEIF, ELSE statement by its php equivalent in the
@@ -341,19 +344,19 @@ class TemplateCompiler
 	 * {[ .. ]} content should interpreted as the same as {{ .. }} or {: .. :}
 	 * but didn't need php open and close tag <?php ... ?>
 	 */
-    public function make_if()
-    {
-        $callback = function($data, $open)
-        {
-            return sprintf('<?php %s ({[ %s ]}) : ?>', substr($open, 3, -1), $data);
-        };
+	public function make_if()
+	{
+		$callback = function($data, $open)
+		{
+			return sprintf('<?php %s ({[ %s ]}) : ?>', substr($open, 3, -1), $data);
+		};
 
-        $this->replace_tag($this->tpl, '{% if ',     ' %}', $callback);
-        $this->replace_tag($this->tpl, '{% elseif ', ' %}', $callback);
+		$this->replace_tag($this->tpl, '{% if ',     ' %}', $callback);
+		$this->replace_tag($this->tpl, '{% elseif ', ' %}', $callback);
 
-        $this->tpl = str_replace('{% else %}',  '<?php else : ?>', $this->tpl);
-        $this->tpl = str_replace('{% endif %}', '<?php endif ?>', $this->tpl);
-    }
+		$this->tpl = str_replace('{% else %}',  '<?php else : ?>', $this->tpl);
+		$this->tpl = str_replace('{% endif %}', '<?php endif ?>', $this->tpl);
+	}
 
 	/**
 	 * Replace all FOR statement by its php equivalent in the template.
@@ -379,30 +382,30 @@ class TemplateCompiler
 	 * <?php for ({[ array|sort ]} as $v): ?>{{ #v }}<?php endfor ?>;
 	 *
 	 */
-    public function make_for()
-    {
-        $me = $this;
+	public function make_for()
+	{
+		$me = $this;
 
-        $callback = function($data) use ($me)
-        {
-            static $loopIndex = 0;
+		$callback = function($data) use ($me)
+		{
+			static $loopIndex = 0;
 
-            $loopIndex++;
+			$loopIndex++;
 
-            list($var,   $data) = explode(' in ', $data, 2);
-            list($array, $data) = explode(' %}',  $data, 2);
+			list($var,   $data) = explode(' in ', $data, 2);
+			list($array, $data) = explode(' %}',  $data, 2);
 
-            $varkey   = array_reverse(explode(',', $var));
-            $var      = trim(array_shift($varkey));
-            $key      = trim(array_shift($varkey));
-            $endBlock = sprintf('<?php endforeach; unset($loop%s); ', $loopIndex);
+			$varkey   = array_reverse(explode(',', $var));
+			$var      = trim(array_shift($varkey));
+			$key      = trim(array_shift($varkey));
+			$endBlock = sprintf('<?php endforeach; unset($loop%s); ', $loopIndex);
 
-            $loop = sprintf('<?php $loop%s = new \pixelpost\TemplateLoop({[ %s ]}); ', $loopIndex, $array);
+			$loop = sprintf('<?php $loop%s = new \pixelpost\TemplateLoop({[ %s ]}); ', $loopIndex, $array);
 
-            if ($key == '') $block = sprintf('foreach ({[ %s ]} as $%s) : ', $array, $var);
-            else            $block = sprintf('foreach ({[ %s ]} as $%s => $%s) : ', $array, $key, $var);
+			if ($key == '') $block = sprintf('foreach ({[ %s ]} as $%s) : ', $array, $var);
+			else            $block = sprintf('foreach ({[ %s ]} as $%s => $%s) : ', $array, $key, $var);
 
-            $block .= sprintf('$loop%s->iterate(); ?>', $loopIndex);
+			$block .= sprintf('$loop%s->iterate(); ?>', $loopIndex);
 
 			$callback = function($data, $type) use ($me, $loopIndex, $key, $var)
 			{
@@ -434,21 +437,21 @@ class TemplateCompiler
 				return sprintf($format, $data);
 			};
 
-            $me->replace_inline($data, $callback);
+			$me->replace_inline($data, $callback);
 
-            if (strpos($data, '{% elsefor %}') !== false)
-            {
-                list($data, $else) = explode('{% elsefor %}', $data, 2);
+			if (strpos($data, '{% elsefor %}') !== false)
+			{
+				list($data, $else) = explode('{% elsefor %}', $data, 2);
 
-                $loop     .= sprintf('if ($loop%s->length > 0) : ', $loopIndex);
-                $endBlock .= sprintf('else : ?>%s<?php endif ', $else);
-            }
+				$loop     .= sprintf('if ($loop%s->length > 0) : ', $loopIndex);
+				$endBlock .= sprintf('else : ?>%s<?php endif ', $else);
+			}
 
-            return $loop . $block . $data . $endBlock . '?>';
-        };
+			return $loop . $block . $data . $endBlock . '?>';
+		};
 
-        $this->replace_tag($this->tpl, '{% for ', '{% endfor %}', $callback, true);
-    }
+		$this->replace_tag($this->tpl, '{% for ', '{% endfor %}', $callback, true);
+	}
 
 	/**
 	 * Replace all {% extends file %} tag by nothing in the template.
@@ -457,37 +460,37 @@ class TemplateCompiler
 	 *
 	 * 'file' is always a relative path to PLUG_PATH (eg. the plugins directory).
 	 */
-    public function make_extends()
-    {
-        $extends = array();
+	public function make_extends()
+	{
+		$extends = array();
 
-        $callback = function($data) use (&$extends)
-        {
-            $extends[] = $data;
-            return '';
-        };
+		$callback = function($data) use (&$extends)
+		{
+			$extends[] = $data;
+			return '';
+		};
 
-        $this->replace_tag($this->tpl, '{% extends ', ' %}', $callback);
+		$this->replace_tag($this->tpl, '{% extends ', ' %}', $callback);
 
-        $filename = array_shift($extends);
+		$filename = array_shift($extends);
 
-        if (is_null($filename)) return;
+		if (is_null($filename)) return;
 
 		$filename = str_replace('/', SEP, trim($filename));
 
-        if ($filename == '') throw Error::create(20);
+		if ($filename == '') throw Error::create(20);
 
-        $file = $this->path . $filename;
+		$file = $this->path . $filename;
 
-        if (!file_exists($file)) throw Error::create(21, array($file));
+		if (!file_exists($file)) throw Error::create(21, array($file));
 
-        $this->tpl = file_get_contents($file);
+		$this->tpl = file_get_contents($file);
 
-        $this->escape_raw_block();
-        $this->remove_comment();
-        $this->escape_escape();
-        $this->extract_block();
-        $this->make_extends();
+		$this->escape_raw_block();
+		$this->remove_comment();
+		$this->escape_escape();
+		$this->extract_block();
+		$this->make_extends();
 	}
 
 	/**
@@ -496,46 +499,46 @@ class TemplateCompiler
 	 *
 	 * 'file' is always a relative path to PLUG_PATH (eg. the plugins directory).
 	 */
-    public function make_include()
-    {
-        $includes = array();
+	public function make_include()
+	{
+		$includes = array();
 
-        $callback = function($data) use (&$includes)
-        {
-            $index            = '{% INCLUDE#' . count($includes) . ' %}';
-            $includes[$index] = $data;
-            return $index;
-        };
+		$callback = function($data) use (&$includes)
+		{
+			$index            = '{% INCLUDE#' . count($includes) . ' %}';
+			$includes[$index] = $data;
+			return $index;
+		};
 
-        $this->replace_tag($this->tpl, '{% include "', '" %}', $callback);
+		$this->replace_tag($this->tpl, '{% include "', '" %}', $callback);
 
-        foreach($includes as $id => $include)
-        {
+		foreach($includes as $id => $include)
+		{
 			$filename = str_replace('/', SEP, trim($include));
 
 			if ($filename == '') throw Error::create(22);
 
-            $file = $this->path . $filename;
+			$file = $this->path . $filename;
 
 			if (!file_exists($file)) throw Error::create(23, array($file));
 
-            $replace = file_get_contents($file);
+			$replace = file_get_contents($file);
 
-            $this->tpl = str_replace($id, $replace, $this->tpl);
-        }
-    }
+			$this->tpl = str_replace($id, $replace, $this->tpl);
+		}
+	}
 
 	/**
 	 * Replace all inline content {{ .. }}, {: .. :}, {[ .. ]} by its PHP
 	 * equivalent form in the template.
 	 */
-    public function make_inline()
-    {
-        $me = $this;
+	public function make_inline()
+	{
+		$me = $this;
 
-        $callback = function($data, $type) use ($me)
-        {
-            $me->extract_var($data, function($data) use ($me)
+		$callback = function($data, $type) use ($me)
+		{
+			$me->extract_var($data, function($data) use ($me)
 			{
 				return $me->make_var($data);
 			});
@@ -549,11 +552,11 @@ class TemplateCompiler
 				default:                   $format = '%s';               break;
 			}
 
-            return sprintf($format, $data);
-        };
+			return sprintf($format, $data);
+		};
 
-        $this->replace_inline($this->tpl, $callback, false);
-    }
+		$this->replace_inline($this->tpl, $callback, false);
+	}
 
 	/**
 	 * Extract all template var from $data and apply $todo to them before to
@@ -602,7 +605,7 @@ class TemplateCompiler
 	}
 
 	/**
-	 * Retuen a PHP equivalent of $data (a template variable eg. my_var|upper ).
+	 * Return a PHP equivalent of $data (a template variable eg. my_var|upper ).
 	 *
 	 * @param string $data
 	 * @return string
@@ -626,7 +629,7 @@ class TemplateCompiler
 					case '-' : break;                               // quote
 					case '@' : $var = substr($var, 1); break;       // constant
 					case '#' : $var = '$' . substr($var, 1); break; // local
-					default  : $var = '$this->' . $var; break;      // template
+					default  : $var = '$this.' . $var; break;      // template
 				}
 
 				$addBraceToHyphensName = function($item)
@@ -672,7 +675,7 @@ class TemplateCompiler
 			case 'empty'   : return 'empty(%s)';
 			case 'default' : return '$this->_filter_default(%s, ' . $param . ')';
 			case 'if'      : return '$this->_filter_if(%s, ' . $param . ')';
-		    // datetime
+			// datetime
 			case 'date'    : return '$this->_filter_date(%s, 0, ' . $param . ')';
 			case 'datetime': return '$this->_filter_date(%s, 1, ' . $param . ')';
 			case 'time'    : return '$this->_filter_date(%s, 2, ' . $param . ')';
@@ -728,15 +731,15 @@ class TemplateCompiler
 	 * @param string   $data
 	 * @param \Closure $todo
 	 */
-    public function replace_inline(&$data, \Closure $todo)
-    {
-        $me = $this;
+	public function replace_inline(&$data, \Closure $todo)
+	{
+		$me = $this;
 
-        $callback = function($data, $open) use ($todo, $me)
-        {
+		$callback = function($data, $open) use ($todo, $me)
+		{
 			$data = trim($data);
 
-            $me->escape_quote($data);
+			$me->escape_quote($data);
 
 			$class = __CLASS__;
 
@@ -747,17 +750,17 @@ class TemplateCompiler
 				default   : $type = $class::INLINE_NOTAG; break;
 			}
 
-            $data = $todo($data, $type);
+			$data = $todo($data, $type);
 
-            $me->unescape_quote($data);
+			$me->unescape_quote($data);
 
 			return $data;
-        };
+		};
 
-        $this->replace_tag($data, '{{', '}}', $callback); // <?php echo ...
-        $this->replace_tag($data, '{:', ':}', $callback); // <?php ...
-        $this->replace_tag($data, '{[', ']}', $callback); // ...
-    }
+		$this->replace_tag($data, '{{', '}}', $callback); // <?php echo ...
+		$this->replace_tag($data, '{:', ':}', $callback); // <?php ...
+		$this->replace_tag($data, '{[', ']}', $callback); // ...
+	}
 
 	/**
 	 * Search all string in $data, starting by $openTag and finished by
@@ -784,8 +787,8 @@ class TemplateCompiler
 	 * @param int     $includeLvl
 	 * @return int
 	 */
-    public function replace_tag(&$data, $openTag, $closeTag, \Closure $todo, $includedFirst = false, $startAt = 0, $includeLvl = 0)
-    {
+	public function replace_tag(&$data, $openTag, $closeTag, \Closure $todo, $includedFirst = false, $startAt = 0, $includeLvl = 0)
+	{
 		// the len of the openTag, closeTag
 		$openLen  = mb_strlen($openTag, 'UTF-8');
 		$closeLen = mb_strlen($closeTag, 'UTF-8');
@@ -856,6 +859,6 @@ class TemplateCompiler
 			if ($includeLvl != 0) return $startAt;
 
 		// and we search again
-        endwhile;
-    }
+		endwhile;
+	}
 }
