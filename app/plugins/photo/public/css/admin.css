@@ -1,0 +1,56 @@
+#dropbox {
+    position: relative;
+    margin-bottom:1em;
+	min-height: 3em;
+	background-color: #FEFFEC;
+	border: 2px dashed #DDD;
+	border-radius: 8px;
+	text-align: center;
+	color: #BBB;
+}
+
+#dropbox > div > img {
+    margin:20px 10px;
+}
+
+#dropbox button {
+    display:none;
+}
+
+#droplabel {
+	font-size: 2em;
+    line-height:3em;
+}
+
+#dropselect,
+#dropselect:link,
+#dropselect:hover {
+    font-size:0.8em;
+    color:#DDD;
+    text-decoration:underline;
+    text-align:right;
+}
+
+#dropfiles { display: none; }
+
+#dropaction {
+	margin: 0 1em 1em 1em;
+	min-height:2.5em;
+}
+
+.progressbar {
+	border:1px solid #DDD;
+	min-height:1em;
+	border-radius: 8px;
+	overflow:hidden;
+	display:none;
+}
+
+.progressbar > div {
+	min-height:1em;
+	background-color:#CCFF66;
+}
+
+.progressbar > div.error {
+    background-color:#FF0000;
+}

@@ -2,9 +2,10 @@
 
 namespace pixelpost\plugins\photo;
 
-use pixelpost;
-use pixelpost\plugins\api\Exception as ApiError;
-use pixelpost\plugins\auth\Plugin as Auth;
+use Exception,
+	pixelpost\Config,
+	pixelpost\plugins\api\Exception as ApiError,
+	pixelpost\plugins\auth\Plugin   as Auth;
 
 // check grants
 if (!Auth::is_granted('write')) throw new ApiError\Ungranted('photo.add');
@@ -33,8 +34,8 @@ try
 	$thumb    = $pathGenerator($uid, 'thumb');
 
 	// load the temp image (uploaded) in GD2
-	$image = new Image($filename, pixelpost\Config::create()->plugin_photo->quality);
-	
+	$image = new Image($filename, Config::create()->plugin_photo->quality);
+
 	// store the original size in jpg to it's final path
 	if (!$image->convert_to_jpeg($original))
 	{
@@ -63,7 +64,7 @@ try
 	{
 		// store the Image in database and put the photo id in the event response
 		$event->response = array('id' => Model::photo_add($uid));
-		
+
 		// delete the uploaded file
 		unlink($filename);
 	}
@@ -76,7 +77,7 @@ try
 		throw $e;
 	}
 }
-catch(\Exception $e)
+catch(Exception $e)
 {
 	throw new ApiError\Internal('can\'t work on the uploaded photo.', $e);
 }

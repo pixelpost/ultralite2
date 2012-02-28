@@ -2,27 +2,34 @@
 
 namespace pixelpost\plugins\photo;
 
-use pixelpost;
+use pixelpost\Event,
+	pixelpost\Template,
+	pixelpost\plugins\api\Plugin as Api;
 
 class Admin
 {
-	public static function template_nav(pixelpost\Event $event)
+	public static function template_nav(Event $event)
 	{
-		$event->response[] = pixelpost\Template::create()
+		$event->response[] = Template::create()
 			  ->assign('url', 'photos/')
 			  ->assign('name', 'photos')
 			  ->render('admin/tpl/_menu.php');
 	}
-	
-	public static function template_widget(pixelpost\Event $event)
+
+	public static function template_widget(Event $event)
 	{
-		$e = pixelpost\Event::signal('api.photo.count', array('request' => array()));
-		
-		$r = $e->is_processed() ? 0 : $e->response->total;
-		
-		$event->response[] = pixelpost\Template::create()
-			  ->assign('count', $r)
+		$result = Api::call_api_method('photo.count', array());
+
+		$count  = $result['total'];
+
+		$event->response[] = Template::create()
+			  ->assign('count', $count)
 			  ->assign('text', 'photos')
 			  ->render('admin/tpl/_widget.php');
+	}
+
+	public static function page_index(Event $event)
+	{
+		require __DIR__ . SEP . 'admin' . SEP . 'home.php';
 	}
 }

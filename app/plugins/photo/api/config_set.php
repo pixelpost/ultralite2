@@ -20,7 +20,7 @@ $newConf += pixelpost\Filter::object_to_array($myConf);
 $checkDir = function($name, $base) use ($myConf, $newConf, &$conf)
 {
 	if ($newConf[$name] == $myConf->$name) return;
-	
+
 	if ($base != '') $base .= SEP;
 
 	$oldPath = ROOT_PATH . SEP . $base . $myConf->$name;
@@ -36,12 +36,12 @@ $checkDir = function($name, $base) use ($myConf, $newConf, &$conf)
 
 $checkNumber = function($number, $min, $max, $message)
 {
-	if (!is_numeric($number))  throw new ApiError\FieldOutBounds($name, $min, $max);
+	if (!is_numeric($number)) throw new ApiError\FieldOutBounds($name, $min, $max);
 
 	$int = abs(intval($number));
-	
-	if ($int < $min || $int > $max)  throw new ApiError\FieldOutBounds($name, $min, $max);
-	
+
+	if ($int < $min || $int > $max) throw new ApiError\FieldOutBounds($name, $min, $max);
+
 	return $int;
 };
 
@@ -54,21 +54,22 @@ $checkSize = function($name) use ($myConf, $newConf, &$conf, $checkNumber)
 		$change = true;
 
 		$options = array('larger-border', 'fixed-width', 'fixed-height', 'fixed', 'sqare');
-				
+
 		switch($newConf['sizes'][$name]['type'])
 		{
-			case 'larger-border': break;
-			case 'fixed-width'  : break;
-			case 'fixed-height' : break;
-			case 'fixed'        : break;
-			case 'square'       : break;
-			default: 
+			case 'larger-border':
+			case 'fixed-width'  :
+			case 'fixed-height' :
+			case 'fixed'        :
+			case 'square'       :
+				break;
+			default:
 				throw new ApiError\FieldNotInList('type', $options);
 		}
 
-		$conf->plugin_photo->sizes->$name->type = $newConf['sizes'][$name]['type'];				
+		$conf->plugin_photo->sizes->$name->type = $newConf['sizes'][$name]['type'];
 	}
-		
+
 
 	if ($newConf['sizes'][$name]['type'] == 'fixed')
 	{
@@ -81,21 +82,21 @@ $checkSize = function($name) use ($myConf, $newConf, &$conf, $checkNumber)
 		// $change == false => $myConf->..->width/height exists before
 		if (!$change && $width  != $myConf->sizes->$name->width)  $change = true;
 		if (!$change && $height != $myConf->sizes->$name->height) $change = true;
-		
+
 		$conf->plugin_photo->sizes->$name->width  = $width;
-		$conf->plugin_photo->sizes->$name->height = $height;				
+		$conf->plugin_photo->sizes->$name->height = $height;
 	}
 	else
-	{		
+	{
 		$size = $newConf['sizes'][$name]['size'];
-		
+
 		$size = $checkNumber($size, 10, 2000, 'size');
-		
+
 		if (!$change && $size != $myConf->sizes->$name->size) $change = true;
-		
+
 		$conf->plugin_photo->sizes->$name->size  = $size;
 	}
-	
+
 	return $change;
 };
 
@@ -104,7 +105,7 @@ try
 	$checkDir('original',  $myConf->directory);
 	$checkDir('resized',   $myConf->directory);
 	$checkDir('thumb',     $myConf->directory);
-	$checkDir('directory', '');	
+	$checkDir('directory', '');
 
 	$change = false;
 	$change = $change || $checkSize('resized');
@@ -116,9 +117,9 @@ try
 	{
 		// TODO bach the rezising of all existing photo (or not) ?
 	}
-	
+
 	$conf->save();
-	
+
 	$event->response = array('message' => 'configuration updated');
 }
 catch(ApiException $e)

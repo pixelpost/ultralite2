@@ -12,9 +12,9 @@ if (!Auth::is_granted('read')) throw new ApiError\Ungranted('photo.count');
 // check if the request is correct
 $options = pixelpost\Filter::object_to_array($event->request);
 
-if (isset($options['filter']) && 
+if (isset($options['filter']) &&
 	isset($options['filter']['publish-date-interval']))
-{	
+{
 	// look at this beautiful reference
 	$start =& $options['filter']['publish-date-interval']['start'];
 	$end   =& $options['filter']['publish-date-interval']['end'];

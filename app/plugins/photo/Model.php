@@ -84,7 +84,7 @@ class Model
 
 	/**
 	 * Parse an option array and return SQL parts of a future query
-	 * 
+	 *
 	 * @param  array $options The options for the query
 	 * @return array          An array with three component where, order, limit
 	 */
@@ -93,7 +93,7 @@ class Model
 		$where = '';
 		$order = '';
 		$limit = '';
-		
+
 		// work on SQL where clause
 		if (isset($options['filter']))
 		{
@@ -159,7 +159,7 @@ class Model
 
 			$limit = sprintf(' LIMIT %s, %s', ($page - 1) * $max, $max);
 		}
-		
+
 		return array($where, $order, $limit);
 	}
 
@@ -276,7 +276,7 @@ class Model
 
 		return $list;
 	}
-	
+
 	/**
 	 * Retrieve the number of photos in database.
 	 *
