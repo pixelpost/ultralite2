@@ -330,8 +330,8 @@ class TemplateCompiler
 			return $name . '{% endblock';
 		};
 
-		$this->replace_tag($this->tpl, '{% display ' , ' %}'        , $display_tag);
 		$this->replace_tag($this->tpl, '{% block '   , '{% endblock', $block_tag);
+		$this->replace_tag($this->tpl, '{% display ' , ' %}'        , $display_tag);
 		$this->replace_tag($this->tpl, '{% endblock ', '%}'         , function() { return ''; });
 	}
 
