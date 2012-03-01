@@ -20,4 +20,12 @@ class Page
 	{
 		require __DIR__ . SEP . 'page' . SEP . 'api_test.php';
 	}
+
+	public static function template_widget(pixelpost\Event $event)
+	{
+		$event->response[] = pixelpost\Template::create()
+			->assign('count', 'v'.pixelpost\Config::create()->version)
+			->assign('text', 'settings')
+			->render('admin/tpl/_widget.php');
+	}
 }

@@ -53,16 +53,17 @@ footer {
 	background-color: black;
 	color: white;
 	cursor: pointer;
+	text-decoration: none;
 }
 
 .widget:hover {
 	border-bottom-color: grey;
 }
 
-.widget strong {
+.widget span {
 	display:block;
-	font-size:300%;
-	line-height:100%;
+	font-size:250%;
+	line-height:125%;
 }
 
 fieldset {

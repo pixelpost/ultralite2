@@ -47,14 +47,15 @@ class Plugin implements PluginInterface
 		$api  = '\\' . __NAMESPACE__ . '\\Api';
 		$page = '\\' . __NAMESPACE__ . '\\Page';
 
-		Event::register('request.admin',     $self . '::admin_router');
+		Event::register('request.admin',         $self . '::admin_router');
 
-		Event::register('api.admin.version', $api  . '::api_version');
+    	Event::register('api.admin.version',     $api  . '::api_version');
 
-		Event::register('admin.index',       $page . '::page_index');
-		Event::register('admin.404',         $page . '::page_404');
-		Event::register('admin.api-test',    $page . '::page_api_test');
-		Event::register('admin.phpinfo',     $self . '::phpinfo');
+		Event::register('admin.index',           $page . '::page_index');
+		Event::register('admin.404',             $page . '::page_404');
+		Event::register('admin.api-test',        $page . '::page_api_test');
+		Event::register('admin.phpinfo',         $self . '::phpinfo');
+		Event::register('admin.template.widget', $page . '::template_widget', 200);
 	}
 
 	public static function phpinfo(Event $event)

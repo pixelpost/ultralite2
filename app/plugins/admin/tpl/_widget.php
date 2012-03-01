@@ -1,1 +1,1 @@
-<div class="widget"><strong>{{ count }}</strong> {{ text }}</div>
+<a href="{{ url|default('#') }}" class="widget"><span>{{ count }}</span> {{ text }}</a>
