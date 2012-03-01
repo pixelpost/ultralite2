@@ -685,7 +685,7 @@ class TemplateCompiler
 			// mixed
 			case 'exists'  : return 'isset(%s)';
 			case 'empty'   : return 'empty(%s)';
-			case 'default' : return '$this->_filter_default(%s, ' . $param . ')';
+			case 'default' : return '(isset(%1$s) ? %1$s : ' . $param . ')';
 			case 'if'      : return '$this->_filter_if(%s, ' . $param . ')';
 			// string
 			case 'reverse' : return 'strrev(%s)';

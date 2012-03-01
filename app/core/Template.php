@@ -293,18 +293,6 @@ class Template
     }
 
 	/**
-	 * Internal filter: return a default value if a data is not set.
-	 *
-	 * @param mixed $data
-	 * @param mixed $default
-	 * @return mixed
-	 */
-	protected function _filter_default($data, $default)
-	{
-		return (isset($data)) ? $data : $default;
-	}
-
-	/**
 	 * Internal filter: return $yes if $data is true else $no.
 	 *
 	 * @param mixed $data
