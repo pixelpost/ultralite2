@@ -301,7 +301,8 @@ class TemplateCompiler
 		{
 			$name  = '{% BLOCK ' . trim($data) . ' %}';
 
-			if (!isset($me->block[$name])) $me->block[$name] = '';
+			// false are display as empty string
+			if (!isset($me->block[$name])) $me->block[$name] = false;
 
 			return $name;
 		};
@@ -314,7 +315,7 @@ class TemplateCompiler
 
 			$block = trim($block);
 
-			if (!isset($me->block[$name]))
+			if (!isset($me->block[$name]) || $me->block[$name] === false)
 			{
 				$me->block[$name] = $block;
 			}

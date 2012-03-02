@@ -275,12 +275,50 @@ EOF;
 		$this->object->extract_block();
 
 		$this->assertArrayHasKey('{% BLOCK name %}', $this->object->block);
-		$this->assertSame('', $this->object->block['{% BLOCK name %}']);
+		$this->assertEquals('', $this->object->block['{% BLOCK name %}']);
 		$this->assertSame($result1, $this->object->tpl);
 
 		$this->object->compile_block();
 
 		$this->assertSame($result2, $this->object->tpl);
+	}
+
+	/**
+	 * Test a bug where a display tag declare an empty block and parent block
+	 * content was erased.
+	 *
+	 * @covers pixelpost\TemplateCompiler::extract_block
+	 */
+	public function test_extract_block_with_display_tag_in_child()
+	{
+		// here we assume that $child_tpl contains a {% extends $parent_tpl %} tag
+		$child_tpl  = '{% display name %}';
+
+		$parent_tpl = 'Hello, {% block name %}Alban{% endblock %}.';
+
+		$result1 = '{% BLOCK name %}';
+		$result2 = 'Hello, {% BLOCK name %}.';
+		$result3 = 'Hello, Alban.';
+
+		$this->object->tpl = $child_tpl;
+
+		$this->object->extract_block();
+
+		$this->assertArrayHasKey('{% BLOCK name %}', $this->object->block);
+		$this->assertEquals('', $this->object->block['{% BLOCK name %}']);
+		$this->assertSame($result1, $this->object->tpl);
+
+		$this->object->tpl = $parent_tpl;
+
+		$this->object->extract_block();
+
+		$this->assertArrayHasKey('{% BLOCK name %}', $this->object->block);
+		$this->assertSame('Alban', $this->object->block['{% BLOCK name %}']);
+		$this->assertSame($result2, $this->object->tpl);
+
+		$this->object->compile_block();
+
+		$this->assertSame($result3, $this->object->tpl);
 	}
 
 	/**
