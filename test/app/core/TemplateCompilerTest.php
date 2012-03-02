@@ -704,7 +704,7 @@ EOF;
 	public function test_extract_var_real_example()
 	{
 		$test   = '1 + foo[bar-foo] + big_Filter|default(#array[(foo + @bar)|upper|sub(bar|len)]|exists) + 23';
-		$result = '1 + $this->foo[$this->{\'bar-foo\'}] + $this->_filter_default($this->big_Filter, isset($array[mb_substr(mb_strtoupper(($this->foo + bar), \'UTF-8\'), mb_strlen($this->bar, \'UTF-8\'), \'UTF-8\')])) + 23';
+		$result = '1 + $this->foo[$this->{\'bar-foo\'}] + (isset($this->big_Filter) ? $this->big_Filter : isset($array[mb_substr(mb_strtoupper(($this->foo + bar), \'UTF-8\'), mb_strlen($this->bar, \'UTF-8\'), \'UTF-8\')])) + 23';
 
 		$object = $this->object;
 
