@@ -1,0 +1,129 @@
+body {
+	margin: 40px;
+	color: black;
+	font-family: Lato, Arial, sans-serif;
+}
+
+header ul {
+	padding-left:0;
+}
+
+header li {
+	display: inline-block;
+	list-style: none;
+	margin: 0 10px 0 0;
+	padding: 0;
+}
+
+header a {
+	color: grey;
+	text-decoration: none;
+	border-bottom: 4px solid white;
+}
+
+header a:hover {
+	border-bottom-color: grey;
+}
+
+#content {
+	margin-bottom:100px; /* give space to footer */
+}
+
+footer {
+	background-color: black;
+	position: fixed;
+	bottom:0px;
+	left:0px;
+	width:100%;
+	padding:0px 40px;
+}
+
+#widget:after {
+	content: " ";
+	clear: both;
+}
+
+.widget {
+	display: inline-block;
+	width: 130px;
+	height: 70px;
+	padding: 15px;
+	margin-right:20px;
+	border-bottom: 10px solid white;
+	background-color: black;
+	color: white;
+	cursor: pointer;
+	text-decoration: none;
+}
+
+.widget:hover {
+	border-bottom-color: grey;
+}
+
+.widget span {
+	display:block;
+	font-size:250%;
+	line-height:125%;
+}
+
+fieldset {
+	background-color:#DDD;
+	border:0;
+}
+
+textarea { vertical-align:top; }
+
+legend {
+	padding-top:30px;
+	margin-bottom: 15px;
+	color:white;
+	font-weight: bold;
+}
+
+fieldset>ol {
+	padding-left:20px;
+}
+
+fieldset>ol>li {
+	color:white;
+	margin-left:0;
+}
+
+fieldset label {
+	color:black;
+	display:inline-block;
+	width:25%;
+	font-size:90%;
+	cursor:pointer;
+}
+
+fieldset input, fieldset textarea, fieldset select {
+	background-color: white;
+	border:3px solid white;
+	width: 60%;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+}
+
+fieldset button {
+	margin-left:20px;
+}
+
+button {
+	cursor:pointer;
+}
+
+.btn {
+	display:inline-block;
+	padding:5px 10px;
+	border:4px solid  #8CC8F0;
+	background-color: #8CC8F0;
+	color: white;
+	font-weight: bold;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+}
+
+a.btn, a.btn:link, a.btn:visited, a.btn:hover, a.btn:active { text-decoration: none; }
