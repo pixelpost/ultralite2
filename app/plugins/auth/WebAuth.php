@@ -294,7 +294,7 @@ class WebAuth
 	 */
 	public static function forget(Request $request)
 	{
-		$message = 'an email is sent to the admin';
+		$message = 'an email has been sent to the admin';
 
 		try
 		{
@@ -327,7 +327,7 @@ class WebAuth
 				mail($email, 'Pixelpost reset password request', $content);
 			}
 
-			echo json_encode(array('status' => 'valid', 'message' => 'an email is sent to the admin'));
+			echo json_encode(array('status' => 'valid', 'message' => 'an email has been sent to the admin'));
 		}
 		catch(Exception $e)
 		{
@@ -400,7 +400,7 @@ class WebAuth
 					self::register($user, $pass, $id, $request->get_host());
 				}
 
-				echo json_encode(array('status' => 'valid', 'message' => 'password is reset'));
+				echo json_encode(array('status' => 'valid', 'message' => 'password reset'));
 			}
 			catch(Exception $e)
 			{

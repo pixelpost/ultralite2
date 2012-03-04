@@ -115,7 +115,7 @@ try
 		if (pixelpost\Plugin::active($plugin) == false)
 		{
 			$e = pixelpost\Plugin::get_last_error();
-			throw new Exception("Error during plugin '$plugin' setup. error: $e.");
+			throw new Exception("Error activating plugin '$plugin'. Error: $e.");
 		}
 	}
 

@@ -27,12 +27,12 @@ if (isset($options['pager']))
 	if (!isset($options['pager']['max-per-page']))
 	{
 		throw new ApiError\FieldRequired('photo.list', 'pager::max-per-page');
-	}	
+	}
 }
 
-if (isset($options['filter']) && 
+if (isset($options['filter']) &&
 	isset($options['filter']['publish-date-interval']))
-{	
+{
 	// look at this beautiful reference
 	$start =& $options['filter']['publish-date-interval']['start'];
 	$end   =& $options['filter']['publish-date-interval']['end'];

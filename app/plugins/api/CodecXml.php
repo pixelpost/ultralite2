@@ -57,12 +57,12 @@ class CodecXml implements CodecInterface
 				libxml_clear_errors();
 
 				throw new Exception('bad_encoding',
-						'The XML request seems invalid format. Debug: ' . $errorMsg);
+						'The XML request contains invalid formatting. Debug: ' . $errorMsg);
 			}
 			else
 			{
 				throw new Exception('bad_encoding',
-						'The XML request seems invalid format.');
+						'The XML request contains invalid formatting.');
 			}
 		}
 

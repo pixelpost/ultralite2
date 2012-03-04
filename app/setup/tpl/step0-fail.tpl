@@ -9,9 +9,7 @@
 	<body>
 		<h1>Sorry</h1>
 		<p>
-			You can't install pixelpost 2, it require <strong>PHP 5.3.0</strong> at least.
-			<br />
-			Your PHP version is actually <?php echo PHP_VERSION ?>.
+			Pixelpost 2 requires <strong>PHP 5.3.0</strong> or later, you server is currently using PHP <?php echo PHP_VERSION ?>.
 		</p>
 	</body>
 </html>

@@ -235,7 +235,7 @@ class Plugin implements PluginInterface
 		}
 		catch(ModelExceptionNoResult $e)
 		{
-			throw new ApiException('bad_token', 'This token is not valid.');
+			throw new ApiException('bad_token', 'The token is not valid.');
 		}
 
 		// retrieve user data
@@ -256,7 +256,7 @@ class Plugin implements PluginInterface
 		// check if the token is perempted.
 		if ($auth->get_token() != $event->request->token)
 		{
-			throw new ApiException('old_token', 'This token have expired.');
+			throw new ApiException('old_token', 'The token has expired.');
 		}
 
 		// extract method and request parts of the request
@@ -266,7 +266,7 @@ class Plugin implements PluginInterface
 		// check signature
 		if ($auth->hmac($method, $request) != $event->request->hmac)
 		{
-			throw new ApiException('bad_hmac', 'This hmac is not valid.');
+			throw new ApiException('bad_hmac', 'The hmac is not valid.');
 		}
 
 		// store authentified username and id, generate a new nonce

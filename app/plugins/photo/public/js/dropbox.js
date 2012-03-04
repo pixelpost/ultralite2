@@ -316,8 +316,8 @@ dropbox_label  = function(label) {
 	// methods
 	this.set     = function(text) { label.text(text); };
 	this.reset   = function()     { self.set(origin); };
-	this.process = function(name) { self.set('Process ' + name); };
-	this.upload  = function(name) { self.set('Upload ' + name); };
+	this.process = function(name) { self.set('Processing ' + name); };
+	this.upload  = function(name) { self.set('Uploading ' + name); };
 	this.error   = function(name) { self.set('Error ' + name); };
 };
 

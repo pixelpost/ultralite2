@@ -1,7 +1,7 @@
 {% extends _main.tpl %}
 
 {% block Content %}
-<h1>Oops !</h1>
+<h1>Oops!</h1>
 <p>
 	{{ error }}
 </p>

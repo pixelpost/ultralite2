@@ -21,7 +21,7 @@ class FieldNotInList extends \pixelpost\plugins\api\Exception
 	public function __construct($field, array $list)
 	{
 		$code    = 'bad_data';
-		$message = 'Field `%s` need to be one of this value: %s.';
+		$message = 'Field `%s` need to be one of the following values: %s.';
 
 		parent::__construct($code, sprintf($message, implode(' | ', $message)));
 	}

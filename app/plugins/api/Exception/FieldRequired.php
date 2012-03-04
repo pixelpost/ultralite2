@@ -21,7 +21,7 @@ class FieldRequired extends \pixelpost\plugins\api\Exception
 	public function __construct($apiMethod, $field)
 	{
 		$code    = 'bad_request';
-		$message = '`%s` method require a `%s` field.';
+		$message = '`%s` method requires a `%s` field.';
 
 		parent::__construct($code, sprintf($message, $apiMethod, $field));
 	}

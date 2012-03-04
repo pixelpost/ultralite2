@@ -28,7 +28,7 @@ if (isset($fields['publish-date']))
 	{
 		throw new ApiError\FieldNotValid('publish-date', 'invalid RFC3339 date');
 	}
-	
+
 	pixelpost\Filter::str_to_date($fields['publish-date']);
 }
 

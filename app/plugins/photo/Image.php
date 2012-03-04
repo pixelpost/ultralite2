@@ -65,7 +65,7 @@ class Image
 
 		if (GD_MAJOR_VERSION < 2)
 		{
-			throw new \Exception('GD library is too old, need at least version 2.0.', 2);
+			throw new \Exception('GD library is too old, requires version 2.0 or later.', 2);
 		}
 
 		pixelpost\Filter::assume_string($filename);

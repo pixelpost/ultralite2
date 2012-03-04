@@ -25,8 +25,8 @@ else
 	{
 		$messageVeryLong  = '.htaccess` already exists: '
 						  . 'we cannot install the mod_rewrite rule, '
-						  . 'and securise your private data... '
-						  . ' Take a look on `app/setup/htaccess_sample` '
+						  . 'and secure your private data... '
+						  . ' Take a look at the `app/setup/htaccess_sample` '
 						  . ' file for manual install.';
 
 		$warnings[] = '`' . ROOT_PATH . SEP . $messageVeryLong;
@@ -40,15 +40,15 @@ else
 
 	if (GD_MAJOR_VERSION < 2)
 	{
-		$warnings[] = 'GD library is too old, need at least version 2.0.0, '
-		            . 'your GD version is actually ' . GD_VERSION . '.';
+		$warnings[] = 'GD library is too old. You need version 2.0.0 or later. '
+		            . 'Your current GD version is ' . GD_VERSION . '.';
 	}
 
 	// check if sqlite3 is present (some distribution like debian
 	// provide sqlite3 support in a separated paquet.
 	if (!class_exists('SQLite3'))
 	{
-		$warnings[] = 'SQLite3 support is not installed.';
+		$warnings[] = 'SQLite3 library is not installed.';
 	}
 }
 

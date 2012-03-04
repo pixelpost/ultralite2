@@ -249,13 +249,13 @@ class Plugin implements PluginInterface
 		// check if the event is processed (no '404' request)
 		if (!$event->is_processed())
 		{
-			throw new ApiException('bad_method', "The '$method' requested method is unsupported.");
+			throw new ApiException('bad_method', "The requested method '$method' is unsupported.");
 		}
 
 		// check if there is a response data in the event
 		if (!property_exists($event, 'response'))
 		{
-			throw new ApiException('internal_error', "Oops ! there is actually a problem.");
+			throw new ApiException('internal_error', "Oops! We seem to be experiencing a problem.");
 		}
 
 		return $event->response;
@@ -282,13 +282,13 @@ class Plugin implements PluginInterface
 			// check if the call is processed
 			if (!$call->is_processed())
 			{
-				throw new Exception('event `'. $method .'` is not processed');
+				throw new Exception("event `$method` was not processed");
 			}
 
 			// check if the response exists
 			if (!isset($call->response))
 			{
-				throw new Exception('event `'. $method .'` not provide a response');
+				throw new Exception("event `$method` did not provide a response");
 			}
 
 			// return the response
@@ -298,7 +298,7 @@ class Plugin implements PluginInterface
 		// if you don't the user receive the error message of your internal call
 		catch(ApiException $e)
 		{
-			throw new Exception('event `'. $method .'` thrown an exception', 0, $e);
+			throw new Exception("event `$method` threw an exception", 0, $e);
 		}
 	}
 }

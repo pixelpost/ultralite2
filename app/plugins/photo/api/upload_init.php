@@ -36,7 +36,7 @@ $file_max_size = $max_size * $chunks * 3 / 4; // 3/4 is base64 -> bytes
 
 if ($file_max_size < $size)
 {
-	$msg = 'With %d chunks max file size is %d bytes at most';
+	$msg = 'With %d chunks, the maximum file size is %d bytes';
 	$msg = sprintf($msg, $chunks, $file_max_size);
 
 	throw new ApiError\FieldNotValid('size', $msg);

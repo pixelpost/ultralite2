@@ -18,9 +18,9 @@
 	<span id="droplabel">Drop files here…</span>
 	<div id="dropaction">
 		<div class="progressbar"></div>
-		<button class="btn">Upload !</button>
+		<button class="btn">Upload Files</button>
 	</div>
-	<a id="dropselect" href="#">…or select files.</a>
+	<a id="dropselect" href="#">…or select a file.</a>
 	<input id="dropfiles" accept="image/*" type="file" multiple />
 </div>
 
@@ -45,7 +45,7 @@
 	</div>
 	{% elsefor %}
 	<p>
-		You have not uploaded photo yet.
+		You haven't uploaded any photos yet.
 	</p>
 	{% endfor %}
 </div>

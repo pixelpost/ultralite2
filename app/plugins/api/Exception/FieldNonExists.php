@@ -24,11 +24,11 @@ class FieldNonExists extends \pixelpost\plugins\api\Exception
 
 		if (is_null($value))
 		{
-			$message = 'The specified `%s` not exists.';
+			$message = 'The specified `%s` does not exist.';
 		}
 		else
 		{
-			$message = 'The specified `%s` with value `' . $value . '` not exists.';
+			$message = 'The specified `%s` with value `' . $value . '` does not exist.';
 		}
 
 		parent::__construct($code, sprintf($message, $field));

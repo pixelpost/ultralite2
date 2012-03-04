@@ -1,7 +1,7 @@
 {% extends _main.tpl %}
 
 {% block Content %}
-<h1>Welcome !</h1>
+<h1>Welcome!</h1>
 <p>
 	Pixelpost will be installed in two minutes...
 </p>
