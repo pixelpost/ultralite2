@@ -14,6 +14,11 @@ class Admin
 			  ->assign('url', 'photos/')
 			  ->assign('name', 'photos')
 			  ->render('admin/tpl/_menu.php');
+
+		$event->response[] = Template::create()
+			  ->assign('url', 'phpinfo/')
+			  ->assign('name', 'php info')
+			  ->render('admin/tpl/_menu.php');
 	}
 
 	public static function template_widget(Event $event)
@@ -24,6 +29,7 @@ class Admin
 
 		$event->response[] = Template::create()
 			  ->assign('count', $count)
+			  ->assign('url', 'photos/')
 			  ->assign('text', 'photos')
 			  ->render('admin/tpl/_widget.php');
 	}
