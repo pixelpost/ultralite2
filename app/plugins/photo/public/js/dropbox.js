@@ -70,6 +70,12 @@ dropbox = function(config) {
 
 	this.read_files = function(files) {
 
+		if(typeof FileReader == 'undefined')
+		{
+			alert("Sorry, your browser doesn't support drag & drop upload.");
+			return false;
+		}
+
 		var it = new iterator(files);
 
 		// before read
