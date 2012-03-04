@@ -26,3 +26,8 @@
 <IfModule mod_php5.c>
     php_flag magic_quotes_gpc Off
 </IfModule>
+
+<IfModule mod_env.c>
+	# Set this to "development" to enable debug mode
+	SetEnv APPLICATION_ENV production
+</IfModule>
