@@ -96,10 +96,10 @@ class Plugin implements PluginInterface
 		// Make a choice between ADMIN, API, WEB.
 		// ADMIN and API base url are in the configuration file,
 		// other words is the WEB interface.
-		switch (array_shift($params))
+		switch (current($params))
 		{
-			case $conf->admin : $event_name = 'request.admin'; break;
-			case $conf->api   : $event_name = 'request.api';   break;
+			case $conf->admin : $event_name = 'request.admin'; array_shift($params); break;
+			case $conf->api   : $event_name = 'request.api';   array_shift($params); break;
 			default           : $event_name = 'request.web';   break;
 		}
 
@@ -116,7 +116,6 @@ class Plugin implements PluginInterface
 	 * The event need data:
 	 * - mixed request
 	 * - array params
-	 * - string event_name
 	 */
 	public static function route(Event $event)
 	{
