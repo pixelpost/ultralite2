@@ -1,6 +1,7 @@
 <?php
 
-use pixelpost\plugins\auth;
+use pixelpost\plugins\auth,
+	pixelpost\plugins\photo;
 
 require __DIR__ . SEP . 'Dependency.php';
 
@@ -122,14 +123,16 @@ try
 	$rollbackTo = 7;
 
 	// add user / password (not use api because api require grant access)
-	$userName = $post['username'];
-	$userPass = $post['password'];
-	$userId   = auth\Model::user_add($userName, $userPass);
+	$userName  = $post['username'];
+	$userPass  = $post['password'];
+	$userEmail = $post['email'];
+	$userId    = auth\Model::user_add($userName, $userPass, $userEmail);
+	$entityId  = auth\Model::user_get_entity_id($userId);
 
 	// for our admin user, add all grant access to him
 	foreach(auth\Model::grant_list() as $grant)
 	{
-		auth\Model::user_grant_link($userId, $grant['id']);
+		auth\Model::entity_grant_link($entityId, $grant['id']);
 	}
 
 	// need ADMIN_URL constant for webAuth
@@ -142,7 +145,7 @@ catch(Exception $e)
 {
 	$error = $e->getMessage() . ', on line: ' . $e->getLine() . ' : ' . $e->getFile();
 
-	if ($rollbackTo >= 7) pixelpost\plugins\photo\Plugin::uninstall();
+	if ($rollbackTo >= 7) photo\Plugin::uninstall();
 	if ($rollbackTo >= 6) unlink(PRIV_PATH . SEP . 'sqlite3.db');
 	if ($rollbackTo >= 5) unlink(ROOT_PATH . SEP . 'index.php');
 	if ($rollbackTo >= 4) unlink(PRIV_PATH . SEP . '.htaccess');

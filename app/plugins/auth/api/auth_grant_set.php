@@ -2,41 +2,33 @@
 
 namespace pixelpost\plugins\auth;
 
-use pixelpost;
-use pixelpost\plugins\api\Exception;
+use pixelpost\plugins\api\Exception\Ungranted,
+	pixelpost\plugins\api\Exception\FieldNotValid,
+	pixelpost\plugins\api\Exception\FieldNonExists;
+
+// method
+$method = 'auth.grant.set';
+
+// the request
+$request = $event->request;
 
 // check grants
-if (!Plugin::is_granted('admin')) throw new Exception\Ungranted('auth.grant.set');
+if (!Plugin::is_granted('admin')) throw new Ungranted($method);
 
-// check required data
-if (!isset($event->request->grant)) throw new Exception\FieldRequired('auth.grant.set', 'grant');
+// input validation
+$grant = self::get_required('grant', $request, $method);
+$name  = self::get_required('name' , $request, $method);
 
-if (!isset($event->request->name)) throw new Exception\FieldRequired('auth.grant.set', 'name');
+// check newname is different
+if ($grant == $name) throw new FieldNotValid('name', 'no update was needed');
 
-if (trim($event->request->grant) == '') throw new Exception\FieldEmpty('grant');
+// check grant exists
+if (!self::check_grant_name($grant, $id)) throw new FieldNonExists('grant');
 
-if (trim($event->request->name) == '') throw new Exception\FieldEmpty('name');
-
-// check if grant exists
-try
-{
-	$grantId = Model::grant_get($event->request->grant);
-}
-catch(ModelExceptionNoResult $e)
-{
-	throw new Exception\FieldNonExists('grant');
-}
-
-// check if optionnal newname is already exists
-try
-{
-	Model::grant_get($event->request->name);
-
-	throw new Exception\FieldNotValid('name', 'grant already exists');
-}
-catch(ModelExceptionNoResult $e) {}
+// check if newname already exists
+if (self::check_grant_name($name)) throw new FieldNotValid('name', 'name already exists');
 
 // update grant
-Model::grant_update($grantId, $event->request->name);
+Model::grant_update($id, $name);
 
-$event->response = array('message' => 'grant updated');
+$event->response = array('grant' => $name);

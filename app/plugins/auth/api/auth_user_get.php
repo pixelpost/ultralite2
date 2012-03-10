@@ -2,25 +2,24 @@
 
 namespace pixelpost\plugins\auth;
 
-use pixelpost;
-use pixelpost\plugins\api\Exception;
+use pixelpost\plugins\api\Exception\Ungranted,
+	pixelpost\plugins\api\Exception\FieldNonExists;
+
+// method
+$method = 'auth.user.get';
+
+// the request
+$request = $event->request;
 
 // check grants
-if (!Plugin::is_granted('admin')) throw new Exception\Ungranted('auth.user.get');
+if (!Plugin::is_granted('admin')) throw new Ungranted($method);
 
-// check required data
-if (!isset($event->request->user)) throw new Exception\FieldRequired('auth.user.get', 'user');
+// input validation
+$user = self::get_required('user', $request, $method);
 
-if (trim($event->request->user) == '') throw new Exception\FieldEmpty('user');
+// check user exists
+if (!self::check_user_name($user)) throw new FieldNonExists('user');
 
-try
-{
-	// create $id and $password
-	extract(Model::user_get_by_name($event->request->user));
-}
-catch(ModelExceptionNoResult $e)
-{
-	throw new Exception\FieldNonExists('user');
-}
-
-$event->response = array('id' => $id);
+// this can feel stupid but it's important to keep a distinction between
+// user identifier and user name, even if today it is the same.
+$event->response = array('name' => $user);

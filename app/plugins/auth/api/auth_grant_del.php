@@ -2,25 +2,23 @@
 
 namespace pixelpost\plugins\auth;
 
-use pixelpost;
-use pixelpost\plugins\api\Exception;
+use pixelpost\plugins\api\Exception\Ungranted,
+	pixelpost\plugins\api\Exception\FieldNonExists;
+
+// method
+$method = 'auth.grant.del';
+
+// the request
+$request = $event->request;
 
 // check grants
-if (!Plugin::is_granted('admin')) throw new Exception\Ungranted('auth.grant.del');
+if (!Plugin::is_granted('admin')) throw new Ungranted($method);
 
-// check required data
-if (!isset($event->request->name)) throw new Exception\FieldRequired('auth.grant.del', 'name');
+// input validation
+$grant = self::get_required('grant', $request, $method);
 
-if (trim($event->request->name) == '') throw new Exception\FieldEmpty('name');
-
-try
-{
-	$id = Model::grant_get($event->request->name);
-}
-catch(ModelExceptionNoResult $e)
-{
-	throw new Exception\FieldNonExists('name');
-}
+// check grant exists
+if (!self::check_grant_name($grant, $id)) throw new FieldNonExists('grant');
 
 Model::grant_del($id);
 

@@ -2,23 +2,24 @@
 
 namespace pixelpost\plugins\auth;
 
-use pixelpost;
-use pixelpost\plugins\api\Exception;
+use pixelpost\plugins\api\Exception\Ungranted,
+	pixelpost\plugins\api\Exception\FieldNotValid;
 
-if (!Plugin::is_granted('admin')) throw new Exception\Ungranted('auth.grant.add');
+// method
+$method = 'auth.grant.add';
 
-if (!isset($event->request->name)) throw new Exception\FieldRequired('auth.grant.add', 'name');
+// the request
+$request = $event->request;
 
-if (trim($event->request->name) == '') throw new Exception\FieldEmpty('name');
+// check grants
+if (!Plugin::is_granted('admin')) throw new Ungranted($method);
 
-try
-{
-	Model::grant_get($event->request->username);
+// input validation
+$name = self::get_required('name', $request, $method);
 
-	throw new Exception\FieldNotValid('name', 'grant already exists');
-}
-catch(ModelExceptionNoResult $e) {}
+// check grant exists
+if (self::check_grant_name($name)) throw new FieldNotValid('name', 'grant already exists');
 
-$grantId = Model::grant_add($event->request->name);
+Model::grant_add($name);
 
-$event->response = array('message' => 'user added');
+$event->response = array('grant' => $name);

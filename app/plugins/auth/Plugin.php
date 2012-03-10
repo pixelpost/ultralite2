@@ -35,19 +35,29 @@ class Plugin implements PluginInterface
 	protected static $_api_nonce = '';
 
 	/**
-	 * @var string The authentified username if auth success
-	 */
-	protected static $_user_name = '';
-
-	/**
-	 * @var string The authentified password hashed if auth success
-	 */
-	protected static $_user_pass = '';
-
-	/**
-	 * @var int The authentified user_id if auth success
+	 * @var int The authenticated user_id if auth success
 	 */
 	protected static $_user_id  = 0;
+
+	/**
+	 * @var int The authenticated entity_id if auth success
+	 */
+	protected static $_entity_id = 0;
+
+	/**
+	 * @var string The authenticated entity public key if auth success
+	 */
+	protected static $_entity_pub = '';
+
+	/**
+	 * @var string The authenticated entity private key if auth success
+	 */
+	protected static $_entity_priv = '';
+
+	/**
+	 * @var int The authenticated entity name if auth success
+	 */
+	protected static $_entity_name = '';
 
 	public static function version()
 	{
@@ -106,24 +116,32 @@ class Plugin implements PluginInterface
 		// check admin auth before admin event method is called
 		Event::register('request.admin',    $selfClass . '::request_admin', 99);
 
-		Event::register('api.auth.version',        $apiClass . '::auth_version');
-		Event::register('api.auth.request',        $apiClass . '::auth_request');
-		Event::register('api.auth.token',          $apiClass . '::auth_token');
-		Event::register('api.auth.refresh',        $apiClass . '::auth_refresh');
-		Event::register('api.auth.config.get',     $apiClass . '::auth_config_get');
-		Event::register('api.auth.config.set',     $apiClass . '::auth_config_set');
-		Event::register('api.auth.user.add',       $apiClass . '::auth_user_add');
-		Event::register('api.auth.user.set',       $apiClass . '::auth_user_set');
-		Event::register('api.auth.user.get',       $apiClass . '::auth_user_get');
-		Event::register('api.auth.user.del',       $apiClass . '::auth_user_del');
-		Event::register('api.auth.user.list',      $apiClass . '::auth_user_list');
-		Event::register('api.auth.grant.add',      $apiClass . '::auth_grant_add');
-		Event::register('api.auth.grant.set',      $apiClass . '::auth_grant_set');
-		Event::register('api.auth.grant.get',      $apiClass . '::auth_grant_get');
-		Event::register('api.auth.grant.del',      $apiClass . '::auth_grant_del');
-		Event::register('api.auth.grant.list',     $apiClass . '::auth_grant_list');
-		Event::register('api.auth.user.grant.add', $apiClass . '::auth_user_grant_add');
-		Event::register('api.auth.user.grant.del', $apiClass . '::auth_user_grant_del');
+		Event::register('api.auth.version',          $apiClass . '::auth_version');
+		Event::register('api.auth.request',          $apiClass . '::auth_request');
+		Event::register('api.auth.token',            $apiClass . '::auth_token');
+		Event::register('api.auth.refresh',          $apiClass . '::auth_refresh');
+		Event::register('api.auth.destroy',          $apiClass . '::auth_destroy');
+		Event::register('api.auth.config.get',       $apiClass . '::auth_config_get');
+		Event::register('api.auth.config.set',       $apiClass . '::auth_config_set');
+		Event::register('api.auth.user.add',         $apiClass . '::auth_user_add');
+		Event::register('api.auth.user.set',         $apiClass . '::auth_user_set');
+		Event::register('api.auth.user.get',         $apiClass . '::auth_user_get');
+		Event::register('api.auth.user.del',         $apiClass . '::auth_user_del');
+		Event::register('api.auth.user.list',        $apiClass . '::auth_user_list');
+		Event::register('api.auth.entity.add',       $apiClass . '::auth_entity_add');
+		Event::register('api.auth.entity.set',       $apiClass . '::auth_entity_set');
+		Event::register('api.auth.entity.get',       $apiClass . '::auth_entity_get');
+		Event::register('api.auth.entity.del',       $apiClass . '::auth_entity_del');
+		Event::register('api.auth.entity.list',      $apiClass . '::auth_entity_list');
+		Event::register('api.auth.grant.add',        $apiClass . '::auth_grant_add');
+		Event::register('api.auth.grant.set',        $apiClass . '::auth_grant_set');
+		Event::register('api.auth.grant.get',        $apiClass . '::auth_grant_get');
+		Event::register('api.auth.grant.del',        $apiClass . '::auth_grant_del');
+		Event::register('api.auth.grant.list',       $apiClass . '::auth_grant_list');
+		Event::register('api.auth.user.grant.add',   $apiClass . '::auth_user_grant_add');
+		Event::register('api.auth.user.grant.del',   $apiClass . '::auth_user_grant_del');
+		Event::register('api.auth.entity.grant.add', $apiClass . '::auth_entity_grant_add');
+		Event::register('api.auth.entity.grant.del', $apiClass . '::auth_entity_grant_del');
 
 		Event::register('admin.template.footer', $adminClass . '::template_footer');
 		Event::register('admin.template.css',    $adminClass . '::template_css');
@@ -134,7 +152,7 @@ class Plugin implements PluginInterface
 	}
 
 	/**
-	 * Verify if a user is authentified for admin pages. if not print the login
+	 * Verify if a user is authenticated for admin pages. if not print the login
 	 * pages and break the request.admin chain (cause the original admin page
 	 * called is not generated).
 	 *
@@ -168,9 +186,9 @@ class Plugin implements PluginInterface
 			if (WebAuth::check($id, $name))
 			{
 				// register the identification (permit to internal api call to be
-				// authentified too).
-				self::$_user_id   = $id;
-				self::$_user_name = $name;
+				// authenticated too).
+				self::$_user_id     = $id;
+				self::$_entity_name = $name;
 				// call admin page
 				return true;
 			}
@@ -185,17 +203,47 @@ class Plugin implements PluginInterface
 	}
 
 	/**
-	 * Return the authentified username or an empty string
+	 * Return the authenticated entity name or an empty string
 	 *
 	 * @return string
 	 */
-	public static function get_username()
+	public static function get_entity_name()
 	{
-		return self::$_user_name;
+		return self::$_entity_name;
 	}
 
 	/**
-	 * Return the authentified user_id or 0
+	 * Return the authenticated entity public key or an empty string
+	 *
+	 * @return string
+	 */
+	public static function get_entity_public_key()
+	{
+		return self::$_entity_pub;
+	}
+
+	/**
+	 * Return the authenticated token id or 0
+	 *
+	 * @return int
+	 */
+	public static function get_token_id()
+	{
+		return self::$_api_token;
+	}
+
+	/**
+	 * Return the authenticated entity id or 0
+	 *
+	 * @return int
+	 */
+	public static function get_entity_id()
+	{
+		return self::$_entity_id;
+	}
+
+	/**
+	 * Return the authenticated user_id or 0
 	 *
 	 * @return string
 	 */
@@ -205,14 +253,25 @@ class Plugin implements PluginInterface
 	}
 
 	/**
-	 * Return if a user is authentified
+	 * Return if there is an authentication
 	 *
 	 * @return bool
 	 */
 	public static function is_auth()
 	{
-		// check if user is allready authentified
-		if (self::$_user_id != 0) return true;
+		// check if user is already authenticated
+		return (self::$_user_id != 0);
+	}
+
+	/**
+	 * Return if a user is authenticated
+	 *
+	 * @return bool
+	 */
+	public static function is_auth_admin()
+	{
+		// check if it is a entity which is logged
+		return (self::$_entity_id == 0);
 	}
 
 	/**
@@ -238,8 +297,8 @@ class Plugin implements PluginInterface
 			throw new ApiException('bad_token', 'The token is not valid.');
 		}
 
-		// retrieve user data
-		$user = Model::user_get_by_id($token['user_id']);
+		// retrieve entity data
+		$entity = Model::entity_get_by_id($token['entity_id']);
 
 		// retrieve configuration
 		$conf = Config::create();
@@ -247,9 +306,8 @@ class Plugin implements PluginInterface
 		// prepare auth class
 		$auth = new Auth();
 		$auth->set_lifetime($conf->plugin_auth->lifetime)
-			 ->set_key($conf->uid)
-			 ->set_username($user['name'])
-			 ->set_password_hash($user['pass'])
+			 ->set_public_key($entity['public_key'])
+			 ->set_private_key($entity['private_key'])
 			 ->set_challenge($token['challenge'])
 			 ->set_nonce($token['nonce']);
 
@@ -269,12 +327,13 @@ class Plugin implements PluginInterface
 			throw new ApiException('bad_hmac', 'The hmac is not valid.');
 		}
 
-		// store authentified username and id, generate a new nonce
-		self::$_api_token  = $token['id'];
-		self::$_api_nonce  = $token['nonce'];
-		self::$_user_id    = $token['user_id'];
-		self::$_user_name  = $user['name'];
-		self::$_user_pass  = $user['pass'];
+		// store authenticated entityname and id, generate a new nonce
+		self::$_api_token   = $token['id'];
+		self::$_api_nonce   = $token['nonce'];
+		self::$_entity_id   = $token['entity_id'];
+		self::$_entity_pub  = $entity['public_key'];
+		self::$_entity_priv = $entity['private_key'];
+		self::$_user_id     = $entity['user_id'];
 	}
 
 	/**
@@ -288,9 +347,8 @@ class Plugin implements PluginInterface
 
 		// prepare auth class
 		$auth = new Auth();
-		$auth->set_key(Config::create()->uid)
-			 ->set_password_hash(self::$_user_pass)
-			 ->set_username(self::$_user_name)
+		$auth->set_private_key(self::$_entity_priv)
+			 ->set_public_key(self::$_entity_pub)
 			 ->set_nonce(self::$_api_nonce);
 
 		// create the new nonce
@@ -307,29 +365,40 @@ class Plugin implements PluginInterface
 	}
 
 	/**
-	 * Return if a user is granted to $grantRequested
+	 * Return if a user is granted to $grantRequested or to 'self' grant if a
+	 * user id is provided.
 	 * Possible grants are : read | write | config | delete
 	 *
 	 * @return bool
 	 */
-	public static function is_granted($grantRequested)
+	public static function is_granted($grantRequested, $user_id = 0)
 	{
 		// check the authentification
 		if (!self::is_auth()) return false;
 
-		// retrieve all user's grant
-		try
+		// check virtual 'self' grant if a user id is provided
+		if ($user_id && $user_id == self::_user_id) return true;
+
+		// the entity grants (for better perf on multiple call)
+		static $grants = null;
+
+		if (is_null($grants))
 		{
-			$grants = Model::user_grant_list_by_user(self::$_user_id);
-		}
-		catch(ModelExceptionNoResult $e)
-		{
-			return false;
+			// which entity is logged ?
+			$id = self::$_entity_id ?: Model::user_get_entity_id(self::$_user_id);
+
+			// retrieve all user's grant
+			try
+			{
+				$grants = Model::entity_grant_list_by_entity($id);
+			}
+			catch(ModelExceptionNoResult $e)
+			{
+				return false;
+			}
 		}
 
 		// check if the user is granted to $grantRequested
-		$granted = false;
-
 		foreach($grants as $grant)
 		{
 			if ($grant['name'] == $grantRequested) return true;

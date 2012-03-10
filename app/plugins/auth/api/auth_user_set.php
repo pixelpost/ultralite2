@@ -2,56 +2,39 @@
 
 namespace pixelpost\plugins\auth;
 
-use pixelpost;
-use pixelpost\plugins\api\Exception;
+use pixelpost\plugins\api\Exception\Ungranted,
+	pixelpost\plugins\api\Exception\FieldNotValid,
+	pixelpost\plugins\api\Exception\FieldNonExists;
 
-// check grants
-if (!Plugin::is_granted('admin')) throw new Exception\Ungranted('auth.user.set');
+// method
+$method = 'auth.user.set';
 
-// check required data
-if (!isset($event->request->user)) throw new Exception\FieldRequired('auth.user.set', 'user');
+// the request
+$request = $event->request;
 
-if (trim($event->request->user) == '') throw new Exception\FieldEmpty('user');
+// more grant check come later
+if (!Plugin::is_auth()) throw new Ungranted($method);
 
-// check optionnal data
-$username = false;
-$password = false;
+// input validation
+$user     = self::get_required('user'    , $request, $method);
+$name     = self::get_optional('name'    , $request, $method);
+$password = self::get_optional('password', $request, $method);
+$email    = self::get_optional('email',    $request, $method);
 
-if (isset($event->request->name))     $username = $event->request->name;
-if (isset($event->request->password)) $password = $event->request->password;
+// check if user exists
+if (!self::check_user_name($user, $id, $pass, $mail)) throw new FieldNonExists('user');
 
-if ($username !== false && trim($username) == '') throw new Exception\FieldEmpty('name');
-if ($password !== false && trim($password) == '') throw new Exception\FieldEmpty('password');
-
-if ($username !== false && $username == $event->request->user) $username  = false;
-
-// check if username exists
-try
-{
-	// create $user_id and $user_password
-	extract(Model::user_get_by_name($event->request->user), EXTR_PREFIX_ALL, 'user_');
-}
-catch(ModelExceptionNoResult $e)
-{
-	throw new Exception\FieldNonExists('user');
-}
+// check grants (require admin grants or just self update)
+if (!Plugin::is_granted('admin', $id)) throw new Ungranted($method);
 
 // check if optionnal newname is already exists
-if ($username !== false)
-{
-	try
-	{
-		Model::user_get_by_name($username);
-
-		throw new Exception\FieldNotValid('name', 'user already exists');
-	}
-	catch(ModelExceptionNoResult $e) {}
-}
+if ($name && self::check_user_name($name)) throw new FieldNotValid('name', 'user already exists');
 
 // update the user
-if ($username === false) $username = $event->request->user;
-if ($password === false) $password = $user_password;
+$name     = $name     ?: $user;
+$password = $password ?: $pass;
+$email    = $email    ?: $mail;
 
-Model::user_update($user_id, $username, $password);
+Model::user_update($id, $name, $password, $email);
 
-$event->response = array('message' => 'user updated');
+$event->response = array('user' => $name);

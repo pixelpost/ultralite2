@@ -15,12 +15,11 @@ use stdClass,
  */
 class Auth
 {
-	protected $_lifetime  = 500;
-	protected $_username  = '';
-	protected $_password  = '';
-	protected $_key       = '';
-	protected $_challenge = '';
-	protected $_nonce     = '';
+	protected $_lifetime    = 500;
+	protected $_public_key  = '';
+	protected $_private_key = '';
+	protected $_challenge   = '';
+	protected $_nonce       = '';
 
 	/**
 	 * Change the auth lifetime
@@ -38,46 +37,31 @@ class Auth
 	}
 
 	/**
-	 * Set the auth username
+	 * Set the auth public key
 	 *
-	 * @param string $username The user name
+	 * @param string $public_key
 	 * @return pixelpost\plugins\auth\Auth
 	 */
-	public function set_username($username)
+	public function set_public_key($public_key)
 	{
-		Filter::is_string($username);
+		Filter::is_string($public_key);
 
-		$this->_username = $username;
+		$this->_public_key = $public_key;
 
 		return $this;
 	}
 
 	/**
-	 * Change the auth password (md5 hash)
+	 * Set the auth private key
 	 *
-	 * @param string $password The MD5 hash of the user password
+	 * @param string $private_key
 	 * @return pixelpost\plugins\auth\Auth
 	 */
-	public function set_password_hash($password)
+	public function set_private_key($private_key)
 	{
-		Filter::is_string($password);
+		Filter::is_string($private_key);
 
-		$this->_password = $password;
-
-		return $this;
-	}
-
-	/**
-	 * Set the auth secret key
-	 *
-	 * @param string $key The secret shared by both parts
-	 * @return pixelpost\plugins\auth\Auth
-	 */
-	public function set_key($key)
-	{
-		Filter::is_string($key);
-
-		$this->_key = $key;
+		$this->_private_key = $private_key;
 
 		return $this;
 	}
@@ -123,17 +107,17 @@ class Auth
 	}
 
 	/**
-	 * Generate and return the secret - Based on username, password, key
+	 * Generate and return the secret - Based on public_key, private_key
 	 *
 	 * @return string
 	 */
 	public function get_secret()
 	{
-		return md5($this->_username . $this->_password . $this->_key);
+		return md5($this->_public_key . $this->_private_key);
 	}
 
 	/**
-	 * Generate and return a challenge - Based on username, password, key
+	 * Generate and return a challenge - Based on public_key, private_key
 	 *
 	 * @return string
 	 */
@@ -153,7 +137,7 @@ class Auth
 	}
 
 	/**
-	 * Generate and return a token - Based on username, password, key, lifetime, challenge
+	 * Generate and return a token - Based on public_key, private_key, lifetime, challenge
 	 *
 	 * @return string
 	 */
@@ -163,7 +147,7 @@ class Auth
 	}
 
 	/**
-	 * Generate and return a hmac - Based on username, password, key, nonce
+	 * Generate and return a hmac - Based on public_key, private_key, nonce
 	 *
 	 * @param string $data The $data to hmac
 	 * @return string
@@ -174,7 +158,7 @@ class Auth
 	}
 
 	/**
-	 * Generate and return a signature - Based on username, password, key, lifetime, challenge
+	 * Generate and return a signature - Based on public_key, private_key, lifetime, challenge
 	 *
 	 * @param string $data The $data to sign
 	 * @return string

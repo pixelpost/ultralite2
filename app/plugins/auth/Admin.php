@@ -12,8 +12,7 @@ class Admin
 	public static function template_footer(Event $event)
 	{
 		$event->response[] = Template::create()
-				->assign('key', Config::create()->uid)
-				->assign('user', Plugin::get_username())
+				->assign('user', Plugin::get_entity_name())
 				->render('auth/tpl/admin-footer.php');
 	}
 

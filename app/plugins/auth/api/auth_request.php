@@ -3,38 +3,36 @@
 namespace pixelpost\plugins\auth;
 
 use pixelpost\Config,
-	pixelpost\plugins\api\Exception\FieldRequired,
-	pixelpost\plugins\api\Exception\FieldNotValid;
+	pixelpost\plugins\api\Exception\FieldRequired;
 
 // check the request
-if (!isset($event->request->username)) throw new FieldRequired('auth.request', 'username');
+if (!isset($event->request->public_key)) throw new FieldRequired('auth.request', 'public_key');
+if (!isset($event->request->session))    throw new FieldRequired('auth.request', 'session');
 
-// check the username exists
+// check the public_key exists
 try
 {
-	$user = Model::user_get_by_name($event->request->username);
+	$entity = Model::entity_get_by_public_key($event->request->public_key);
 
-	// retrieve configuration
-	$conf     = Config::create();
-	$lifetime = $conf->plugin_auth->lifetime;
-	$key      = $conf->uid;
+	// retrieve the lifetime configuration value
+	$lifetime = Config::create()->plugin_auth->lifetime;
 
 	// set auth module
 	$auth = new Auth();
 	$auth->set_lifetime($lifetime)
-		 ->set_key($key)
-		 ->set_username($event->request->username)
-		 ->set_password_hash($user['pass']);
+		 ->set_public_key($event->request->public_key)
+		 ->set_private_key($entity['private_key']);
 
 	// create the challenge
 	$challenge = $auth->get_challenge();
+	$session   = $event->request->session;
 
 	// store the challenge in database
-	Model::challenge_add($challenge, $user['id'], $lifetime);
+	Model::challenge_add($challenge, $entity['id'], $session, $lifetime);
 }
 catch(ModelExceptionNoResult $e)
 {
-	// netheir tell user don't exists. This is an indication for attacker
+	// netheir tell entity don't exists. This is an indication for attacker
 	$challenge = md5(uniqid());
 	$lifetime  = 300;
 }

@@ -59,11 +59,11 @@
 			e.stopPropagation();
 			var url    = '{{ @ADMIN_URL }}auth-login';
 			var user   = $('#user').val();
-			var pass   = md5($('#pass').val());
+			var pass   = md5(md5($('#pass').val())+url);
 			var data   = $('#data').val();
-			var nonce  = Math.ceil((new Date()).getTime() / 150000) * 150;
-			var secret = md5(user + pass + url);
-			var key    = md5(data + secret + nonce);
+			var salt   = Math.ceil((new Date()).getTime() / 150000) * 150;
+			var secret = md5(user + pass);
+			var key    = md5(data + secret + salt);
 			var data   = { 'user': user, 'priv': data, 'key': key };
 			var todo   = function(json) {
 				if (json.status == 'valid') {

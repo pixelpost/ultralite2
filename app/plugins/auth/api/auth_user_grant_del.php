@@ -2,38 +2,36 @@
 
 namespace pixelpost\plugins\auth;
 
-use pixelpost;
-use pixelpost\plugins\api\Exception;
+use pixelpost\plugins\api\Exception\Ungranted,
+	pixelpost\plugins\api\Exception\FieldNonExists;
+
+// method
+$method = 'auth.user.grant.del';
 
 // check grants
-if (!Plugin::is_granted('admin')) throw new Exception\Ungranted('auth.user.grant.del');
+if (!Plugin::is_granted('admin')) throw new Ungranted($method);
 
-// check required data
-if (!isset($event->request->user)) throw new Exception\FieldRequired('auth.user.grant.del', 'user');
-if (!isset($event->request->grant)) throw new Exception\FieldRequired('auth.user.grant.del', 'grant');
+// the request
+$request = $event->request;
 
-if (trim($event->request->user) == '') throw new Exception\FieldEmpty('user');
-if (trim($event->request->grant) == '') throw new Exception\FieldEmpty('grant');
+// input validation
+$user  = self::get_required('user' , $request, $method);
+$grant = self::get_required('grant', $request, $method);
 
+// check user exists
+if (!self::check_user_name($user, $user_id)) throw new FieldNonExists('user');
+
+// check grant exists
+if (!self::check_grant_name($grant, $grant_id)) throw new FieldNonExists('grant');
+
+// remove grant to all user's entities
 try
 {
-	// create $user_id and $user_password
-	extract(Model::user_get_by_name($event->request->user), EXTR_PREFIX_ALL, 'user_');
+	foreach (Model::entity_list_by_user($user_id) as $entity)
+	{
+		Model::entity_grant_unlink($entity['id'], $grant_id);
+	}
 }
-catch(ModelExceptionNoResult $e)
-{
-	throw new Exception\FieldNonExists('user');
-}
-
-try
-{
-	$grantId = Model::grant_get($event->request->grant);
-}
-catch(ModelExceptionNoResult $e)
-{
-	throw new Exception\FieldNonExists('grant');
-}
-
-Model::user_grant_del($user_id, $grantId);
+catch (ModelExceptionNoResult $e) {}
 
 $event->response = array('message' => 'user have no longer the grant access');

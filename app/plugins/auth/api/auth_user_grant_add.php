@@ -2,38 +2,29 @@
 
 namespace pixelpost\plugins\auth;
 
-use pixelpost;
-use pixelpost\plugins\api\Exception;
+use pixelpost\plugins\api\Exception\Ungranted,
+	pixelpost\plugins\api\Exception\FieldNonExists;
+
+// method
+$method = 'auth.user.grant.add';
 
 // check grants
-if (!Plugin::is_granted('admin')) throw new Exception\Ungranted('auth.user.grant.add');
+if (!Plugin::is_granted('admin')) throw new Ungranted($method);
 
-// check required data
-if (!isset($event->request->user)) throw new Exception\FieldRequired('auth.user.grant.add', 'user');
-if (!isset($event->request->grant)) throw new Exception\FieldRequired('auth.user.grant.add', 'grant');
+// the request
+$request = $event->request;
 
-if (trim($event->request->user) == '') throw new Exception\FieldEmpty('user');
-if (trim($event->request->grant) == '') throw new Exception\FieldEmpty('grant');
+// input validation
+$user  = self::get_required('user' , $request, $method);
+$grant = self::get_required('grant', $request, $method);
 
-try
-{
-	// create $user_id and $user_password
-	extract(Model::user_get_by_name($event->request->user), EXTR_PREFIX_ALL, 'user_');
-}
-catch(ModelExceptionNoResult $e)
-{
-	throw new Exception\FieldNonExists('user');
-}
+// check user exists
+if (!self::check_user_name($user, $user_id)) throw new FieldNonExists('user');
 
-try
-{
-	$grantId = Model::grant_get($event->request->grant);
-}
-catch(ModelExceptionNoResult $e)
-{
-	throw new Exception\FieldNonExists('grant');
-}
+// check grant exists
+if (!self::check_grant_name($grant, $grant_id)) throw new FieldNonExists('grant');
 
-Model::user_grant_link($user_id, $grantId);
+// add grant to user
+Model::entity_grant_link(Model::user_get_entity_id($user_id), $grant_id);
 
 $event->response = array('message' => 'user have now the grant access');

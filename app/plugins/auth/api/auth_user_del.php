@@ -2,26 +2,23 @@
 
 namespace pixelpost\plugins\auth;
 
-use pixelpost;
-use pixelpost\plugins\api\Exception;
+use pixelpost\plugins\api\Exception\Ungranted,
+	pixelpost\plugins\api\Exception\FieldNonExists;
+
+// method
+$method = 'auth.user.del';
+
+// the request
+$request = $event->request;
 
 // check grants
-if (!Plugin::is_granted('admin')) throw new Exception\Ungranted('auth.user.del');
+if (!Plugin::is_granted('admin')) throw new Ungranted($method);
 
-// check required data
-if (!isset($event->request->user)) throw new Exception\FieldRequired('auth.user.del', 'user');
+// input validation
+$user = self::get_required('user', $request, $method);
 
-if (trim($event->request->user) == '') throw new Exception\FieldEmpty('user');
-
-try
-{
-	// create $id and $password
-	extract(Model::user_get_by_name($event->request->user));
-}
-catch(ModelExceptionNoResult $e)
-{
-	throw new Exception\FieldNonExists('user');
-}
+// check user exists
+if (!self::check_user_name($user, $id)) throw new FieldNonExists('user');
 
 Model::user_del($id);
 

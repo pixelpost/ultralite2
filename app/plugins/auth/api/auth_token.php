@@ -31,20 +31,17 @@ if ($now > $challenge['expire'])
 	throw new FieldNotValid('challenge');
 }
 
-// retrieve user and the password correspondig to the challenge
-$user = Model::user_get_by_id($challenge['user_id']);
+// retrieve entity public and private key correspondig to the challenge
+$entity = Model::entity_get_by_id($challenge['entity_id']);
 
-// retrieve configuration
-$conf     = Config::create();
-$lifetime = $conf->plugin_auth->lifetime;
-$key      = $conf->uid;
+// retrieve the lifetime configuration value
+$lifetime = Config::create()->plugin_auth->lifetime;
 
 // set auth module
 $auth = new Auth();
 $auth->set_lifetime($lifetime)
-	 ->set_key($key)
-	 ->set_username($user['name'])
-	 ->set_password_hash($user['pass'])
+	 ->set_public_key($entity['public_key'])
+	 ->set_private_key($entity['private_key'])
 	 ->set_challenge($event->request->challenge);
 
 // generate new token, nonce and check the request signature
@@ -62,7 +59,12 @@ if ($sign != $event->request->signature)
 Model::challenge_del($challenge['id']);
 
 // store the token in database
-Model::token_add($token, $event->request->challenge, $nonce, $challenge['user_id']);
+Model::token_add($token,
+				 $event->request->challenge,
+				 $nonce,
+				 $challenge['entity_id'],
+				 $challenge['session'],
+				 $lifetime);
 
 // return the response
 $event->response = compact('nonce', 'signature');

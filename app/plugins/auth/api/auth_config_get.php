@@ -2,9 +2,9 @@
 
 namespace pixelpost\plugins\auth;
 
-use pixelpost;
-use pixelpost\plugins\api\Exception;
+use pixelpost\Config,
+	pixelpost\plugins\api\Exception\Ungranted;
 
-if (!Plugin::is_granted('read')) throw new Exception\Ungranted('auth.config.get');
+if (!Plugin::is_granted('read')) throw new Ungranted('auth.config.get');
 
-$event->response = pixelpost\Config::create()->plugin_auth;
+$event->response = Config::create()->plugin_auth;

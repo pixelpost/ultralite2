@@ -2,27 +2,37 @@
 
 namespace pixelpost\plugins\auth;
 
-use pixelpost;
-use pixelpost\plugins\api\Exception;
+use pixelpost\plugins\api\Exception\Ungranted,
+	pixelpost\plugins\api\Exception\FieldNotValid;
 
-if (!Plugin::is_granted('admin')) throw new Exception\Ungranted('auth.user.add');
+// method
+$method = 'auth.user.add';
 
-if (!isset($event->request->user)) throw new Exception\FieldRequired('auth.user.add', 'user');
+// the request
+$request = $event->request;
 
-if (!isset($event->request->password)) throw new Exception\FieldRequired('auth.user.add', 'password');
+// check grants
+if (!Plugin::is_granted('admin')) throw new Ungranted($method);
 
-if (trim($event->request->user) == '') throw new Exception\FieldEmpty('user');
+// input validation
+$name     = self::get_required('name'    , $request, $method);
+$password = self::get_required('password', $request, $method);
+$email    = self::get_required('email',    $request, $method);
 
-if (trim($event->request->password) == '') throw new Exception\FieldEmpty('password');
-
-try
+// check email format
+if (false === $email = filter_var($email, FILTER_VALIDATE_EMAIL))
 {
-	Model::user_get_by_name($event->request->user);
-
-	throw new Exception\FieldNotValid('user', 'user already exists');
+	throw new FieldNotValid('email', 'it not seems to be correct.');
 }
-catch(ModelExceptionNoResult $e) {}
 
-$userId = Model::user_add($event->request->user, $event->request->password);
+// check name exists
+if (self::check_user_name($name))
+{
+	throw new FieldNotValid('name', 'name already exists');
+}
 
-$event->response = array('message' => 'user added');
+Model::user_add($name, $password, $email);
+
+// this can feel stupid but it's important to keep a distinction between
+// user identifier and user name, even if today it is the same.
+$event->response = array('user' => $name);

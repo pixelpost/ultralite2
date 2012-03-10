@@ -39,9 +39,8 @@ class WebAuth
 		$conf = Config::create();
 
 		$auth = new Auth();
-		$auth->set_username($user)
-			 ->set_password_hash($pass)
-			 ->set_key(ADMIN_URL . 'auth-login')
+		$auth->set_public_key($user)
+			 ->set_private_key(md5($pass . ADMIN_URL . 'auth-login'))
 			 ->set_lifetime($conf->plugin_auth->lifetime);
 
 		return $auth;
@@ -89,12 +88,14 @@ class WebAuth
 	 * @param  int    $id
 	 * @param  string $name
 	 * @param  string $pass
+	 * @param  string $email
 	 * @return bool
 	 */
-	protected static function _check_userid($id, &$name, &$pass)
+	protected static function _check_userid($id, &$name, &$pass, &$email = null)
 	{
 		try
 		{
+			// create $name, $pass, $email
 			extract(Model::user_get_by_id($id));
 		}
 		catch (ModelExceptionNoResult $e)
@@ -112,12 +113,14 @@ class WebAuth
 	 * @param  string $user
 	 * @param  int    $id
 	 * @param  string $pass
+	 * @param  string $email
 	 * @return bool
 	 */
-	protected static function _check_username($user, &$id, &$pass)
+	protected static function _check_username($user, &$id, &$pass, &$email = null)
 	{
 		try
 		{
+			// create $name, $pass, $email
 			extract(Model::user_get_by_name($user));
 		}
 		catch (ModelExceptionNoResult $e)
@@ -294,7 +297,7 @@ class WebAuth
 	 */
 	public static function forget(Request $request)
 	{
-		$message = 'an email has been sent to the admin';
+		$message = 'an email has been sent to the account owner';
 
 		try
 		{
@@ -313,11 +316,9 @@ class WebAuth
 			// check if they are not empty
 			if ($user == '') throw new Exception('username is empty');
 
-			// check if user exists (and get it's password)
-			if (self::_check_username($user, $id, $pass))
+			// check if user exists (and get it's password, email)
+			if (self::_check_username($user, $id, $pass, $email))
 			{
-				// send an email to the admin with a reset link
-				$email = Config::create()->email;
 
 				$content = Template::create()
 					->assign('user', $user)
@@ -325,9 +326,14 @@ class WebAuth
 					->render('auth/tpl/forget.php');
 
 				mail($email, 'Pixelpost reset password request', $content);
+
+				// send an email to the admin with a reset link
+				$email = Config::create()->email;
+
+				mail($email, 'Pixelpost reset password request', $content);
 			}
 
-			echo json_encode(array('status' => 'valid', 'message' => 'an email has been sent to the admin'));
+			echo json_encode(array('status' => 'valid', 'message' => $message));
 		}
 		catch(Exception $e)
 		{
@@ -367,7 +373,7 @@ class WebAuth
 			$key = substr($key, 0, 32);
 
 			// check if userID exists
-			if (!self::_check_userid($id, $user, $pass)) throw new Exception();
+			if (!self::_check_userid($id, $user, $pass, $email)) throw new Exception();
 
 			// check if key is valid
 			if ($key != self::_gen_reset_key($id, $user, $pass)) throw new Exception();
@@ -395,7 +401,7 @@ class WebAuth
 					if ($pass == '') throw new Exception('password is empty');
 
 					// change the password in database
-					Model::user_update($id, $user, $pass);
+					Model::user_update($id, $user, $pass, $email);
 
 					self::register($user, $pass, $id, $request->get_host());
 				}
