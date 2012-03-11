@@ -140,7 +140,7 @@ class Model
 		$entity_id = self::entity_add($user_id, $username, $pub_key, $priv_key);
 
 		// this entity is just here to link user and grants.
-		$query = 'UPDATE auth_entity SET is_me = 1 WHERE entity_id = %d;';
+		$query = 'UPDATE auth_entity SET is_me = 1 WHERE id = %d;';
 		$query = sprintf($query, $entity_id);
 
 		if (!$db->exec($query)) throw new ModelExceptionSqlError();
