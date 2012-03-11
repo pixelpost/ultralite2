@@ -12,7 +12,7 @@ $method = 'auth.entity.get';
 $request = $event->request;
 
 // more grant check come later
-//if (!Plugin::is_auth()) throw new Ungranted($method);
+if (!Plugin::is_auth()) throw new Ungranted($method);
 
 // input validation
 $entity = self::get_required('entity', $request, $method);
@@ -35,7 +35,7 @@ catch(ModelExceptionNoResult $e)
 }
 
 // check grants
-//if (!Plugin::is_granted('admin', $user_id)) throw new Ungranted($method);
+if (!Plugin::is_granted('admin', $user_id)) throw new Ungranted($method);
 
 $event->response = compact('name', 'user', 'public_key');
 
