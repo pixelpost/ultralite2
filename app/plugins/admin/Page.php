@@ -23,6 +23,14 @@ class Page
 		require __DIR__ . SEP . 'page' . SEP . 'api_test.php';
 	}
 
+	public static function template_nav_phpinfo(Event $event)
+	{
+		$event->response[] = Template::create()
+			  ->assign('url', 'phpinfo/')
+			  ->assign('name', 'php info')
+			  ->render('admin/tpl/_menu.php');
+	}
+
 	public static function template_widget(Event $event)
 	{
 		$event->response[] = Template::create()

@@ -56,6 +56,8 @@ class Plugin implements PluginInterface
 		Event::register('admin.api-test',        $page . '::page_api_test');
 		Event::register('admin.phpinfo',         $self . '::phpinfo');
 		Event::register('admin.template.widget', $page . '::template_widget', 200);
+
+		DEBUG and Event::register('admin.template.nav', $page . '::template_nav_phpinfo', 200);
 	}
 
 	public static function phpinfo(Event $event)
