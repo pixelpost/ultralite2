@@ -402,7 +402,7 @@ class Model
 		Filter::is_int($entity_id);
 
 		$query = 'SELECT name, is_me, user_id, public_key, private_key FROM auth_entity '
-		       . 'WHERE entity_id = %d LIMIT 1;';
+		       . 'WHERE id = %d LIMIT 1;';
 		$query = sprintf($query, $entity_id);
 
 		$db = Db::create();
@@ -726,7 +726,7 @@ class Model
 		// delete old challenge
 		$date = new DateTime();
 
-		$expire = Db::escape(Db::date_serialize());
+		$expire = Db::escape(Db::date_serialize($date));
 
 		$sql = 'DELETE FROM auth_challenge WHERE expire < %s;';
 		$sql = sprintf($sql, $expire);

@@ -20,8 +20,8 @@ catch(ModelExceptionNoResult $e)
 	throw new FieldNotValid('token');
 }
 
-// retrieve entity public and private key correspondig to the challenge
-$entity = Model::entity_get_by_id($challenge['entity_id']);
+// retrieve entity public and private key correspondig to the token
+$entity = Model::entity_get_by_id($token['entity_id']);
 
 // retrieve the lifetime configuration value
 $lifetime = Config::create()->plugin_auth->lifetime;
