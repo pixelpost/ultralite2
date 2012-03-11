@@ -28,7 +28,10 @@ if (!self::check_user_name($user, $id, $pass, $mail)) throw new FieldNonExists('
 if (!Plugin::is_granted('admin', $id)) throw new Ungranted($method);
 
 // check if optionnal newname is already exists
-if ($name && self::check_user_name($name)) throw new FieldNotValid('name', 'user already exists');
+if ($name && $name != $user && self::check_user_name($name))
+{
+	throw new FieldNotValid('name', 'user already exists');
+}
 
 // update the user
 $name     = $name     ?: $user;

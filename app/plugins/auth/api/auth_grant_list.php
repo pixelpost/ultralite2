@@ -59,7 +59,7 @@ elseif ($entity)
 else
 {
 	// check grants
-	if (Plugin::is_granted('read')) throw new Ungranted($method);
+	if (!Plugin::is_granted('read')) throw new Ungranted($method);
 
 	// return all grants
 	$list = Model::grant_list(function(&$item)

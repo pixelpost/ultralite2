@@ -103,51 +103,54 @@ class Plugin implements PluginInterface
 
 	public static function register()
 	{
-		$selfClass   = '\\' . __CLASS__;
-		$apiClass    = '\\' . __NAMESPACE__ . '\\Api';
-		$adminClass  = '\\' . __NAMESPACE__ . '\\Admin';
-		$routerClass = '\pixelpost\plugins\Router\Plugin';
+		$self   = '\\' . __CLASS__;
+		$api    = '\\' . __NAMESPACE__ . '\\Api';
+		$admin  = '\\' . __NAMESPACE__ . '\\Admin';
+		$router = '\pixelpost\plugins\Router\Plugin';
 
 		// check api auth before api event method is called
-		Event::register('api.request.raw',  $selfClass . '::api_request');
+		Event::register('api.request.raw',  $self . '::api_request');
 		// check api hmac before api response is sent
-		Event::register('api.response.raw', $selfClass . '::api_response');
+		Event::register('api.response.raw', $self . '::api_response');
 		// check admin auth before admin event method is called
-		Event::register('request.admin',    $selfClass . '::request_admin', 99);
+		Event::register('request.admin',    $self . '::request_admin', 99);
 
-		Event::register('api.auth.version',          $apiClass . '::auth_version');
-		Event::register('api.auth.request',          $apiClass . '::auth_request');
-		Event::register('api.auth.token',            $apiClass . '::auth_token');
-		Event::register('api.auth.refresh',          $apiClass . '::auth_refresh');
-		Event::register('api.auth.destroy',          $apiClass . '::auth_destroy');
-		Event::register('api.auth.config.get',       $apiClass . '::auth_config_get');
-		Event::register('api.auth.config.set',       $apiClass . '::auth_config_set');
-		Event::register('api.auth.user.add',         $apiClass . '::auth_user_add');
-		Event::register('api.auth.user.set',         $apiClass . '::auth_user_set');
-		Event::register('api.auth.user.get',         $apiClass . '::auth_user_get');
-		Event::register('api.auth.user.del',         $apiClass . '::auth_user_del');
-		Event::register('api.auth.user.list',        $apiClass . '::auth_user_list');
-		Event::register('api.auth.entity.add',       $apiClass . '::auth_entity_add');
-		Event::register('api.auth.entity.set',       $apiClass . '::auth_entity_set');
-		Event::register('api.auth.entity.get',       $apiClass . '::auth_entity_get');
-		Event::register('api.auth.entity.del',       $apiClass . '::auth_entity_del');
-		Event::register('api.auth.entity.list',      $apiClass . '::auth_entity_list');
-		Event::register('api.auth.grant.add',        $apiClass . '::auth_grant_add');
-		Event::register('api.auth.grant.set',        $apiClass . '::auth_grant_set');
-		Event::register('api.auth.grant.get',        $apiClass . '::auth_grant_get');
-		Event::register('api.auth.grant.del',        $apiClass . '::auth_grant_del');
-		Event::register('api.auth.grant.list',       $apiClass . '::auth_grant_list');
-		Event::register('api.auth.user.grant.add',   $apiClass . '::auth_user_grant_add');
-		Event::register('api.auth.user.grant.del',   $apiClass . '::auth_user_grant_del');
-		Event::register('api.auth.entity.grant.add', $apiClass . '::auth_entity_grant_add');
-		Event::register('api.auth.entity.grant.del', $apiClass . '::auth_entity_grant_del');
+		Event::register('api.auth.version',          $api . '::auth_version');
+		Event::register('api.auth.request',          $api . '::auth_request');
+		Event::register('api.auth.token',            $api . '::auth_token');
+		Event::register('api.auth.refresh',          $api . '::auth_refresh');
+		Event::register('api.auth.destroy',          $api . '::auth_destroy');
+		Event::register('api.auth.config.get',       $api . '::auth_config_get');
+		Event::register('api.auth.config.set',       $api . '::auth_config_set');
+		Event::register('api.auth.user.add',         $api . '::auth_user_add');
+		Event::register('api.auth.user.set',         $api . '::auth_user_set');
+		Event::register('api.auth.user.get',         $api . '::auth_user_get');
+		Event::register('api.auth.user.del',         $api . '::auth_user_del');
+		Event::register('api.auth.user.list',        $api . '::auth_user_list');
+		Event::register('api.auth.entity.add',       $api . '::auth_entity_add');
+		Event::register('api.auth.entity.set',       $api . '::auth_entity_set');
+		Event::register('api.auth.entity.get',       $api . '::auth_entity_get');
+		Event::register('api.auth.entity.del',       $api . '::auth_entity_del');
+		Event::register('api.auth.entity.list',      $api . '::auth_entity_list');
+		Event::register('api.auth.grant.add',        $api . '::auth_grant_add');
+		Event::register('api.auth.grant.set',        $api . '::auth_grant_set');
+		Event::register('api.auth.grant.get',        $api . '::auth_grant_get');
+		Event::register('api.auth.grant.del',        $api . '::auth_grant_del');
+		Event::register('api.auth.grant.list',       $api . '::auth_grant_list');
+		Event::register('api.auth.user.grant.add',   $api . '::auth_user_grant_add');
+		Event::register('api.auth.user.grant.del',   $api . '::auth_user_grant_del');
+		Event::register('api.auth.entity.grant.add', $api . '::auth_entity_grant_add');
+		Event::register('api.auth.entity.grant.del', $api . '::auth_entity_grant_del');
 
-		Event::register('admin.template.footer', $adminClass . '::template_footer');
-		Event::register('admin.template.css',    $adminClass . '::template_css');
-		Event::register('admin.template.js',     $adminClass . '::template_js');
+		Event::register('admin.template.nav',    $admin . '::template_nav', 150);
+		Event::register('admin.template.footer', $admin . '::template_footer');
+		Event::register('admin.template.css',    $admin . '::template_css');
+		Event::register('admin.template.js',     $admin . '::template_js');
 
-		Event::register('admin.auth',            $routerClass . '::route');
-		Event::register('admin.auth.api-bridge', $adminClass  . '::page_api_bridge');
+		Event::register('admin.auth',            $router . '::route');
+		Event::register('admin.auth.api-bridge', $admin  . '::page_api_bridge');
+		Event::register('admin.auth.account',    $admin  . '::page_account');
+
 	}
 
 	/**
@@ -376,7 +379,7 @@ class Plugin implements PluginInterface
 		if (!self::is_auth()) return false;
 
 		// check virtual 'self' grant if a user id is provided
-		if ($user_id && $user_id == self::_user_id) return true;
+		if ($user_id && $user_id == self::$_user_id) return true;
 
 		// the entity grants (for better perf on multiple call)
 		static $grants = null;

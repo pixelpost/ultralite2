@@ -12,7 +12,7 @@ $method = 'auth.entity.get';
 $request = $event->request;
 
 // more grant check come later
-if (!Plugin::is_auth()) throw new Ungranted($method);
+//if (!Plugin::is_auth()) throw new Ungranted($method);
 
 // input validation
 $entity = self::get_required('entity', $request, $method);
@@ -24,9 +24,9 @@ try
 	extract(Model::entity_get_by_public_key($entity));
 
 	// create $user_name, $user_pass and $user_email
-	extract(Model::user_get_by_id($user_id), EXTR_PREFIX_ALL, 'user_');
+	$user_data = Model::user_get_by_id($user_id);
 
-	$user       = $user_name;
+	$user       = $user_data['name'];
 	$public_key = $entity;
 }
 catch(ModelExceptionNoResult $e)
@@ -35,7 +35,7 @@ catch(ModelExceptionNoResult $e)
 }
 
 // check grants
-if (!Plugin::is_granted('admin', $user_id)) throw new Ungranted($method);
+//if (!Plugin::is_granted('admin', $user_id)) throw new Ungranted($method);
 
 $event->response = compact('name', 'user', 'public_key');
 

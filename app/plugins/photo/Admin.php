@@ -11,7 +11,7 @@ class Admin
 	public static function template_nav(Event $event)
 	{
 		$event->response[] = Template::create()
-			  ->assign('url', 'photos/')
+			  ->assign('url', 'photos')
 			  ->assign('name', 'photos')
 			  ->render('admin/tpl/_menu.php');
 	}
@@ -24,7 +24,7 @@ class Admin
 
 		$event->response[] = Template::create()
 			  ->assign('count', $count)
-			  ->assign('url', 'photos/')
+			  ->assign('url', 'photos')
 			  ->assign('text', 'photos')
 			  ->render('admin/tpl/_widget.php');
 	}

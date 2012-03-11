@@ -127,3 +127,5 @@ button {
 }
 
 a.btn, a.btn:link, a.btn:visited, a.btn:hover, a.btn:active { text-decoration: none; }
+
+.hidden { display: none; }

@@ -9,6 +9,14 @@ use pixelpost\core\Template,
 
 class Admin
 {
+	public static function template_nav(Event $event)
+	{
+		$event->response[] = Template::create()
+			  ->assign('url', 'auth/account')
+			  ->assign('name', 'account')
+			  ->render('admin/tpl/_menu.php');
+	}
+
 	public static function template_footer(Event $event)
 	{
 		$event->response[] = Template::create()
@@ -32,5 +40,10 @@ class Admin
 		// call api methods.
 		// So, no tokens, no hmac, no nonce. More simple for admin JS calls.
 		$event->redirect('request.api');
+	}
+
+	public static function page_account(Event $event)
+	{
+		require __DIR__ . SEP . 'admin' . SEP . 'account.php';
 	}
 }
