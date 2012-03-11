@@ -58,8 +58,11 @@ class CodecGet
 			{
 				list($key, $val) = explode(':', $param, 2);
 
-				$key = Filter::check_encoding(urldecode($key));
-				$val = Filter::check_encoding(urldecode($val));
+				$key = urldecode($key);
+				$val = urldecode($val);
+
+				Filter::check_encoding($key);
+				Filter::check_encoding($val);
 
 				$response[$key] = $val;
 			}
