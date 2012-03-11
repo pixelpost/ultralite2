@@ -2,15 +2,15 @@
 
 namespace pixelpost\plugins\photo;
 
-use pixelpost;
-use pixelpost\plugins\api\Exception as ApiError;
-use pixelpost\plugins\auth\Plugin as Auth;
+use pixelpost\core\Filter,
+	pixelpost\plugins\api\Exception as ApiError,
+	pixelpost\plugins\auth\Plugin as Auth;
 
 // check grants
 if (!Auth::is_granted('read')) throw new ApiError\Ungranted('photo.count');
 
 // check if the request is correct
-$options = pixelpost\Filter::object_to_array($event->request);
+$options = Filter::object_to_array($event->request);
 
 if (isset($options['filter']) &&
 	isset($options['filter']['publish-date-interval']))
@@ -19,17 +19,17 @@ if (isset($options['filter']) &&
 	$start =& $options['filter']['publish-date-interval']['start'];
 	$end   =& $options['filter']['publish-date-interval']['end'];
 
-	if (pixelpost\Filter::validate_date($start))
+	if (Filter::validate_date($start))
 	{
 		throw new ApiError\FieldNotValid('start', 'required RFC3339 date');
 	}
-	if (pixelpost\Filter::validate_date($end))
+	if (Filter::validate_date($end))
 	{
 		throw new ApiError\FieldNotValid('end', 'required RFC3339 date');
 	}
 
-	pixelpost\Filter::str_to_date($start);
-	pixelpost\Filter::str_to_date($end);
+	Filter::str_to_date($start);
+	Filter::str_to_date($end);
 }
 
 // retrieve requested fields and send them in the response

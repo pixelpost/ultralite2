@@ -1,6 +1,8 @@
 <?php
 
-namespace pixelpost;
+namespace pixelpost\core;
+
+use ArrayObject;
 
 /**
  * Configuration support
@@ -10,9 +12,8 @@ namespace pixelpost;
  * @version    0.0.1
  * @since      File available since Release 1.0.0
  */
-class Config extends \ArrayObject
+class Config extends ArrayObject
 {
-
 	/**
 	 * @var Config The singleton of that class is stored here
 	 */
@@ -26,27 +27,25 @@ class Config extends \ArrayObject
 	/**
 	 * You shoudn't use this contructor directly, You must use create() method.
 	 *
-	 * @throws Error
+	 * @throws pixelpost\core\Error
 	 */
 	final public function __construct()
 	{
-		if (!is_null(self::$_instance))
-		{
-			throw Error::create(2);
-		}
+		if (!is_null(static::$_instance)) throw Error::create(2);
 
-		parent::__construct(array(), \ArrayObject::ARRAY_AS_PROPS);
-		self::$_instance = $this;
+		parent::__construct(array(), ArrayObject::ARRAY_AS_PROPS);
+
+		static::$_instance = $this;
 	}
 
 	/**
 	 * Returns an unique instance of Config class containing the configuration data
 	 *
-	 * @return Config
+	 * @return pixelpost\core\Config
 	 */
 	public static function create()
 	{
-		return self::$_instance ?: new static;
+		return static::$_instance ?: new static;
 	}
 
 	/**
@@ -55,9 +54,8 @@ class Config extends \ArrayObject
 	 * class.
 	 * Keep in memory the filename in $_file protected static var.
 	 *
-	 * @throws Error
-	 *
-	 * @param string $filename The configuration file you want load.
+	 * @throws pixelpost\core\Error
+	 * @param  string $filename The configuration file you want load.
 	 */
 	public static function load($filename)
 	{
@@ -75,7 +73,7 @@ class Config extends \ArrayObject
 
 		$conf = json_decode($content);
 
-		if (json_last_error() != \JSON_ERROR_NONE)
+		if (json_last_error() != JSON_ERROR_NONE)
 		{
 			$errormsg = '';
 			switch (json_last_error())
@@ -90,9 +88,9 @@ class Config extends \ArrayObject
 
 		static::create()->exchangeArray($conf);
 
-		self::$_file = $filename;
+		static::$_file = $filename;
 
-		return self::$_instance;
+		return static::$_instance;
 	}
 
 	/**
@@ -104,7 +102,6 @@ class Config extends \ArrayObject
 	{
 		$data = json_encode($this, JSON_HEX_QUOT);
 
-		return (bool) file_put_contents(self::$_file, $data, LOCK_EX);
+		return (bool) file_put_contents(static::$_file, $data, LOCK_EX);
 	}
-
 }

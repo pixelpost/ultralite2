@@ -1,5 +1,10 @@
 <?php
 
+namespace pixelpost\setup;
+
+use Exception,
+	pixelpost\core\Plugin;
+
 /**
  * Create the plugin order
  */
@@ -59,7 +64,7 @@ class DependencyManager
 		if (!isset($this->plugins[$pluginName]))
 		{
 			// retrieve the plugin required for it.
-			$requires = pixelpost\Plugin::get_dependencies($pluginName);
+			$requires = Plugin::get_dependencies($pluginName);
 
 			// create the object hold that
 			$this->plugins[$pluginName] = new DependencyPriority();

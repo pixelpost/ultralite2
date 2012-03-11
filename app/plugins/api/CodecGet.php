@@ -2,8 +2,8 @@
 
 namespace pixelpost\plugins\api;
 
-use pixelpost\Filter,
-	pixelpost\Request;
+use pixelpost\core\Filter,
+	pixelpost\core\Request;
 
 /**
  * Provide a GET/POST codec for the plugin 'api'
@@ -24,7 +24,7 @@ class CodecGet
 	 * Decode the request and return an PHP stdClass containing the requested
 	 * data.
 	 *
-	 * @param  pixelpost\Request
+	 * @param  pixelpost\core\Request
 	 * @return stdClass
 	 */
 	public function decode(Request $request)

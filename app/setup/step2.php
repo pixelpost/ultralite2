@@ -1,9 +1,9 @@
 <?php
 
-use pixelpost\plugins\auth,
+use pixelpost\core,
+	pixelpost\setup\DependencyManager as DM,
+	pixelpost\plugins\auth,
 	pixelpost\plugins\photo;
-
-require __DIR__ . SEP . 'Dependency.php';
 
 try
 {
@@ -63,13 +63,13 @@ try
 	$rollbackTo = 5;
 
 	// Load the request
-	$request = pixelpost\Request::create()->auto();
+	$request = core\Request::create()->auto();
 
 	// retrieve the posted data
 	$post = $request->get_post();
 
 	// Load the config file
-	$conf = pixelpost\Config::load(PRIV_PATH . SEP . 'config.json');
+	$conf = core\Config::load(PRIV_PATH . SEP . 'config.json');
 
 	// retreive the userdir
 	$userdir = $request->get_params();
@@ -101,21 +101,21 @@ try
 	$conf->save();
 
 	// create the database
-	$db = pixelpost\Db::create();
+	$db = core\Db::create();
 
 	$rollbackTo = 6;
 
 	// detect all plugins already in the package (and store the list in conf)
-	pixelpost\Plugin::detect();
+	core\Plugin::detect();
 
 	// create the install plugin order
-	$manager = new DependencyManager(array_keys(pixelpost\Filter::object_to_array($conf->plugins)));
+	$manager = new DM(array_keys(core\Filter::object_to_array($conf->plugins)));
 
 	foreach($manager->process() as $plugin)
 	{
-		if (pixelpost\Plugin::active($plugin) == false)
+		if (core\Plugin::active($plugin) == false)
 		{
-			$e = pixelpost\Plugin::get_last_error();
+			$e = core\Plugin::get_last_error();
 			throw new Exception("Error activating plugin '$plugin'. Error: $e.");
 		}
 	}
@@ -156,12 +156,12 @@ catch(Exception $e)
 
 $template = ($error != '') ? 'step2-fail.tpl' : 'step2-success.tpl';
 
-$tpl = pixelpost\Template::create();
+$tpl = core\Template::create();
 
 $tpl->set_cache_raw_template(false)->set_template_path(__DIR__ . SEP . 'tpl');
 
 $tpl->error = $error;
-$tpl->data  = pixelpost\Filter::array_to_object($post);
+$tpl->data  = core\Filter::array_to_object($post);
 $tpl->home  = ADMIN_URL;
 
 $tpl->publish($template);

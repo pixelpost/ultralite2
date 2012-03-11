@@ -3,8 +3,8 @@
 namespace pixelpost\plugins\admin;
 
 use pixelpost\plugins\router\Plugin as Router,
-	pixelpost\PluginInterface,
-	pixelpost\Event;
+	pixelpost\core\PluginInterface,
+	pixelpost\core\Event;
 
 /**
  * ADMIN routers for pixelpost admin urls.
@@ -73,7 +73,7 @@ class Plugin implements PluginInterface
 	 *
 	 * In case of non response to an event admin.* the event admin.404 is thrown.
 	 *
-	 * @param  pixelpost\Event $event
+	 * @param  pixelpost\core\Event $event
 	 * @return bool
 	 */
 	public static function admin_router(Event $event)

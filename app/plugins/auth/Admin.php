@@ -2,9 +2,9 @@
 
 namespace pixelpost\plugins\auth;
 
-use pixelpost\Template,
-	pixelpost\Event,
-	pixelpost\Config,
+use pixelpost\core\Template,
+	pixelpost\core\Event,
+	pixelpost\core\Config,
 	pixelpost\plugins\api\Plugin as api;
 
 class Admin

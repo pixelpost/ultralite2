@@ -1,6 +1,8 @@
 <?php
 
-namespace pixelpost;
+namespace pixelpost\core;
+
+use Closure;
 
 /**
  * Provide template transformation to html methods.
@@ -413,7 +415,7 @@ class TemplateCompiler
 			$key      = trim(array_shift($varkey));
 			$endBlock = sprintf('<?php endforeach; unset($loop%s); ', $loopIndex);
 
-			$loop = sprintf('<?php $loop%s = new \pixelpost\TemplateLoop({[ %s ]}); ', $loopIndex, $array);
+			$loop = sprintf('<?php $loop%s = new \pixelpost\core\TemplateLoop({[ %s ]}); ', $loopIndex, $array);
 
 			if ($key == '') $block = sprintf('foreach ({[ %s ]} as $%s) : ', $array, $var);
 			else            $block = sprintf('foreach ({[ %s ]} as $%s => $%s) : ', $array, $key, $var);
@@ -579,9 +581,9 @@ class TemplateCompiler
 	 * return a string value.
 	 *
 	 * @param string $data
-	 * @param \Closure $todo
+	 * @param Closure $todo
 	 */
-	public function extract_var(&$data, \Closure $todo)
+	public function extract_var(&$data, Closure $todo)
 	{
 		$me = $this;
 
@@ -744,9 +746,9 @@ class TemplateCompiler
 	 * content (see constant INLINE_*)
 	 *
 	 * @param string   $data
-	 * @param \Closure $todo
+	 * @param Closure $todo
 	 */
-	public function replace_inline(&$data, \Closure $todo)
+	public function replace_inline(&$data, Closure $todo)
 	{
 		$me = $this;
 
@@ -793,16 +795,16 @@ class TemplateCompiler
 	 * $startAt and $includeLvl argument and the return value are used internaly
 	 * for the recursion.
 	 *
-	 * @param string  $data
-	 * @param string  $openTag
-	 * @param string  $closeTag
-	 * @param Closure $todo
-	 * @param bool    $includedFirst
-	 * @param int     $startAt
-	 * @param int     $includeLvl
+	 * @param  string  $data
+	 * @param  string  $openTag
+	 * @param  string  $closeTag
+	 * @param  Closure $todo
+	 * @param  bool    $includedFirst
+	 * @param  int     $startAt
+	 * @param  int     $includeLvl
 	 * @return int
 	 */
-	public function replace_tag(&$data, $openTag, $closeTag, \Closure $todo, $includedFirst = false, $startAt = 0, $includeLvl = 0)
+	public function replace_tag(&$data, $openTag, $closeTag, Closure $todo, $includedFirst = false, $startAt = 0, $includeLvl = 0)
 	{
 		// the len of the openTag, closeTag
 		$openLen  = mb_strlen($openTag, 'UTF-8');

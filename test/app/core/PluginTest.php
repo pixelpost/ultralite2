@@ -1,6 +1,6 @@
 <?php
 
-namespace pixelpost;
+namespace pixelpost\core;
 
 /**
  * Test class for Plugin.
@@ -28,7 +28,7 @@ class PluginTest extends \PHPUnit_Framework_TestCase
 	 */
 	protected function tearDown()
 	{
-		
+
 	}
 
 	/**

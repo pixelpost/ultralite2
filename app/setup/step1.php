@@ -54,7 +54,7 @@ else
 
 $template = (count($warnings) > 0) ? 'step1-fail.tpl' : 'step1-form.tpl';
 
-$tpl = pixelpost\Template::create();
+$tpl = pixelpost\core\Template::create();
 
 $tpl->set_cache_raw_template(false)->set_template_path(__DIR__ . SEP . 'tpl');
 

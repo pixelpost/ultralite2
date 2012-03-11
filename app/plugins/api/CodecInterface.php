@@ -2,7 +2,7 @@
 
 namespace pixelpost\plugins\api;
 
-use pixelpost;
+use pixelpost\core\Request;
 
 /**
  * Interface of a codec.
@@ -22,10 +22,10 @@ interface CodecInterface
 	 * Decode the request and return an PHP stdClass containing the requested
 	 * data.
 	 *
-	 * @param  pixelpost\Request
+	 * @param  pixelpost\core\Request
 	 * @return stdClass
 	 */
-	public function decode(pixelpost\Request $request);
+	public function decode(Request $request);
 
 	/**
 	 * Encode a reponse, an array containing all the client data, in the client

@@ -2,9 +2,9 @@
 
 namespace pixelpost\plugins\photo;
 
-use pixelpost;
-use pixelpost\SqlMapper as Map;
-use pixelpost\Db as Db;
+use pixelpost\core\Filter,
+	pixelpost\core\SqlMapper,
+	pixelpost\core\Db;
 
 /**
  * All Exception thown by the Model class are ModelException class
@@ -55,6 +55,9 @@ class ModelExceptionSqlError extends ModelException
  */
 class Model
 {
+	/**
+	 * @var pixelpost\core\SqlMapper
+	 */
 	protected static $_mapper;
 
 	/**
@@ -63,20 +66,19 @@ class Model
 	 * NOTA: The mapper is registred in a static field because it not necessary
 	 * to re-create it each time he is used.
 	 *
-	 * @return pixelpost\SqlMapper
+	 * @return pixelpost\core\SqlMapper
 	 */
 	protected static function _getMapper()
 	{
 		if (is_null(self::$_mapper))
 		{
-			// use pixelpost\SqlMapper as Map
-			self::$_mapper = Map::create()
-					->map('id',           'id',      Map::DATA_INT)
-					->map('filename',     'file',    Map::DATA_STRING)
-					->map('title',        'title',   Map::DATA_STRING)
-					->map('description',  'desc',    Map::DATA_STRING)
-					->map('publish-date', 'publish', Map::DATA_DATE)
-					->map('visible',      'show',    Map::DATA_BOOL);
+			self::$_mapper = SqlMapper::create()
+					->map('id',           'id',      SqlMapper::DATA_INT)
+					->map('filename',     'file',    SqlMapper::DATA_STRING)
+					->map('title',        'title',   SqlMapper::DATA_STRING)
+					->map('description',  'desc',    SqlMapper::DATA_STRING)
+					->map('publish-date', 'publish', SqlMapper::DATA_DATE)
+					->map('visible',      'show',    SqlMapper::DATA_BOOL);
 		}
 
 		return self::$_mapper;
@@ -197,7 +199,7 @@ class Model
 	 */
 	public static function photo_add($filename)
 	{
-		pixelpost\Filter::assume_string($filename);
+		Filter::assume_string($filename);
 
 		$fields = self::_getMapper()->genSqlInsertList(array(
 			'filename'     => $filename,
@@ -222,7 +224,7 @@ class Model
 	 */
 	public static function photo_del($photoId)
 	{
-		pixelpost\Filter::assume_int($photoId);
+		Filter::assume_int($photoId);
 
 		$db  = Db::create();
 		$sql = sprintf('DELETE FROM photos WHERE id = %d;', $photoId);
@@ -262,7 +264,7 @@ class Model
 		$query = 'SELECT %s FROM photos%s%s%s;';
 		$query = sprintf($query, $fields, $where, $order, $limit);
 
-		$result = pixelpost\Db::create()->query($query);
+		$result = Db::create()->query($query);
 
 		if ($result === true)  throw new ModelExceptionNoResult();
 		if ($result === false) throw new ModelExceptionSqlError();
@@ -294,7 +296,7 @@ class Model
 		$query = 'SELECT COUNT(id) FROM photos%s%s%s;';
 		$query = sprintf($query, $where, $order, $limit);
 
-		$result = pixelpost\Db::create()->querySingle($query);
+		$result = Db::create()->querySingle($query);
 
 		if ($result === null)  $result = '0';
 		if ($result === false) throw new ModelExceptionSqlError();
@@ -323,14 +325,14 @@ class Model
 	 */
 	public static function photo_get($photoId, array $fields, \Closure $todo = null)
 	{
-		pixelpost\Filter::assume_int($photoId);
+		Filter::assume_int($photoId);
 
 		$fields = self::_getMapper()->genSqlSelectList($fields);
 
 		$query = 'SELECT %s FROM photos WHERE id = %d LIMIT 1;';
 		$query = sprintf($query, $fields, $photoId);
 
-		$result = pixelpost\Db::create()->querySingle($query, true);
+		$result = Db::create()->querySingle($query, true);
 
 		if ($result === false) throw new ModelExceptionSqlError();
 		if (empty($result))    throw new ModelExceptionNoResult();
@@ -350,9 +352,9 @@ class Model
 	 */
 	public static function photo_set($photoId, array $fields)
 	{
-		pixelpost\Filter::assume_int($photoId);
+		Filter::assume_int($photoId);
 
-		$db = pixelpost\Db::create();
+		$db = Db::create();
 
 		$values = self::_getMapper()->genSqlUpdateList($fields);
 
@@ -363,5 +365,4 @@ class Model
 
 		return $db->changes();
 	}
-
 }

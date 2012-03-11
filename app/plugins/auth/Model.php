@@ -2,9 +2,8 @@
 
 namespace pixelpost\plugins\auth;
 
-use pixelpost\Conf,
-	pixelpost\Db,
-	pixelpost\Filter,
+use pixelpost\core\Db,
+	pixelpost\core\Filter,
 	DateTime,
 	Closure;
 

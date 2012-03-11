@@ -1,6 +1,6 @@
 <?php
 
-namespace pixelpost;
+namespace pixelpost\core;
 
 use DateTime, DateTimeZone, Exception;
 
@@ -17,7 +17,7 @@ class Template
 	/**
 	 * @var bool Is cache Raw Template file is authorized ?
 	 */
-    protected $_cacheRawTemplate = true;
+	protected $_cacheRawTemplate = true;
 
 	/**
 	 * @var Config The App configuration
@@ -37,11 +37,11 @@ class Template
 	/**
 	 * Create a new Template
 	 *
-	 * @return Template
+	 * @return pixelpost\core\Template
 	 */
 	public static function create()
 	{
-		$tpl = new self;
+		$tpl = new static;
 		$tpl->set_template_path(PLUG_PATH . SEP);
 		$tpl->set_template_cache_path(PRIV_PATH . SEP . 'cache' . SEP);
 		return $tpl;
@@ -50,17 +50,17 @@ class Template
 	/**
 	 * Change the cache setting, by default set it to true
 	 *
-	 * @param bool $active
-	 * @return Template
+	 * @param  bool $active
+	 * @return pixelpost\core\Template
 	 */
-    public function set_cache_raw_template($active = true)
-    {
+	public function set_cache_raw_template($active = true)
+	{
 		Filter::assume_bool($active);
 
-        $this->_cacheRawTemplate = $active;
+		$this->_cacheRawTemplate = $active;
 
-        return $this;
-    }
+		return $this;
+	}
 
 	/**
 	 * Change the template path
@@ -91,10 +91,10 @@ class Template
 	}
 
 	/**
-	 * Return the App configuration object (pixelpost\config::create())
+	 * Return the App configuration object (pixelpost\core\config::create())
 	 * This is a facility method to be called into template file.
 	 *
-	 * @return Config
+	 * @return pixelpost\core\Config
 	 */
 	public function config()
 	{
@@ -104,18 +104,19 @@ class Template
 	/**
 	 * Add data into this template
 	 *
-	 * @param mixed $var
-	 * @param mixed $value
-	 * @return Template
+	 * @throws pixelpost\core\Error
+	 * @param  mixed $var
+	 * @param  mixed $value
+	 * @return pixelpost\core\Template
 	 */
-    public function assign($var, $value = null)
-    {
-        if (is_string($var))     $this->$var = Filter::array_to_arrayObject($value);
-        elseif (!is_array($var)) throw Error::create(11);
-        else                     foreach ($var as $key => $val) $this->$key = Filter::array_to_arrayObject($val);
+	public function assign($var, $value = null)
+	{
+		if (is_string($var))     $this->$var = Filter::array_to_arrayObject($value);
+		elseif (!is_array($var)) throw Error::create(11);
+		else                     foreach ($var as $key => $val) $this->$key = Filter::array_to_arrayObject($val);
 
-        return $this;
-    }
+		return $this;
+	}
 
 	/**
 	 * Create a new instance of self.
@@ -129,63 +130,63 @@ class Template
 	 * Throw always an Error exception, if this is called, this is because a
 	 * non existant template data try to be used.
 	 *
-	 * @throws Error
-	 * @param string $key
+	 * @throws pixelpost\core\Error
+	 * @param  string $key
 	 * @return null
 	 */
-    public function __get($key)
-    {
-        throw Error::create(12, array($key));
+	public function __get($key)
+	{
+		throw Error::create(12, array($key));
 
-        return null;
-    }
+		return null;
+	}
 
 	/**
 	 * Check if a tempalte data exists. Always return false on protected or
 	 * private data (eg. starting by a underscore).
 	 *
-	 * @param string $key
+	 * @param  string $key
 	 * @return bool
 	 */
-    public function __isset($key)
-    {
-        if ('_' != substr($key, 0, 1)) return isset($this->$key);
+	public function __isset($key)
+	{
+		if ('_' != substr($key, 0, 1)) return isset($this->$key);
 
-        return false;
-    }
+		return false;
+	}
 
 	/**
 	 * Call a template data as a method if it callable, else throw an Error
 	 * exception.
 	 *
-	 * @throws Error
-	 * @param string $name
-	 * @param array  $args
+	 * @throws pixelpost\core\Error
+	 * @param  string $name
+	 * @param  array  $args
 	 * @return mixed
 	 */
-    public function __call($name, array $args)
-    {
+	public function __call($name, array $args)
+	{
 		if (!isset($name)) throw Error::create(13, array($name));
 
-        if (!is_callable($this->$name)) throw Error::create(14, array($name));
+		if (!is_callable($this->$name)) throw Error::create(14, array($name));
 
 		return call_user_func_array($this->$name, $args);
-    }
+	}
 
 	/**
 	 * Add or Change a template data value. If the data is private or protected,
 	 * (eg. starting with a underscore) throw an Error Exception
 	 *
-	 * @throws Error
-	 * @param string $key
-	 * @param mixed $val
+	 * @throws pixelpost\core\Error
+	 * @param  string $key
+	 * @param  mixed $val
 	 */
-    public function __set($key, $val)
-    {
-        if ('_' == substr($key, 0, 1)) throw Error::create(15, array($key));
+	public function __set($key, $val)
+	{
+		if ('_' == substr($key, 0, 1)) throw Error::create(15, array($key));
 
-        $this->$key = $val;
-    }
+		$this->$key = $val;
+	}
 
 	/**
 	 * Remove a tempalte data if it's not a private or protected data (eg.
@@ -193,111 +194,111 @@ class Template
 	 *
 	 * @param string $key
 	 */
-    public function __unset($key)
-    {
-        if ('_' != substr($key, 0, 1) && isset($this->$key)) unset($this->$key);
-    }
+	public function __unset($key)
+	{
+		if ('_' != substr($key, 0, 1) && isset($this->$key)) unset($this->$key);
+	}
 
 	/**
 	 * Internal filter: Escape a string for html content
 	 *
-	 * @param string $string
+	 * @param  string $string
 	 * @return string
 	 */
-    protected function _filter_escape($string)
-    {
-        Filter::check_encoding($string);
+	protected function _filter_escape($string)
+	{
+		Filter::check_encoding($string);
 
-        return htmlspecialchars($string, ENT_COMPAT, 'UTF-8', false);
-    }
+		return htmlspecialchars($string, ENT_COMPAT, 'UTF-8', false);
+	}
 
 	/**
 	 * Internal filter: check if a number is between $min and $max (included)
 	 *
-	 * @param mixed $number
-	 * @param mixed $min
-	 * @param mixed $max
+	 * @param  mixed $number
+	 * @param  mixed $min
+	 * @param  mixed $max
 	 * @return bool
 	 */
-    protected function _filter_between($number, $min, $max)
-    {
+	protected function _filter_between($number, $min, $max)
+	{
 		Filter::assume_float($number);
 		Filter::assume_float($min);
 		Filter::assume_float($max);
 
-        return ($min <= $number && $number <= $max);
-    }
+		return ($min <= $number && $number <= $max);
+	}
 
 	/**
 	 * Internal filter: sort a array (keep key associated)
 	 *
-	 * @param array $array
+	 * @param  array $array
 	 * @return array
 	 */
-    protected function _filter_array_sort(array $array)
-    {
-        asort($array);
-        return $array;
-    }
+	protected function _filter_array_sort(array $array)
+	{
+		asort($array);
+		return $array;
+	}
 
 	/**
 	 * Internal filter: sort a array in reverse order (keep key associated)
 	 *
-	 * @param array $array
+	 * @param  array $array
 	 * @return array
 	 */
-    protected function _filter_array_rsort(array $array)
-    {
-        arsort($array);
-        return $array;
-    }
+	protected function _filter_array_rsort(array $array)
+	{
+		arsort($array);
+		return $array;
+	}
 
 	/**
 	 * Internal filter: sort a array in natural order (keep key associated)
 	 *
-	 * @param array $array
+	 * @param  array $array
 	 * @return array
 	 */
-    protected function _filter_array_nsort(array $array)
-    {
-        natcasesort($array);
-        return $array;
-    }
+	protected function _filter_array_nsort(array $array)
+	{
+		natcasesort($array);
+		return $array;
+	}
 
 	/**
 	 * Internal filter: return the first item in an array or null
 	 *
-	 * @param array $array
+	 * @param  array $array
 	 * @return mixed
 	 */
-    protected function _filter_array_first(array $array)
-    {
-        if (count($array) == 0) return null;
-        $keys = array_keys($array);
-        $first = array_shift($keys);
-        return $array[$first];
-    }
+	protected function _filter_array_first(array $array)
+	{
+		if (count($array) == 0) return null;
+		$keys  = array_keys($array);
+		$first = array_shift($keys);
+		return $array[$first];
+	}
 
 	/**
 	 * Internal filter: return the last item in an array or null
 	 *
-	 * @param array $array
+	 * @param  array $array
 	 * @return mixed
 	 */
-    protected function _filter_array_last(array &$array)
-    {
-        if (count($array) == 0) return null;
-        $keys = array_keys($array);
-        $last = array_pop($keys);
-        return $array[$last];
-    }
+	protected function _filter_array_last(array &$array)
+	{
+		if (count($array) == 0) return null;
+		$keys = array_keys($array);
+		$last = array_pop($keys);
+		return $array[$last];
+	}
 
 	/**
 	 * Internal filter: return $yes if $data is true else $no.
 	 *
-	 * @param mixed $data
-	 * @param mixed $yes
-	 * @param mixed $no
+	 * @param  mixed $data
+	 * @param  mixed $yes
+	 * @param  mixed $no
 	 * @return mixed
 	 */
 	protected function _filter_if($data, $yes, $no)
@@ -308,9 +309,9 @@ class Template
 	/**
 	 * Internal filter: Format a DateTime object.
 	 *
-	 * @param DateTime $date
-	 * @param int $datetime
-	 * @param string $format
+	 * @param  DateTime $date
+	 * @param  int      $datetime
+	 * @param  string   $format
 	 * @return string
 	 */
 	protected function _filter_date($date, $type, $format, $print_tz = false)
@@ -361,7 +362,7 @@ class Template
 	 * Call the event $name, pass to the event an empty array named 'response'.
 	 * Finally, return the 'response' array event parameter.
 	 *
-	 * @param string
+	 * @param  string
 	 * @return array
 	 */
 	protected function _event_signal($name)
@@ -372,7 +373,7 @@ class Template
 	/**
 	 * Internal filter: Format a number to 2 decimal.
 	 *
-	 * @param mixed $data
+	 * @param  mixed $data
 	 * @return string
 	 */
 	protected function _filter_number($data)
@@ -384,7 +385,7 @@ class Template
 	 * Compile a template into a raw template. (eg. Transform it into a valid
 	 * php code without associating the template data to it).
 	 *
-	 * @param string $templateFile
+	 * @param  string $templateFile
 	 * @return string
 	 */
 	protected function _compile($templateFile)
@@ -393,18 +394,18 @@ class Template
 		$tpl->path = $this->_tplPath;
 		$tpl->tpl  = file_get_contents($templateFile);
 
-        $tpl->escape_raw_block();
-        $tpl->remove_comment();
-        $tpl->escape_escape();
+		$tpl->escape_raw_block();
+		$tpl->remove_comment();
+		$tpl->escape_escape();
 		$tpl->extract_block();
-        $tpl->make_extends();
-        $tpl->compile_block();
-        $tpl->make_include();
-        $tpl->make_if();
-        $tpl->make_for();
-        $tpl->make_inline();
+		$tpl->make_extends();
+		$tpl->compile_block();
+		$tpl->make_include();
+		$tpl->make_if();
+		$tpl->make_for();
+		$tpl->make_inline();
 		$tpl->unescape_escape();
-        $tpl->unescape_raw_block();
+		$tpl->unescape_raw_block();
 		$tpl->replace_php_short_open_tag();
 
 		return $tpl->tpl;
@@ -415,15 +416,15 @@ class Template
 	 * $templateFile is a relative path to PLUG_PATH contant (eg. the plugin
 	 * folder).
 	 *
-	 * @param string $templateFile
+	 * @param  string $templateFile
 	 * @return string
 	 */
-    public function render($templateFile)
-    {
-        ob_start();
+	public function render($templateFile)
+	{
+		ob_start();
 
-        try
-        {
+		try
+		{
 			$templateFile = str_replace('/', SEP, $templateFile);
 
 			$tpl   = $this->_tplPath . $templateFile;
@@ -460,19 +461,19 @@ class Template
 			}
 			// else load directly the cached file
 			else include $cache;
-        }
-        catch(Exception $e) { ob_end_clean(); throw $e; }
+		}
+		catch(Exception $e) { ob_end_clean(); throw $e; }
 
-        return ob_get_clean();
-    }
+		return ob_get_clean();
+	}
 
 	/**
 	 * Print the rendered data into a template file.
 	 * $templateFile is a relative path to PLUG_PATH contant (eg. the plugin
 	 * folder).
 	 *
-	 * @param string $templateFile
-	 * @return Template
+	 * @param  string $templateFile
+	 * @return pixelpost\core\Template
 	 */
 	public function publish($templateFile)
 	{

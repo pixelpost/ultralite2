@@ -2,11 +2,10 @@
 
 namespace pixelpost\plugins\auth;
 
-use pixelpost,
-	pixelpost\Config,
-	pixelpost\Filter,
-	pixelpost\Event,
-	pixelpost\PluginInterface,
+use pixelpost\core\Config,
+	pixelpost\core\Filter,
+	pixelpost\core\Event,
+	pixelpost\core\PluginInterface,
 	pixelpost\plugins\api\Exception as ApiException;
 
 /**
@@ -156,7 +155,7 @@ class Plugin implements PluginInterface
 	 * pages and break the request.admin chain (cause the original admin page
 	 * called is not generated).
 	 *
-	 * @param pixelpost\Event $event
+	 * @param pixelpost\core\Event $event
 	 * @return bool
 	 */
 	public static function request_admin(Event $event)
@@ -277,7 +276,7 @@ class Plugin implements PluginInterface
 	/**
 	 * Check authentication if provided in api request.
 	 *
-	 * @param pixelpost\Event $event
+	 * @param pixelpost\core\Event $event
 	 */
 	public static function api_request(Event $event)
 	{
@@ -339,7 +338,7 @@ class Plugin implements PluginInterface
 	/**
 	 * Create hmac and nonce in api response if necessary
 	 *
-	 * @param pixelpost\Event $event
+	 * @param pixelpost\core\Event $event
 	 */
 	public static function api_response(Event $event)
 	{

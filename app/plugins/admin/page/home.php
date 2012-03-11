@@ -2,8 +2,8 @@
 
 namespace pixelpost\plugins\admin;
 
-use pixelpost\Template,
-	pixelpost\Event;
+use pixelpost\core\Template,
+	pixelpost\core\Event;
 
 $tpl = Template::create();
 

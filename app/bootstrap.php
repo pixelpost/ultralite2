@@ -3,6 +3,12 @@
 // Step 0. Hello world, here is the entry point
 namespace pixelpost;
 
+use pixelpost\core\Config,
+	pixelpost\core\Filter,
+	pixelpost\core\Plugin,
+	pixelpost\core\Request,
+	pixelpost\core\Event;
+
 // Step 1. A little of PHP conf
 
 // report always all error (-1 is better than constant, php 5.3 & 5.4 compliant)
@@ -48,9 +54,9 @@ set_exception_handler(function ($exception)
 {
 	$debug = !defined('DEBUG') or DEBUG;
 
-	if (class_exists('\pixelpost\Event'))
+	if (class_exists('\pixelpost\core\Event'))
 	{
-		$event = \pixelpost\Event::signal('error.new', compact('exception'));
+		$event = \pixelpost\core\Event::signal('error.new', compact('exception'));
 
 		if (!$event->is_processed() && $debug)
 		{
@@ -64,47 +70,28 @@ set_exception_handler(function ($exception)
 });
 
 // Step 4. We need a cool autoloader
-spl_autoload_register(function($className)
+spl_autoload_register(function($name)
 {
-	// the main namespace, all other is ignored
-	$nsPrefix = 'pixelpost\\';
-
-	// we need to keep $className, so we work on $class
-	$class    = $className;
-
 	// some security checking
-	if (strpos($class, '/') !== false) return false;
-	if (strpos($class, '.') !== false) return false;
+	if (strpos($name, '/') !== false) return false;
+	if (strpos($name, '.') !== false) return false;
+
+	// the main namespace, all other is ignored
+	$ns  = __NAMESPACE__;
+	$len = strlen($ns);
 
 	// remove the beginning backslash
-	if (substr($class, 0, 1) == '\\') $class = substr($class, 1);
+	$class = (substr($name, 0, 1) == '\\') ? substr($name, 1) : $name;
 
 	// check if the class start with the main namespace
-	if (substr($class, 0, strlen($nsPrefix)) != $nsPrefix) return false;
+	if (substr($class, 0, $len) != $ns) return false;
 
-	// remove the main namespace of the class name
-	$class = substr($class, strlen($nsPrefix));
+	// remove the main namespace of the class name and apply psr-0
+	$file = APP_PATH . str_replace('\\', SEP, substr($class, $len)) . '.php';
 
-	// get all parts of the class name
-	$items = explode('\\', $class);
+	is_file($file) and require_once $file;
 
-	// extract the file name
-	$class = array_pop($items);
-
-	// create the related path
-	$path = (count($items) == 0) ? 'Core' : implode(SEP, $items);
-
-	// create the absolute path with the complete file name
-	$file = APP_PATH . SEP . $path . SEP . $class . '.php';
-
-	// check if file exists...
-	if (!is_file($file)) return false;
-
-	// include him...
-	require_once $file;
-
-	// return if the class is loaded...
-	return class_exists($className);
+	return class_exists($name);
 });
 
 // Step 5. We need to parse the config file and set properly the environnement
@@ -114,9 +101,9 @@ $conf = Config::load(PRIV_PATH . SEP . 'config.json');
 // variable `APPLICATION_ENV` to `development` in .htaccess
 $debug = ($conf->debug or 'development' == getenv('APPLICATION_ENV'));
 
-defined('DEBUG')       or define('DEBUG',       $debug, true);
-defined('WEB_URL')     or define('WEB_URL',     $conf->url,   true);
-defined('CONTENT_URL') or define('CONTENT_URL', $conf->url . 'app/plugins/',   true);
+defined('DEBUG')       or define('DEBUG',       $debug,                      true);
+defined('WEB_URL')     or define('WEB_URL',     $conf->url,                  true);
+defined('CONTENT_URL') or define('CONTENT_URL', $conf->url . 'app/plugins/', true);
 
 DEBUG or error_reporting(0);
 
@@ -125,7 +112,7 @@ date_default_timezone_set($conf->timezone);
 // Step 6. Check auto update if needed
 if (Filter::compare_version($conf->version, VERSION))
 {
-	require_once APP_PATH . 'update.php';
+	require_once APP_PATH . SEP . 'update.php';
 }
 
 // Step 7. Registers activated plugins

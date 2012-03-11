@@ -2,9 +2,8 @@
 
 namespace pixelpost\plugins\photo;
 
-use pixelpost;
-use pixelpost\plugins\api\Exception as ApiError;
-use pixelpost\plugins\auth\Plugin as Auth;
+use pixelpost\plugins\api\Exception as ApiError,
+	pixelpost\plugins\auth\Plugin as Auth;
 
 // check grants
 if (!Auth::is_granted('delete')) throw new ApiError\Ungranted('photo.del');

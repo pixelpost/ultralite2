@@ -1,6 +1,9 @@
 <?php
 
-namespace pixelpost;
+namespace pixelpost\core;
+
+use RecursiveIteratorIterator  as RII,
+	RecursiveDirectoryIterator as RDI;
 
 /**
  * Plugin support
@@ -12,50 +15,51 @@ namespace pixelpost;
  */
 class Plugin
 {
-	const NS_SEP            = '\\';
-	const NS                = 'plugins';
+	const NS                = 'pixelpost\plugins';
 	const PLUG_CLASS        = 'Plugin';
 	const PLUG_FILE         = 'Plugin.php';
-	const PLUG_IFACE        = 'pixelpost\PluginInterface';
+	const PLUG_IFACE        = 'pixelpost\core\PluginInterface';
 
 	const STATE_UNINSTALLED = 'uninstalled';
 	const STATE_INACTIVE    = 'inactive';
 	const STATE_ACTIVE      = 'active';
 
 	protected static $_error = '';
-	
+
 	/**
 	 * Return the last error message
-	 * 
+	 *
 	 * @return string
 	 */
 	public static function get_last_error()
 	{
-		$error = self::$_error; 
-		
-		self::$_error = '';
-		
+		$error = static::$_error;
+
+		static::$_error = '';
+
 		return $error;
 	}
-	
+
 	/**
 	 * Return if a plugins is detected
-	 * 
+	 *
+	 * @throws pixelpost\core\Error
 	 * @param  string $plugin
-	 * @return bool 
+	 * @return bool
 	 */
 	public static function is_exists($plugin)
 	{
 		Filter::is_string($plugin);
-		
+
 		return isset(Config::create()->plugins->$plugin);
 	}
-	
+
 	/**
 	 * Return the actual state of a plugins, the state is directly read from the
 	 * configuration file.
 	 *
-	 * @param string $plugin The plugin name
+	 * @throws pixelpost\core\Error
+	 * @param  string $plugin The plugin name
 	 * @return string
 	 */
 	public static function get_state($plugin)
@@ -66,7 +70,7 @@ class Plugin
 
 		if (!isset($conf->plugins->$plugin))
 		{
-			self::set_state($plugin, self::STATE_UNINSTALLED);
+			static::set_state($plugin, static::STATE_UNINSTALLED);
 		}
 
 		return $conf->plugins->$plugin;
@@ -76,9 +80,9 @@ class Plugin
 	 * Change the state of a plugin, the configuration file is directly written,
 	 * return TRUE if writing the config file is a success else FALSE.
 	 *
-	 * @throws Error
-	 * @param string $plugin The plugin name
-	 * @param string $state  The new state of the plugin
+	 * @throws pixelpost\core\Error
+	 * @param  string $plugin The plugin name
+	 * @param  string $state  The new state of the plugin
 	 * @return bool
 	 */
 	public static function set_state($plugin, $state)
@@ -88,10 +92,10 @@ class Plugin
 
 		switch ($state)
 		{
-			case self::STATE_UNINSTALLED : break;
-			case self::STATE_INACTIVE    : break;
-			case self::STATE_ACTIVE      : break;
-			default                      : throw new Error(6, array($state));
+			case static::STATE_UNINSTALLED : break;
+			case static::STATE_INACTIVE    : break;
+			case static::STATE_ACTIVE      : break;
+			default                        : throw new Error(6, array($state));
 		}
 
 		$conf = Config::create();
@@ -103,29 +107,29 @@ class Plugin
 	/**
 	 * Return the file uri which contains the main plugin class.
 	 *
-	 * @param string $plugin The plugin name
+	 * @throws pixelpost\core\Error
+	 * @param  string $plugin The plugin name
 	 * @return string
 	 */
 	public static function get_file($plugin)
 	{
 		Filter::is_string($plugin);
 
-		return PLUG_PATH . SEP . $plugin . SEP . self::PLUG_FILE;
+		return PLUG_PATH . SEP . $plugin . SEP . static::PLUG_FILE;
 	}
 
 	/**
 	 * Return the full class name (namespace include) of the main plugin class.
 	 *
-	 * @param string $plugin The plugin name
+	 * @throws pixelpost\core\Error
+	 * @param  string $plugin The plugin name
 	 * @return string
 	 */
 	public static function get_class($plugin)
 	{
 		Filter::is_string($plugin);
 
-		return __NAMESPACE__ . self::NS_SEP . self::NS
-				             . self::NS_SEP . $plugin
-				             . self::NS_SEP . self::PLUG_CLASS;
+		return static::NS . '\\' . $plugin . '\\' . static::PLUG_CLASS;
 	}
 
 	/**
@@ -133,40 +137,41 @@ class Plugin
 	 * of the main plugin class. (according the interface, methods should be
 	 * defined).
 	 *
-	 * @param string $plugin The plugin name
+	 * @throws pixelpost\core\Error
+	 * @param  string $plugin The plugin name
 	 * @return string
 	 */
 	public static function get_method($plugin, $method)
 	{
 		Filter::is_string($method);
 
-		return self::get_class($plugin) . '::' . $method;
+		return static::get_class($plugin) . '::' . $method;
 	}
 
 	/**
 	 * Check if a proposed plugins is valid. Check if the main file exists, main
 	 * class exists, implements the plugins interface.
 	 *
-	 * @throws Error
-	 * @param string $plugin The plugin name
+	 * @throws pixelpost\core\Error
+	 * @param  string $plugin The plugin name
 	 * @return bool
 	 */
 	public static function validate($plugin)
 	{
-		require_once self::get_file($plugin);
+		require_once static::get_file($plugin);
 
-		$class = self::get_class($plugin);
+		$class = static::get_class($plugin);
 
 		if (!class_exists($class))
 		{
-			throw new Error(7, array($plugin, self::PLUG_CLASS, $class));
+			throw new Error(7, array($plugin, static::PLUG_CLASS, $class));
 		}
 
-		if (!array_key_exists(self::PLUG_IFACE, class_implements($class)))
+		if (!array_key_exists(static::PLUG_IFACE, class_implements($class)))
 		{
-			throw new Error(8, array($plugin, self::PLUG_CLASS, self::PLUG_IFACE));
+			throw new Error(8, array($plugin, static::PLUG_CLASS, static::PLUG_IFACE));
 		}
-		
+
 		return true;
 	}
 
@@ -174,7 +179,7 @@ class Plugin
 	 * Check if new plugins are present in the plugin folder. If yes, the
 	 * plugins is added to list in state 'uninstalled'.
 	 *
-	 * @throws Error
+	 * @throws pixelpost\core\Error
 	 * @return bool
 	 */
 	public static function detect()
@@ -190,20 +195,20 @@ class Plugin
 
 		while (false !== $file = readdir($rd))
 		{
-            $f = PLUG_PATH . SEP . $file;
+			$f = PLUG_PATH . SEP . $file;
 
 			if (!is_dir($f) || $file == '.' || $file == '..') continue;
 
-			if (!isset($conf->plugins->$file) && self::validate($file))
+			if (!isset($conf->plugins->$file) && static::validate($file))
 			{
-				$conf->plugins->$file = self::STATE_UNINSTALLED;
+				$conf->plugins->$file = static::STATE_UNINSTALLED;
 
 				$isNewPlugin = true;
 			}
 		}
 
 		closedir($rd);
-		
+
 		$conf->save();
 
 		return $isNewPlugin;
@@ -213,13 +218,13 @@ class Plugin
 	 * Totaly remove a plugin (this method can be dangerous). Uninstall the
 	 * plugins before delete it if it is installed.
 	 *
-	 * @throws Error
-	 * @param string $plugin The plugin name
+	 * @throws pixelpost\core\Error
+	 * @param  string $plugin The plugin name
 	 * @return bool
 	 */
 	public static function clean($plugin)
 	{
-		if (!self::uninstall($plugin)) return false;
+		if (!static::uninstall($plugin)) return false;
 
 		$conf = Config::create();
 
@@ -227,16 +232,16 @@ class Plugin
 
 		$conf->save();
 
-		foreach(new \RecursiveIteratorIterator(
-					new \RecursiveDirectoryIterator(PLUG_PATH . SEP . $plugin),
-					\RecursiveIteratorIterator::CHILD_FIRST) as $file)
+		$path = PLUG_PATH . SEP . $plugin;
+
+		foreach(new RII(new RDI($path), RII::CHILD_FIRST) as $file)
 		{
 			$method = $file->isDir() ? "rmdir" : 'unlink';
 			$method($file->getPathName());
 		}
 
-		rmdir(PLUG_PATH . SEP . $plugin);
-		
+		rmdir($path);
+
 		return true;
 	}
 
@@ -244,14 +249,15 @@ class Plugin
 	 * Call the method 'register' of the plugin. Return FALSE in case of
 	 * problem with the registration.
 	 *
-	 * @param string $plugin The plugin name
+	 * @throws pixelpost\core\Error
+	 * @param  string $plugin The plugin name
 	 * @return bool
 	 */
 	public static function register($plugin)
 	{
-		require_once self::get_file($plugin);
+		require_once static::get_file($plugin);
 
-		return call_user_func(self::get_method($plugin, 'register'));
+		return call_user_func(static::get_method($plugin, 'register'));
 	}
 
 	/**
@@ -260,32 +266,33 @@ class Plugin
 	 * The plugins is inactived (if it is active) before the update and
 	 * re-actived if needed.
 	 *
-	 * @param string $plugin The plugin name
+	 * @throws pixelpost\core\Error
+	 * @param  string $plugin The plugin name
 	 * @return bool
 	 */
 	public static function update($plugin)
 	{
 		$isUpgraded = true;
 
-		$state = self::get_state($plugin);
+		$state = static::get_state($plugin);
 
-		if ($state == self::STATE_ACTIVE)
+		if ($state == static::STATE_ACTIVE)
 		{
-			self::inactive($plugin);
+			static::inactive($plugin);
 		}
 
-		if ($state == self::UNINSTALLED)
+		if ($state == static::UNINSTALLED)
 		{
-			$isUpgraded = self::install($plugin);
+			$isUpgraded = static::install($plugin);
 		}
 		else
 		{
-			$isUpgraded = call_user_func(self::get_method($plugin, 'update'));
+			$isUpgraded = call_user_func(static::get_method($plugin, 'update'));
 		}
 
-		if ($isUpgraded && $state == self::STATE_ACTIVE)
+		if ($isUpgraded && $state == static::STATE_ACTIVE)
 		{
-			self::active($plugin);
+			static::active($plugin);
 		}
 
 		return $isUpgraded;
@@ -294,12 +301,13 @@ class Plugin
 	/**
 	 * Call the method 'version' of the plugin and return it's version number.
 	 *
-	 * @param string $plugin The plugin name
+	 * @throws pixelpost\core\Error
+	 * @param  string $plugin The plugin name
 	 * @return string
 	 */
 	public static function version($plugin)
 	{
-		return call_user_func(self::get_method($plugin, 'version'));
+		return call_user_func(static::get_method($plugin, 'version'));
 	}
 
 	/**
@@ -307,21 +315,22 @@ class Plugin
 	 * 'uninstalled' to 'inactive'. Return FALSE in case of problem with the
 	 * installation.
 	 *
-	 * @param string $plugin The plugin name
+	 * @throws pixelpost\core\Error
+	 * @param  string $plugin The plugin name
 	 * @return bool
 	 */
 	public static function install($plugin)
 	{
-		$state = self::get_state($plugin);
-		
-		if ($state != self::STATE_UNINSTALLED) return true;
+		$state = static::get_state($plugin);
 
-		if (!self::check_dependencies($plugin)) return false;
-		
-		if (!call_user_func(self::get_method($plugin, 'install'))) return false;
-		
-		self::set_state($plugin, self::STATE_INACTIVE);
-		
+		if ($state != static::STATE_UNINSTALLED) return true;
+
+		if (!static::check_dependencies($plugin)) return false;
+
+		if (!call_user_func(static::get_method($plugin, 'install'))) return false;
+
+		static::set_state($plugin, static::STATE_INACTIVE);
+
 		return true;
 	}
 
@@ -330,21 +339,22 @@ class Plugin
 	 * from 'ACTIVE/INACTIVE' to 'UNINSTALLED'. The plugin is inactived if
 	 * necesseray. Return FALSE in case of problem with the uninstallation.
 	 *
-	 * @param string $plugin The plugin name
+	 * @throws pixelpost\core\Error
+	 * @param  string $plugin The plugin name
 	 * @return bool
 	 */
 	public static function uninstall($plugin)
 	{
-		$state = self::get_state($plugin);
-		
-		if ($state == self::STATE_UNINSTALLED) return true;
+		$state = static::get_state($plugin);
 
-		if (!self::inactive($plugin)) return false;
-		
-		if (!call_user_func(self::get_method($plugin, 'uninstall'))) return false;
-		
-		self::set_state($plugin, self::STATE_UNINSTALLED);
-		
+		if ($state == static::STATE_UNINSTALLED) return true;
+
+		if (!static::inactive($plugin)) return false;
+
+		if (!call_user_func(static::get_method($plugin, 'uninstall'))) return false;
+
+		static::set_state($plugin, static::STATE_UNINSTALLED);
+
 		return true;
 	}
 
@@ -353,20 +363,21 @@ class Plugin
 	 * being make. (oh my god is that english ?)
 	 * Return TRUE if plugin is activated or FALSE in other case.
 	 *
-	 * @param string $plugin The plugin name
+	 * @throws pixelpost\core\Error
+	 * @param  string $plugin The plugin name
 	 * @return bool
 	 */
 	public static function active($plugin)
 	{
-		$state = self::get_state($plugin);
-		
-		if ($state == self::STATE_ACTIVE) return true;
+		$state = static::get_state($plugin);
 
-		if (!self::install($plugin)) return false;
+		if ($state == static::STATE_ACTIVE) return true;
 
-		if (!self::check_dependencies($plugin)) return false;
-			
-		self::set_state($plugin, self::STATE_ACTIVE);
+		if (!static::install($plugin)) return false;
+
+		if (!static::check_dependencies($plugin)) return false;
+
+		static::set_state($plugin, static::STATE_ACTIVE);
 
 		return true;
 	}
@@ -376,21 +387,22 @@ class Plugin
 	 * if the plugin is unistalled, process to its installation. Return TRUE if
 	 * the plugins finish in state actived, else FALSE.
 	 *
-	 * @param string $plugin The plugin name
+	 * @throws pixelpost\core\Error
+	 * @param  string $plugin The plugin name
 	 * @return bool
 	 */
 	public static function inactive($plugin)
 	{
-		$state = self::get_state($plugin);
-		
-		if ($state == self::STATE_INACTIVE) return true;
+		$state = static::get_state($plugin);
 
-		if (!self::install($plugin)) return false;
-		
-		if (!self::check_required($plugin)) return false;
-			
-		self::set_state($plugin, self::STATE_INACTIVE);
-		
+		if ($state == static::STATE_INACTIVE) return true;
+
+		if (!static::install($plugin))        return false;
+
+		if (!static::check_required($plugin)) return false;
+
+		static::set_state($plugin, static::STATE_INACTIVE);
+
 		return true;
 	}
 
@@ -398,86 +410,90 @@ class Plugin
 	 * make the registration of all registred plugin before the website
 	 * coming in action.
 	 *
+	 * @throws pixelpost\core\Error
 	 */
 	public static function make_registration()
 	{
 		foreach (Config::create()->plugins as $plugin => $status)
 		{
-			if ($status != self::STATE_ACTIVE) continue;
+			if ($status != static::STATE_ACTIVE) continue;
 
-			self::register($plugin);
+			static::register($plugin);
 		}
 	}
 
 	/**
 	 * Retrieve dependencies of a plugin
-	 * 
+	 *
+	 * @throws pixelpost\core\Error
 	 * @param  string $plugin
-	 * @return array 
+	 * @return array
 	 */
 	public static function get_dependencies($plugin)
 	{
-		return call_user_func(self::get_method($plugin, 'depends'));
+		return call_user_func(static::get_method($plugin, 'depends'));
 	}
-	
+
 	/**
 	 * Verify if a plugin need another plugin to be installed/actived
-	 * 
+	 *
+	 * @throws pixelpost\core\Error
 	 * @param  string $plugin
-	 * @return bool 
+	 * @return bool
 	 */
 	public static function check_dependencies($plugin)
 	{
-		if (self::get_state($plugin) != self::STATE_UNINSTALLED) return true;
-		
-		foreach(self::get_dependencies($plugin) as $dep => $version)
-		{			
-			if (!self::is_exists($dep)) 
+		if (static::get_state($plugin) != static::STATE_UNINSTALLED) return true;
+
+		foreach(static::get_dependencies($plugin) as $dep => $version)
+		{
+			if (!static::is_exists($dep))
 			{
-				self::$_error = "'$plugin' require plugin '$dep' >= '$version'.";
+				static::$_error = "'$plugin' require plugin '$dep' >= '$version'.";
 				return false;
 			}
-			
-			if (self::get_state($dep) != self::STATE_ACTIVE) 
+
+			if (static::get_state($dep) != static::STATE_ACTIVE)
 			{
-				self::$_error = "'$plugin' require plugin '$dep' to be active.";
+				static::$_error = "'$plugin' require plugin '$dep' to be active.";
 				return false;
 			}
-			
-			$v = call_user_func(self::get_method($dep, 'version'));
-			
-			if (Filter::compare_version($v, $version)) 
+
+			$v = call_user_func(static::get_method($dep, 'version'));
+
+			if (Filter::compare_version($v, $version))
 			{
-				self::$_error = "'$plugin' require plugin '$dep' >= '$version'.";
+				static::$_error = "'$plugin' require plugin '$dep' >= '$version'.";
 				return false;
 			}
 		}
-		
+
 		return true;
 	}
-	
+
 	/**
-	 * Verify if a plugin is still required by another one to be 
+	 * Verify if a plugin is still required by another one to be
 	 * inactived/uninstalled.
-	 * 
+	 *
+	 * @throws pixelpost\core\Error
 	 * @param  string $plugin
-	 * @return bool 
+	 * @return bool
 	 */
 	public static function check_required($plugin)
 	{
 		foreach(Config::create()->plugins as $plug => $state)
 		{
-			if ($state != self::STATE_ACTIVE) continue;
-			
-			$deps = self::get_dependencies($plug);
-			
-			if (isset($deps[$plugin])) 
+			if ($state != static::STATE_ACTIVE) continue;
+
+			$deps = static::get_dependencies($plug);
+
+			if (isset($deps[$plugin]))
 			{
-				self::$_error = "'$plugin' is required by '$plug'.";
+				static::$_error = "'$plugin' is required by '$plug'.";
 				return false;
 			}
 		}
-		
+
 		return true;
 	}
 }

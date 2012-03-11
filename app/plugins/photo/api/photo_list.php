@@ -2,9 +2,9 @@
 
 namespace pixelpost\plugins\photo;
 
-use pixelpost;
-use pixelpost\plugins\api\Exception as ApiError;
-use pixelpost\plugins\auth\Plugin as Auth;
+use pixelpost\core\Filter,
+	pixelpost\plugins\api\Exception as ApiError,
+	pixelpost\plugins\auth\Plugin as Auth;
 
 // check grants
 if (!Auth::is_granted('read')) throw new ApiError\Ungranted('photo.list');
@@ -14,7 +14,7 @@ if (!isset($event->request->fields)) throw new ApiError\FieldRequired('photo.lis
 
 if (count($event->request->fields) == 0) throw new ApiError\FieldEmpty('fields');
 
-$options = pixelpost\Filter::object_to_array($event->request);
+$options = Filter::object_to_array($event->request);
 
 $fields  = $options['fields'];
 
@@ -37,17 +37,17 @@ if (isset($options['filter']) &&
 	$start =& $options['filter']['publish-date-interval']['start'];
 	$end   =& $options['filter']['publish-date-interval']['end'];
 
-	if (pixelpost\Filter::validate_date($start))
+	if (Filter::validate_date($start))
 	{
 		throw new ApiError\FieldNotValid('start', 'invalid RFC3339 date');
 	}
-	if (pixelpost\Filter::validate_date($end))
+	if (Filter::validate_date($end))
 	{
 		throw new ApiError\FieldNotValid('start', 'invalid RFC3339 date');
 	}
 
-	pixelpost\Filter::str_to_date($start);
-	pixelpost\Filter::str_to_date($end);
+	Filter::str_to_date($start);
+	Filter::str_to_date($end);
 }
 
 // exec the request

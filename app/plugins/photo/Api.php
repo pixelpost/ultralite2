@@ -3,10 +3,10 @@
 namespace pixelpost\plugins\photo;
 
 use DateTime,
-	pixelpost\Event,
-	pixelpost\Config,
-	pixelpost\Filter,
-	pixelpost\plugins\auth\Plugin as Auth,
+	pixelpost\core\Event,
+	pixelpost\core\Config,
+	pixelpost\core\Filter,
+	pixelpost\plugins\auth\Plugin   as Auth,
 	pixelpost\plugins\api\Exception as ApiError
 	;
 

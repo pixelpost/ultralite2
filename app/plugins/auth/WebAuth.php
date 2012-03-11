@@ -3,9 +3,9 @@
 namespace pixelpost\plugins\auth;
 
 use Exception,
-	pixelpost\Config,
-	pixelpost\Request,
-	pixelpost\Template;
+	pixelpost\core\Config,
+	pixelpost\core\Request,
+	pixelpost\core\Template;
 
 /**
  * Web Auth management
@@ -229,7 +229,7 @@ class WebAuth
 	 * This method return JSON data.
 	 * See it's usage in authentification form in javascript code.
 	 *
-	 * @param pixelpost\Request $request
+	 * @param pixelpost\core\Request $request
 	 */
 	public static function login(Request $request)
 	{
@@ -293,7 +293,7 @@ class WebAuth
 	 * This method return JSON data.
 	 * See it's usage in authentification form in javascript code.
 	 *
-	 * @param pixelpost\Request $request
+	 * @param pixelpost\core\Request $request
 	 */
 	public static function forget(Request $request)
 	{
@@ -349,7 +349,7 @@ class WebAuth
 	 * well reset or not. When the password is reset, the user is registred
 	 * (see register() method) and redirected to the admin home page.
 	 *
-	 * @param pixelpost\Request $request
+	 * @param pixelpost\core\Request $request
 	 * @return type
 	 */
 	public static function reset(Request $request)
@@ -423,7 +423,7 @@ class WebAuth
 	/**
 	 * Disconnect a user and redirect him to the admin home page.
 	 *
-	 * @param pixelpost\Request $request
+	 * @param pixelpost\core\Request $request
 	 */
 	public static function disconnect(Request $request)
 	{

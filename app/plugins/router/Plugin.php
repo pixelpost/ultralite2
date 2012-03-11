@@ -2,9 +2,9 @@
 
 namespace pixelpost\plugins\router;
 
-use pixelpost\Config,
-	pixelpost\PluginInterface,
-	pixelpost\Event;
+use pixelpost\core\Config,
+	pixelpost\core\PluginInterface,
+	pixelpost\core\Event;
 
 /**
  * Base router for pixelpost.

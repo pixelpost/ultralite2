@@ -2,7 +2,8 @@
 
 namespace pixelpost\plugins\api;
 
-use pixelpost;
+use pixelpost\core\Request,
+	pixelpost\core\Filter;
 
 /**
  * Provide a JSON codec for the plugin 'api'
@@ -21,16 +22,16 @@ class CodecJson implements CodecInterface
 	 * Decode the request and return an PHP stdClass containing the requested
 	 * data.
 	 *
-	 * @param pixelpost\Request
+	 * @param pixelpost\core\Request
 	 * @return stdClass
 	 */
-	public function decode(pixelpost\Request $request)
+	public function decode(Request $request)
 	{
 		$request = $request->get_data();
 
 		// check $request is a string
-		pixelpost\Filter::is_string($request);
-		pixelpost\Filter::check_encoding($request);
+		Filter::is_string($request);
+		Filter::check_encoding($request);
 
 		if (trim($request) == '')
 		{

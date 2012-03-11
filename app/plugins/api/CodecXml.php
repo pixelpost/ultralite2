@@ -2,7 +2,9 @@
 
 namespace pixelpost\plugins\api;
 
-use pixelpost;
+use pixelpost\core\Filter,
+	pixelpost\core\Request,
+	libXMLError;
 
 /**
  * Provide a XML codec for the plugin 'api'
@@ -21,15 +23,15 @@ class CodecXml implements CodecInterface
 	 * Decode the request and return an PHP stdClass containing the requested
 	 * data.
 	 *
-	 * @param  pixelpost\Request
+	 * @param  pixelpost\core\Request
 	 * @return stdClass
 	 */
-	public function decode(pixelpost\Request $request)
+	public function decode(Request $request)
 	{
 		$request = $request->get_data();
 		// check $request is a string
-		pixelpost\Filter::is_string($request);
-		pixelpost\Filter::check_encoding($request);
+		Filter::is_string($request);
+		Filter::check_encoding($request);
 
 		if (trim($request) == '')
 		{
@@ -96,9 +98,9 @@ class CodecXml implements CodecInterface
 
 		foreach ($data as $key => $value)
 		{
-			$key = pixelpost\Filter::format_for_xml($key);
+			$key = Filter::format_for_xml($key);
 
-			if (is_object($value)) $value = pixelpost\Filter::object_to_array($value);
+			if (is_object($value)) $value = Filter::object_to_array($value);
 
 			if (is_array($value))
 			{
@@ -108,7 +110,7 @@ class CodecXml implements CodecInterface
 			{
 				$value = strval(intval($value)); // cast boolean to '0' or '1'
 			}
-			elseif (pixelpost\Filter::format_for_xml($value) != $value)
+			elseif (Filter::format_for_xml($value) != $value)
 			{
 				$value = sprintf('<![CDATA[%s]]>', $value);
 			}
@@ -122,10 +124,10 @@ class CodecXml implements CodecInterface
 	/**
 	 * Return a readable text message of an libXMLError
 	 *
-	 * @param \libXMLError $error
+	 * @param  libXMLError $error
 	 * @return string
 	 */
-	public function format_xml_error(\libXMLError $error)
+	public function format_xml_error(libXMLError $error)
 	{
 		$err = '';
 

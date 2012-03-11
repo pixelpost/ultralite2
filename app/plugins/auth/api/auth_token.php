@@ -3,7 +3,7 @@
 namespace pixelpost\plugins\auth;
 
 use DateTime,
-	pixelpost\Config,
+	pixelpost\core\Config,
 	pixelpost\plugins\api\Exception\FieldRequired,
 	pixelpost\plugins\api\Exception\FieldNotValid;
 

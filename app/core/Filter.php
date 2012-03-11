@@ -1,6 +1,6 @@
 <?php
 
-namespace pixelpost;
+namespace pixelpost\core;
 
 /**
  * Filter support
@@ -16,133 +16,122 @@ class Filter
 	/**
 	 * Check $param is a string
 	 *
-	 * @param mixed $param
-	 * @throws Error
+	 * @param  mixed $param
+	 * @throws pixelpost\core\Error
 	 */
 	public static function is_string($param)
 	{
-		if (!\is_string($param))
-			throw new Error(1, array('string'));
+		if (!is_string($param)) throw new Error(1, array('string'));
 	}
 
 	/**
 	 * Check $param is an int
 	 *
-	 * @param mixed $param
-	 * @throws Error
+	 * @param  mixed $param
+	 * @throws pixelpost\core\Error
 	 */
 	public static function is_int($param)
 	{
-		if (!\is_int($param))
-			throw new Error(1, array('int'));
+		if (!is_int($param)) throw new Error(1, array('int'));
 	}
 
 	/**
 	 * Check $param is a float
 	 *
-	 * @param mixed $param
-	 * @throws Error
+	 * @param  mixed $param
+	 * @throws pixelpost\core\Error
 	 */
 	public static function is_float($param)
 	{
-		if (!\is_float($param))
-			throw new Error(1, array('float'));
+		if (!is_float($param)) throw new Error(1, array('float'));
 	}
 
 	/**
 	 * Check $param is a bool
 	 *
-	 * @param mixed $param
-	 * @throws Error
+	 * @param  mixed $param
+	 * @throws pixelpost\core\Error
 	 */
 	public static function is_bool($param)
 	{
-		if (!\is_bool($param))
-			throw new Error(1, array('bool'));
+		if (!is_bool($param)) throw new Error(1, array('bool'));
 	}
 
 	/**
 	 * Check $param is null
 	 *
-	 * @param mixed $param
-	 * @throws Error
+	 * @param  mixed $param
+	 * @throws pixelpost\core\Error
 	 */
 	public static function is_null($param)
 	{
-		if (!\is_null($param))
-			throw new Error(1, array('null'));
+		if (!is_null($param)) throw new Error(1, array('null'));
 	}
 
 	/**
 	 * Check $param is an array
 	 *
 	 * @param mixed $param
-	 * @throws Error
+	 * @throws pixelpost\core\Error
 	 */
 	public static function is_array($param)
 	{
-		if (!\is_array($param))
-			throw new Error(1, array('array'));
+		if (!is_array($param)) throw new Error(1, array('array'));
 	}
 
 	/**
 	 * Check $param is a resource
 	 *
 	 * @param mixed $param
-	 * @throws Error
+	 * @throws pixelpost\core\Error
 	 */
 	public static function is_resource($param)
 	{
-		if (!\is_resource($param))
-			throw new Error(1, array('resource'));
+		if (!is_resource($param)) throw new Error(1, array('resource'));
 	}
 
 	/**
 	 * Check $param is an object
 	 *
 	 * @param mixed $param
-	 * @throws Error
+	 * @throws pixelpost\core\Error
 	 */
 	public static function is_object($param)
 	{
-		if (!\is_object($param))
-			throw new Error(1, array('object'));
+		if (!is_object($param)) throw new Error(1, array('object'));
 	}
 
 	/**
 	 * Check $param is a DateTime object
 	 *
 	 * @param mixed $param
-	 * @throws Error
+	 * @throws pixelpost\core\Error
 	 */
 	public static function is_date($param)
 	{
-		if (!$param instanceof \DateTime)
-			throw new Error(1, array('DateTime'));
+		if (!$param instanceof \DateTime) throw new Error(1, array('DateTime'));
 	}
 
 	/**
 	 * Check $param is a numeric value/format
 	 *
 	 * @param mixed $param
-	 * @throws Error
+	 * @throws pixelpost\core\Error
 	 */
 	public static function is_numeric($param)
 	{
-		if (!\is_numeric($param))
-			throw new Error(1, array('numeric'));
+		if (!is_numeric($param)) throw new Error(1, array('numeric'));
 	}
 
 	/**
 	 * Check $param is a scalar
 	 *
 	 * @param mixed $param
-	 * @throws Error
+	 * @throws pixelpost\core\Error
 	 */
 	public static function is_scalar($param)
 	{
-		if (!\is_scalar($param))
-			throw new Error(1, array('scalar'));
+		if (!is_scalar($param)) throw new Error(1, array('scalar'));
 	}
 
 	/**
@@ -228,8 +217,7 @@ class Filter
 	 */
 	public static function assume_array(&$var)
 	{
-		if (!is_array($var))
-			$var = array($var);
+		if (!is_array($var)) $var = array($var);
 	}
 
 	/**
@@ -271,15 +259,16 @@ class Filter
 	/**
 	 * Remove all accents of a string
 	 *
-	 * @param string $string
+	 * @param  string $string
 	 * @return string
 	 */
 	public static function format_without_accent($string)
 	{
 		self::assume_string($string);
 
-		$accent = utf8_decode('ÀÁÂÃÄÅàáâãäåÒÓÔÕÖØòóôõöøÈÉÊËéèêëÇçÌÍÎÏìíîïÙÚÛÜùúûüÿÑñ');
+		$accent   = utf8_decode('ÀÁÂÃÄÅàáâãäåÒÓÔÕÖØòóôõöøÈÉÊËéèêëÇçÌÍÎÏìíîïÙÚÛÜùúûüÿÑñ');
 		$noaccent = utf8_decode('AAAAAAaaaaaaOOOOOOooooooEEEEeeeeCcIIIIiiiiUUUUuuuuyNn');
+
 		return utf8_encode(strtr((string) utf8_decode($string), $accent, $noaccent));
 	}
 
@@ -287,7 +276,7 @@ class Filter
 	 * Delete all non ASCII char, try to replace some common by iphen or
 	 * equivalent.
 	 *
-	 * @param string $string
+	 * @param  string $string
 	 * @return string
 	 */
 	public static function format_for_url($string)
@@ -296,19 +285,23 @@ class Filter
 
 		$s = array('&', 'æ', 'œ', 'Œ', 'Æ', '©', '®', "\r", "\n", "\t", ' ', '\'');
 		$r = array('-', 'ae', 'oe', 'oe', 'ae', '(c)', '(r)', '-', '-', '-', '-', '-');
-		$string = self::format_without_accent($string);
-		$string = strtolower(str_replace($s, $r, strip_tags($string)));
+
+		$string  = self::format_without_accent($string);
+		$string  = strtolower(str_replace($s, $r, strip_tags($string)));
+
 		$invalid = preg_replace('#[0-9a-z_-]#', '', $string);
-		if ($invalid != '')
-			$string = str_replace(str_split($invalid), '', $string);
+
+		if ($invalid != '') $string = str_replace(str_split($invalid), '', $string);
+
 		$string = preg_replace('#-+#', '-', $string);
+
 		return self::urlencode($string);
 	}
 
 	/**
 	 * Delete all XML illegal character
 	 *
-	 * @param string $string
+	 * @param  string $string
 	 * @return string
 	 */
 	public static function format_for_xml($string)
@@ -316,6 +309,7 @@ class Filter
 		self::assume_string($string);
 
 		$s = array('&', "\r", "\n", '<', '>');
+
 		return str_replace($s, '', $string);
 	}
 
@@ -340,7 +334,7 @@ class Filter
 	 * (slashes) interpretation. (this came up when we urlencode an url for
 	 * example, and this data is not in the queryString part (cf, url_rewrite).
 	 *
-	 * @param string $str
+	 * @param  string $str
 	 * @return string
 	 */
 	public static function urlencode($str)
@@ -355,7 +349,7 @@ class Filter
 	/**
 	 * Convert multidimentionnal array to arrayObject
 	 *
-	 * @param array $array
+	 * @param  array $array
 	 * @return ArrayObject
 	 */
 	public static function array_to_arrayObject($array)
@@ -370,7 +364,7 @@ class Filter
 	/**
 	 * Convert multidimentionnal array to object
 	 *
-	 * @param array $array
+	 * @param  array $array
 	 * @return stdClass
 	 */
 	public static function array_to_object($array)
@@ -385,7 +379,7 @@ class Filter
 	/**
 	 * Convert multidimantionnal object to array
 	 *
-	 * @param stdClass $object
+	 * @param  stdClass $object
 	 * @return array
 	 */
 	public static function object_to_array($object)
@@ -421,8 +415,8 @@ class Filter
 	 * Return null if $new is equal to $old
 	 * Return false if $old is upper to $new
 	 *
-	 * @param type $old
-	 * @param type $new
+	 * @param  string $old
+	 * @param  string $new
 	 * @return mixed
 	 */
 	public static function compare_version($old, $new)
@@ -433,7 +427,7 @@ class Filter
 		$old = intval(vsprintf("%02s%02s%02s", explode('.', $old)));
 		$new = intval(vsprintf("%02s%02s%02s", explode('.', $new)));
 
-		if ($new > $old) return true;
+		if ($new > $old)  return true;
 		if ($new == $old) return null;
 
 		return false;
@@ -442,7 +436,7 @@ class Filter
 	/**
 	* Return shortland size value (e.g 8M, 512K) in bytes.
 	*
-	* @param string $size
+	* @param  string $size
 	* @return int
 	*/
 	public static function shortland_size_to_bytes($size)

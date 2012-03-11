@@ -2,11 +2,11 @@
 
 namespace pixelpost\plugins\admin;
 
-use pixelpost;
+use pixelpost\core\Event;
 
 class Api
 {
-	public static function api_version(pixelpost\Event $event)
+	public static function api_version(Event $event)
 	{
 		$event->response = array('version' => Plugin::version());
 	}

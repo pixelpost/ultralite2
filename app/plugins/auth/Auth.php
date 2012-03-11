@@ -3,7 +3,7 @@
 namespace pixelpost\plugins\auth;
 
 use stdClass,
-	pixelpost\Filter;
+	pixelpost\core\Filter;
 
 /**
  * Auth management

@@ -1,6 +1,6 @@
 <?php
 
-namespace pixelpost;
+namespace pixelpost\core;
 
 /**
  * Request support
@@ -46,7 +46,7 @@ class Request
 	/**
 	 * Create a new instance of the Request class.
 	 *
-	 * @return Request
+	 * @return pixelpost\core\Request
 	 */
 	public static function create()
 	{
@@ -56,7 +56,7 @@ class Request
 	/**
 	 * Load the request from the Apache server data.
 	 *
-	 * @return Request
+	 * @return pixelpost\core\Request
 	 */
 	public function auto()
 	{
@@ -107,8 +107,8 @@ class Request
 	/**
 	 * Load the request with the $url
 	 *
-	 * @param string $url
-	 * @return Request
+	 * @param  string $url
+	 * @return pixelpost\core\Request
 	 */
 	public function set_url($url)
 	{
@@ -118,37 +118,28 @@ class Request
 
 		$query = false;
 
-		if (isset($parse['scheme']))
-			$this->_scheme = $parse['scheme'];
-		if (isset($parse['host']))
-			$this->_host = $parse['host'];
-		if (isset($parse['port']))
-			$this->_port = $parse['port'];
-		if (isset($parse['user']))
-			$this->_user = $parse['user'];
-		if (isset($parse['pass']))
-			$this->_pass = $parse['pass'];
-		if (isset($parse['fragment']))
-			$this->_frag = $parse['fragment'];
-		if (isset($parse['path']))
-			$this->_path = ltrim($parse['path'], '/');
-		if (isset($parse['query']))
-			parse_str($parse['query'], $query);
+		isset($parse['scheme'])   and $this->_scheme = $parse['scheme'];
+		isset($parse['host'])     and $this->_host   = $parse['host'];
+		isset($parse['port'])     and $this->_port   = $parse['port'];
+		isset($parse['user'])     and $this->_user   = $parse['user'];
+		isset($parse['pass'])     and $this->_pass   = $parse['pass'];
+		isset($parse['fragment']) and $this->_frag   = $parse['fragment'];
+		isset($parse['path'])     and $this->_path   = ltrim($parse['path'], '/');
+		isset($parse['query'])    and parse_str($parse['query'], $query);
 
-		if ($query !== false)
-			$this->set_query($query);
+		if ($query !== false) $this->set_query($query);
 
 		// delete userdir from path
 		if ($this->is_userdir() &&
-				strlen($this->_path) >= strlen($this->_userdir) &&
-				substr($this->_path, 0, strlen($this->_userdir)) == $this->_userdir)
+			strlen($this->_path) >= strlen($this->_userdir) &&
+			substr($this->_path, 0, strlen($this->_userdir)) == $this->_userdir)
 		{
 			$this->_path = ltrim(substr($this->_path, strlen($this->_userdir)), '/');
 		}
 
 		$this->_isTrailingSlash = (substr($this->_path, -1) == '/');
 
-		$this->_path = rtrim($this->_path, '/');
+		$this->_path   = rtrim($this->_path, '/');
 
 		$this->_params = explode('/', $this->_path);
 
@@ -160,8 +151,8 @@ class Request
 	 * 'http://foo.com/~username/myapp/') the userdir is skipped in the url path
 	 * and not enter int the url params. (see: get_params())
 	 *
-	 * @param string $userdir
-	 * @return Request
+	 * @param  string $userdir
+	 * @return pixelpost\core\Request
 	 */
 	public function set_userdir($userdir)
 	{
@@ -175,23 +166,17 @@ class Request
 	/**
 	 * Change the protocol. (see class constant)
 	 *
-	 * @param int $protocol
-	 * @return Request
+	 * @param  int $protocol
+	 * @return pixelpost\core\Request
 	 */
 	public function set_protocol($protocol)
 	{
-		Filter::assume_int($protocol);
-
 		switch ($protocol)
 		{
-			case PROTO_HTTP_09 : $this->_protocol = 'HTTP/0.9';
-				break;
-			case PROTO_HTTP_10 : $this->_protocol = 'HTTP/1.0';
-				break;
-			case PROTO_HTTP_11 : $this->_protocol = 'HTTP/1.1';
-				break;
-			default : $this->_protocol = 'HTTP/1.1';
-				break;
+			case PROTO_HTTP_09 : $this->_protocol = 'HTTP/0.9'; break;
+			case PROTO_HTTP_10 : $this->_protocol = 'HTTP/1.0'; break;
+			case PROTO_HTTP_11 : $this->_protocol = 'HTTP/1.1'; break;
+			default            : $this->_protocol = 'HTTP/1.1'; break;
 		}
 
 		return $this;
@@ -200,8 +185,8 @@ class Request
 	/**
 	 * Change the GET params
 	 *
-	 * @param array $params
-	 * @return Request
+	 * @param  array $params
+	 * @return pixelpost\core\Request
 	 */
 	public function set_query(array $params)
 	{
@@ -213,8 +198,8 @@ class Request
 	/**
 	 * Change the POST params
 	 *
-	 * @param array $params
-	 * @return Request
+	 * @param  array $params
+	 * @return pixelpost\core\Request
 	 */
 	public function set_post(array $params)
 	{
@@ -226,8 +211,8 @@ class Request
 	/**
 	 * Change the data received on input with the request
 	 *
-	 * @param string $data
-	 * @return Request
+	 * @param  string $data
+	 * @return pixelpost\core\Request
 	 */
 	public function set_data($data)
 	{
@@ -241,33 +226,22 @@ class Request
 	/**
 	 * Change the url method call
 	 *
-	 * @param int $method (see: class constant)
-	 * @return Request
+	 * @param  int $method (see: class constant)
+	 * @return pixelpost\core\Request
 	 */
 	public function set_method($method)
 	{
-		Filter::assume_int($method);
-
 		switch ($method)
 		{
-			case self::METHOD_GET : $this->_method = 'GET';
-				break;
-			case self::METHOD_POST : $this->_method = 'POST';
-				break;
-			case self::METHOD_PUT : $this->_method = 'PUT';
-				break;
-			case self::METHOD_HEAD : $this->_method = 'HEAD';
-				break;
-			case self::METHOD_DELETE : $this->_method = 'DELETE';
-				break;
-			case self::METHOD_TRACE : $this->_method = 'TRACE';
-				break;
-			case self::METHOD_CONNECT : $this->_method = 'CONNECT';
-				break;
-			case self::METHOD_OPTIONS : $this->_method = 'OPTIONS';
-				break;
-			default : $this->_method = 'GET';
-				break;
+			case static::METHOD_GET     : $this->_method = 'GET';     break;
+			case static::METHOD_POST    : $this->_method = 'POST';    break;
+			case static::METHOD_PUT     : $this->_method = 'PUT';     break;
+			case static::METHOD_HEAD    : $this->_method = 'HEAD';    break;
+			case static::METHOD_DELETE  : $this->_method = 'DELETE';  break;
+			case static::METHOD_TRACE   : $this->_method = 'TRACE';   break;
+			case static::METHOD_CONNECT : $this->_method = 'CONNECT'; break;
+			case static::METHOD_OPTIONS : $this->_method = 'OPTIONS'; break;
+			default                     : $this->_method = 'GET';     break;
 		}
 
 		return $this;
@@ -302,10 +276,8 @@ class Request
 	{
 		$url = $this->_scheme . '://' . $this->_host;
 
-		if (!$this->is_std_port())
-			$url .= ':' . $this->_port;
-		if ($this->is_userdir())
-			$url .= '/' . $this->_userdir;
+		$this->is_std_port() or $url .= ':' . $this->_port;
+		$this->is_userdir() and $url .= '/' . $this->_userdir;
 
 		return $url . '/';
 	}
@@ -513,5 +485,4 @@ class Request
 	{
 		return ($this->_data != '');
 	}
-
 }

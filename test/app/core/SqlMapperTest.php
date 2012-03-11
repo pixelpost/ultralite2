@@ -1,6 +1,6 @@
 <?php
 
-namespace pixelpost;
+namespace pixelpost\core;
 
 /**
  * Test class for SqlMapper.
@@ -37,7 +37,7 @@ class SqlMapperTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers pixelpost\SqlMapper::create
+	 * @covers pixelpost\core\SqlMapper::create
 	 */
 	public function test_create()
 	{
@@ -45,7 +45,7 @@ class SqlMapperTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers pixelpost\SqlMapper::map
+	 * @covers pixelpost\core\SqlMapper::map
 	 */
 	public function test_map()
 	{
@@ -55,7 +55,7 @@ class SqlMapperTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers pixelpost\SqlMapper::genSqlSelectList
+	 * @covers pixelpost\core\SqlMapper::genSqlSelectList
 	 */
 	public function test_genSqlSelectList()
 	{
@@ -67,7 +67,7 @@ class SqlMapperTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers pixelpost\SqlMapper::genSqlSelectList
+	 * @covers pixelpost\core\SqlMapper::genSqlSelectList
 	 */
 	public function test_genSqlSelectList_unknown_field()
 	{
@@ -80,8 +80,8 @@ class SqlMapperTest extends \PHPUnit_Framework_TestCase
 
 
 	/**
-	 * @covers pixelpost\SqlMapper::genSqlUpdateList
-	 * @covers pixelpost\SqlMapper::_castSql
+	 * @covers pixelpost\core\SqlMapper::genSqlUpdateList
+	 * @covers pixelpost\core\SqlMapper::_castSql
 	 */
 	public function test_genSqlUpdateList()
 	{
@@ -98,8 +98,8 @@ class SqlMapperTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers pixelpost\SqlMapper::genSqlUpdateList
-	 * @covers pixelpost\SqlMapper::_castSql
+	 * @covers pixelpost\core\SqlMapper::genSqlUpdateList
+	 * @covers pixelpost\core\SqlMapper::_castSql
 	 */
 	public function test_genSqlUpdateList_unknown_field()
 	{
@@ -117,8 +117,8 @@ class SqlMapperTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers pixelpost\SqlMapper::genSqlInsertList
-	 * @covers pixelpost\SqlMapper::_castSql
+	 * @covers pixelpost\core\SqlMapper::genSqlInsertList
+	 * @covers pixelpost\core\SqlMapper::_castSql
 	 */
 	public function test_genSqlInsertList()
 	{
@@ -135,8 +135,8 @@ class SqlMapperTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers pixelpost\SqlMapper::genSqlInsertList
-	 * @covers pixelpost\SqlMapper::_castSql
+	 * @covers pixelpost\core\SqlMapper::genSqlInsertList
+	 * @covers pixelpost\core\SqlMapper::_castSql
 	 */
 	public function test_genSqlInsertList_unknown_field()
 	{
@@ -154,8 +154,8 @@ class SqlMapperTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers pixelpost\SqlMapper::genArrayResult
-	 * @covers pixelpost\SqlMapper::_castData
+	 * @covers pixelpost\core\SqlMapper::genArrayResult
+	 * @covers pixelpost\core\SqlMapper::_castData
 	 */
 	public function test_genArrayResult()
 	{
@@ -186,8 +186,8 @@ class SqlMapperTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers pixelpost\SqlMapper::genArrayResult
-	 * @covers pixelpost\SqlMapper::_castData
+	 * @covers pixelpost\core\SqlMapper::genArrayResult
+	 * @covers pixelpost\core\SqlMapper::_castData
 	 */
 	public function test_genArrayResult_unknown_field()
 	{

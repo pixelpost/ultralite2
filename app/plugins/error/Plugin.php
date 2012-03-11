@@ -2,8 +2,8 @@
 
 namespace pixelpost\plugins\error;
 
-use pixelpost\Event,
-	pixelpost\PluginInterface;
+use pixelpost\core\Event,
+	pixelpost\core\PluginInterface;
 
 /**
  * Error management for pixelpost.
@@ -61,10 +61,6 @@ class Plugin implements PluginInterface
 	{
 		$error = $event->exception;
 
-		// if we use pixelpost\DEBUG or pixelpost\SEP
-		// php actually says that's constant are unknow. I think this is a
-		// behaviour cause by the fact the set_exeption_handler() is in the
-		// pixelpost namespace.
 		if (DEBUG) include __DIR__ . SEP . 'template' . SEP . 'error_debug.php';
 		else       include __DIR__ . SEP . 'template' . SEP . 'error.php';
 

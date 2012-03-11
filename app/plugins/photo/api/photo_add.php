@@ -3,7 +3,7 @@
 namespace pixelpost\plugins\photo;
 
 use Exception,
-	pixelpost\Config,
+	pixelpost\core\Config,
 	pixelpost\plugins\api\Exception as ApiError,
 	pixelpost\plugins\auth\Plugin   as Auth;
 

@@ -2,7 +2,8 @@
 
 namespace pixelpost\plugins\photo;
 
-use pixelpost;
+use pixelpost\core\Filter,
+	Exception;
 
 class Image
 {
@@ -60,20 +61,20 @@ class Image
 
 		if (!defined('GD_MAJOR_VERSION'))
 		{
-			throw new \Exception('GD 2 library is not installed.', 1);
+			throw new Exception('GD 2 library is not installed.', 1);
 		}
 
 		if (GD_MAJOR_VERSION < 2)
 		{
-			throw new \Exception('GD library is too old, requires version 2.0 or later.', 2);
+			throw new Exception('GD library is too old, requires version 2.0 or later.', 2);
 		}
 
-		pixelpost\Filter::assume_string($filename);
-		pixelpost\Filter::assume_int($quality);
+		Filter::assume_string($filename);
+		Filter::assume_int($quality);
 
 		if (!file_exists($filename))
 		{
-			throw new \Exception("Image '$filename' does not exists.", 3);
+			throw new Exception("Image '$filename' does not exists.", 3);
 		}
 
 		$this->_src = $filename;
@@ -87,7 +88,7 @@ class Image
 			case IMAGETYPE_JPEG: break;
 			case IMAGETYPE_PNG : break;
 			default :
-				throw new \Exception("Image format is not supported.", 4);
+				throw new Exception("Image format is not supported.", 4);
 		}
 
 		$this->_r = floatval(round($this->_w / $this->_h, 2));

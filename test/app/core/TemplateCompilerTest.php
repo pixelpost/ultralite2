@@ -1,6 +1,6 @@
 <?php
 
-namespace pixelpost;
+namespace pixelpost\core;
 
 /**
  * Test class for TemplateCompiler.
@@ -23,7 +23,7 @@ class TemplateCompilerTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers pixelpost\TemplateCompiler::replace_php_short_open_tag
+	 * @covers pixelpost\core\TemplateCompiler::replace_php_short_open_tag
 	 */
 	public function test_replace_php_short_open_tag()
 	{
@@ -35,7 +35,7 @@ class TemplateCompilerTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers pixelpost\TemplateCompiler::remove_comment
+	 * @covers pixelpost\core\TemplateCompiler::remove_comment
 	 */
 	public function test_remove_comment()
 	{
@@ -54,8 +54,8 @@ EOF;
 	}
 
 	/**
-	 * @covers pixelpost\TemplateCompiler::escape_escape
-	 * @covers pixelpost\TemplateCompiler::unescape_escape
+	 * @covers pixelpost\core\TemplateCompiler::escape_escape
+	 * @covers pixelpost\core\TemplateCompiler::unescape_escape
 	 */
 	public function test_escape_escape()
 	{
@@ -72,8 +72,8 @@ EOF;
 	}
 
 	/**
-	 * @covers pixelpost\TemplateCompiler::escape_quote
-	 * @covers pixelpost\TemplateCompiler::unescape_quote
+	 * @covers pixelpost\core\TemplateCompiler::escape_quote
+	 * @covers pixelpost\core\TemplateCompiler::unescape_quote
 	 */
 	public function test_escape_quote()
 	{
@@ -100,8 +100,8 @@ EOF;
 	}
 
 	/**
-	 * @covers pixelpost\TemplateCompiler::escape_square
-	 * @covers pixelpost\TemplateCompiler::unescape_square
+	 * @covers pixelpost\core\TemplateCompiler::escape_square
+	 * @covers pixelpost\core\TemplateCompiler::unescape_square
 	 */
 	public function test_escape_square()
 	{
@@ -131,8 +131,8 @@ EOF;
 	}
 
 	/**
-	 * @covers pixelpost\TemplateCompiler::escape_paren
-	 * @covers pixelpost\TemplateCompiler::unescape_paren
+	 * @covers pixelpost\core\TemplateCompiler::escape_paren
+	 * @covers pixelpost\core\TemplateCompiler::unescape_paren
 	 */
 	public function test_escape_paren()
 	{
@@ -162,8 +162,8 @@ EOF;
 	}
 
 	/**
-	 * @covers pixelpost\TemplateCompiler::escape_raw_block
-	 * @covers pixelpost\TemplateCompiler::unescape_raw_block
+	 * @covers pixelpost\core\TemplateCompiler::escape_raw_block
+	 * @covers pixelpost\core\TemplateCompiler::unescape_raw_block
 	 */
 	public function test_escape_raw_block()
 	{
@@ -190,7 +190,7 @@ EOF;
 	}
 
 	/**
-	 * @covers pixelpost\TemplateCompiler::extract_block
+	 * @covers pixelpost\core\TemplateCompiler::extract_block
 	 */
 	public function test_extract_block()
 	{
@@ -212,7 +212,7 @@ EOF;
 	}
 
 	/**
-	 * @covers pixelpost\TemplateCompiler::compile_block
+	 * @covers pixelpost\core\TemplateCompiler::compile_block
 	 */
 	public function test_compiler_block()
 	{
@@ -287,7 +287,7 @@ EOF;
 	 * Test a bug where a display tag declare an empty block and parent block
 	 * content was erased.
 	 *
-	 * @covers pixelpost\TemplateCompiler::extract_block
+	 * @covers pixelpost\core\TemplateCompiler::extract_block
 	 */
 	public function test_extract_block_with_display_tag_in_child()
 	{
@@ -322,7 +322,7 @@ EOF;
 	}
 
 	/**
-	 * @covers pixelpost\TemplateCompiler::extract_block
+	 * @covers pixelpost\core\TemplateCompiler::extract_block
 	 */
 	public function test_extract_block_with_parent_tag()
 	{
@@ -357,7 +357,7 @@ EOF;
 	}
 
 	/**
-	 * @covers pixelpost\TemplateCompiler::extract_block
+	 * @covers pixelpost\core\TemplateCompiler::extract_block
 	 */
 	public function test_extract_block_with_child_tag()
 	{
@@ -392,7 +392,7 @@ EOF;
 	}
 
 	/**
-	 * @covers pixelpost\TemplateCompiler::extract_block
+	 * @covers pixelpost\core\TemplateCompiler::extract_block
 	 */
 	public function test_extract_block_with_child_and_parent_tag()
 	{
@@ -428,7 +428,7 @@ EOF;
 	}
 
 	/**
-	 * @covers pixelpost\TemplateCompiler::extract_block
+	 * @covers pixelpost\core\TemplateCompiler::extract_block
 	 */
 	public function test_extract_block_without_child_or_parent_tag()
 	{
@@ -463,7 +463,7 @@ EOF;
 	}
 
 	/**
-	 * @covers pixelpost\TemplateCompiler::make_if
+	 * @covers pixelpost\core\TemplateCompiler::make_if
 	 */
 	public function test_make_if()
 	{
@@ -483,13 +483,13 @@ EOF;
 	}
 
 	/**
-	 * @covers pixelpost\TemplateCompiler::make_for
+	 * @covers pixelpost\core\TemplateCompiler::make_for
 	 */
 	public function test_make_for_values()
 	{
 		$test = '{% for v in my_array %} this is the loop: {{ loop.index }} => {{ v }} {% endfor %}';
 
-		$result = '<?php $loop1 = new \pixelpost\TemplateLoop({[ my_array ]}); '
+		$result = '<?php $loop1 = new \pixelpost\core\TemplateLoop({[ my_array ]}); '
 				. 'foreach ({[ my_array ]} as $v) : '
 				. '$loop1->iterate(); ?> '
 				. 'this is the loop: {{ #loop1.index }} => {{ #v }} '
@@ -501,13 +501,13 @@ EOF;
 	}
 
 	/**
-	 * @covers pixelpost\TemplateCompiler::make_for
+	 * @covers pixelpost\core\TemplateCompiler::make_for
 	 */
 	public function test_make_for_keys_values()
 	{
 		$test = '{% for k,v in my_array %} this is the loop: {{ k }} => {{ v }} {% endfor %}';
 
-		$result = '<?php $loop1 = new \pixelpost\TemplateLoop({[ my_array ]}); '
+		$result = '<?php $loop1 = new \pixelpost\core\TemplateLoop({[ my_array ]}); '
 				. 'foreach ({[ my_array ]} as $k => $v) : '
 				. '$loop1->iterate(); ?> '
 				. 'this is the loop: {{ #k }} => {{ #v }} '
@@ -519,13 +519,13 @@ EOF;
 	}
 
 	/**
-	 * @covers pixelpost\TemplateCompiler::make_for
+	 * @covers pixelpost\core\TemplateCompiler::make_for
 	 */
 	public function test_make_for_else()
 	{
 		$test = '{% for v in my_array %} do something {% elsefor %} do otherthing {% endfor %}';
 
-		$result = '<?php $loop1 = new \pixelpost\TemplateLoop({[ my_array ]}); '
+		$result = '<?php $loop1 = new \pixelpost\core\TemplateLoop({[ my_array ]}); '
 				. 'if ($loop1->length > 0) : '
 				. 'foreach ({[ my_array ]} as $v) : '
 				. '$loop1->iterate(); ?> '
@@ -540,17 +540,17 @@ EOF;
 	}
 
 	/**
-	 * @covers pixelpost\TemplateCompiler::make_for
+	 * @covers pixelpost\core\TemplateCompiler::make_for
 	 */
 	public function test_make_for_included()
 	{
 		$test = '{% for v in my_array %}{{ loop.index }} => {{ v }}{% for a in arr %}{{ loop.index }}=>{{ a }}{% endfor %}{% endfor %}';
 
-		$result = '<?php $loop2 = new \pixelpost\TemplateLoop({[ my_array ]}); '
+		$result = '<?php $loop2 = new \pixelpost\core\TemplateLoop({[ my_array ]}); '
 				. 'foreach ({[ my_array ]} as $v) : '
 				. '$loop2->iterate(); ?>'
 				. '{{ #loop2.index }} => {{ #v }}'
-				. '<?php $loop1 = new \pixelpost\TemplateLoop({[ arr ]}); '
+				. '<?php $loop1 = new \pixelpost\core\TemplateLoop({[ arr ]}); '
 				. 'foreach ({[ arr ]} as $a) : '
 				. '$loop1->iterate(); ?>'
 				. '{{ #loop1.index }}=>{{ #a }}'
@@ -585,7 +585,7 @@ EOF;
 	}
 
 	/**
-	 * @covers pixelpost\TemplateCompiler::make_inline
+	 * @covers pixelpost\core\TemplateCompiler::make_inline
 	 */
 	public function test_make_inline()
 	{
@@ -599,14 +599,14 @@ EOF;
 	}
 
 	/**
-	 * @covers pixelpost\TemplateCompiler::extract_var
+	 * @covers pixelpost\core\TemplateCompiler::extract_var
 	 */
 	public function test_extract_var_return_value()
 	{
 		$test   = '1 + 2 + foo + 23';
 		$result = '1 + 2 + bar + 23';
 
-		$mock = $this->getMock('pixelpost\Request'); // whatever the class
+		$mock = $this->getMock('pixelpost\core\Request'); // whatever the class
 		$mock->expects($this->any())
 			 ->method('auto')
 			 ->will($this->returnValue('bar'));
@@ -619,13 +619,13 @@ EOF;
 	}
 
 	/**
-	 * @covers pixelpost\TemplateCompiler::extract_var
+	 * @covers pixelpost\core\TemplateCompiler::extract_var
 	 */
 	public function test_extract_var_match_var()
 	{
 		$test   = '1 + 2 + foo + 23';
 
-		$mock = $this->getMock('pixelpost\Request'); // whatever the class
+		$mock = $this->getMock('pixelpost\core\Request'); // whatever the class
 		$mock->expects($this->exactly(1))
 			 ->method('auto')
 			 ->with($this->equalTo('foo'));
@@ -636,13 +636,13 @@ EOF;
 	}
 
 	/**
-	 * @covers pixelpost\TemplateCompiler::extract_var
+	 * @covers pixelpost\core\TemplateCompiler::extract_var
 	 */
 	public function test_extract_var_in_paren()
 	{
 		$test   = '1 + 2 + (foo == bar) + 23';
 
-		$mock = $this->getMock('pixelpost\Request'); // whatever the class
+		$mock = $this->getMock('pixelpost\core\Request'); // whatever the class
 		$mock->expects($this->exactly(3)) // 1 for (...), 1 for foo, 1 for bar
 			 ->method('auto');
 
@@ -652,13 +652,13 @@ EOF;
 	}
 
 	/**
-	 * @covers pixelpost\TemplateCompiler::extract_var
+	 * @covers pixelpost\core\TemplateCompiler::extract_var
 	 */
 	public function test_extract_var_match_object()
 	{
 		$test   = '1 + 2 + foo.bar + 23';
 
-		$mock = $this->getMock('pixelpost\Request'); // whatever the class
+		$mock = $this->getMock('pixelpost\core\Request'); // whatever the class
 		$mock->expects($this->exactly(1))
 			 ->method('auto')
 			 ->with($this->equalTo('foo.bar'));
@@ -669,13 +669,13 @@ EOF;
 	}
 
 	/**
-	 * @covers pixelpost\TemplateCompiler::extract_var
+	 * @covers pixelpost\core\TemplateCompiler::extract_var
 	 */
 	public function test_extract_var_match_local_var()
 	{
 		$test   = '1 + 2 + #foo + 23';
 
-		$mock = $this->getMock('pixelpost\Request'); // whatever the class
+		$mock = $this->getMock('pixelpost\core\Request'); // whatever the class
 		$mock->expects($this->exactly(1))
 			 ->method('auto')
 			 ->with($this->equalTo('#foo'));
@@ -686,13 +686,13 @@ EOF;
 	}
 
 	/**
-	 * @covers pixelpost\TemplateCompiler::extract_var
+	 * @covers pixelpost\core\TemplateCompiler::extract_var
 	 */
 	public function test_extract_var_match_constant()
 	{
 		$test   = '1 + 2 + @foo + 23';
 
-		$mock = $this->getMock('pixelpost\Request'); // whatever the class
+		$mock = $this->getMock('pixelpost\core\Request'); // whatever the class
 		$mock->expects($this->exactly(1))
 			 ->method('auto')
 			 ->with($this->equalTo('@foo'));
@@ -703,13 +703,13 @@ EOF;
 	}
 
 	/**
-	 * @covers pixelpost\TemplateCompiler::extract_var
+	 * @covers pixelpost\core\TemplateCompiler::extract_var
 	 */
 	public function test_extract_var_match_array()
 	{
 		$test   = '1 + 2 + foo[0] + 23';
 
-		$mock = $this->getMock('pixelpost\Request'); // whatever the class
+		$mock = $this->getMock('pixelpost\core\Request'); // whatever the class
 		$mock->expects($this->exactly(1))
 			 ->method('auto')
 			 ->with($this->equalTo('foo§§0§§'));
@@ -720,13 +720,13 @@ EOF;
 	}
 
 	/**
-	 * @covers pixelpost\TemplateCompiler::extract_var
+	 * @covers pixelpost\core\TemplateCompiler::extract_var
 	 */
 	public function test_extract_var_match_filter()
 	{
 		$test   = '1 + 2 + foo|e|a(12) + 23';
 
-		$mock = $this->getMock('pixelpost\Request'); // whatever the class
+		$mock = $this->getMock('pixelpost\core\Request'); // whatever the class
 		$mock->expects($this->exactly(1))
 			 ->method('auto')
 			 ->with($this->equalTo('foo|e|a::0::'));
@@ -737,7 +737,7 @@ EOF;
 	}
 
 	/**
-	 * @covers pixelpost\TemplateCompiler::extract_var
+	 * @covers pixelpost\core\TemplateCompiler::extract_var
 	 */
 	public function test_extract_var_real_example()
 	{
@@ -753,7 +753,7 @@ EOF;
 	}
 
 	/**
-	 * @covers pixelpost\TemplateCompiler::make_var
+	 * @covers pixelpost\core\TemplateCompiler::make_var
 	 */
 	public function test_make_var()
 	{
@@ -761,7 +761,7 @@ EOF;
 	}
 
 	/**
-	 * @covers pixelpost\TemplateCompiler::make_var
+	 * @covers pixelpost\core\TemplateCompiler::make_var
 	 */
 	public function test_make_var_with_sub_object()
 	{
@@ -769,7 +769,7 @@ EOF;
 	}
 
 	/**
-	 * @covers pixelpost\TemplateCompiler::make_var
+	 * @covers pixelpost\core\TemplateCompiler::make_var
 	 */
 	public function test_make_var_local()
 	{
@@ -777,7 +777,7 @@ EOF;
 	}
 
 	/**
-	 * @covers pixelpost\TemplateCompiler::make_var
+	 * @covers pixelpost\core\TemplateCompiler::make_var
 	 */
 	public function test_make_var_constant()
 	{
@@ -785,7 +785,7 @@ EOF;
 	}
 
 	/**
-	 * @covers pixelpost\TemplateCompiler::make_var
+	 * @covers pixelpost\core\TemplateCompiler::make_var
 	 */
 	public function test_make_var_keyword()
 	{
@@ -793,7 +793,7 @@ EOF;
 	}
 
 	/**
-	 * @covers pixelpost\TemplateCompiler::make_var
+	 * @covers pixelpost\core\TemplateCompiler::make_var
 	 */
 	public function test_make_var_paren()
 	{
@@ -801,7 +801,7 @@ EOF;
 	}
 
 	/**
-	 * @covers pixelpost\TemplateCompiler::make_var
+	 * @covers pixelpost\core\TemplateCompiler::make_var
 	 */
 	public function test_make_var_method_call()
 	{
@@ -809,7 +809,7 @@ EOF;
 	}
 
 	/**
-	 * @covers pixelpost\TemplateCompiler::make_var
+	 * @covers pixelpost\core\TemplateCompiler::make_var
 	 */
 	public function test_make_var_filter()
 	{
@@ -817,7 +817,7 @@ EOF;
 	}
 
 	/**
-	 * @covers pixelpost\TemplateCompiler::make_var
+	 * @covers pixelpost\core\TemplateCompiler::make_var
 	 */
 	public function test_make_var_hyphen_in_names()
 	{
@@ -825,7 +825,7 @@ EOF;
 	}
 
 	/**
-	 * @covers pixelpost\TemplateCompiler::parse_filter
+	 * @covers pixelpost\core\TemplateCompiler::parse_filter
 	 */
 	public function test_parse_filter()
 	{
@@ -833,7 +833,7 @@ EOF;
 	}
 
 	/**
-	 * @covers pixelpost\TemplateCompiler::parse_filter
+	 * @covers pixelpost\core\TemplateCompiler::parse_filter
 	 */
 	public function test_parse_filter_with_param()
 	{
@@ -844,7 +844,7 @@ EOF;
 	}
 
 	/**
-	 * @covers pixelpost\TemplateCompiler::parse_filter
+	 * @covers pixelpost\core\TemplateCompiler::parse_filter
 	 */
 	public function test_parse_filter_bad_filter()
 	{
@@ -852,14 +852,14 @@ EOF;
 	}
 
 	/**
-	 * @covers pixelpost\TemplateCompiler::replace_inline
+	 * @covers pixelpost\core\TemplateCompiler::replace_inline
 	 */
 	public function test_replace_inline()
 	{
 		$test   = 'foo {{ foo }} foo {[ foo ]} foo {: foo :} foo';
 		$result = 'foo bar foo bar foo bar foo';
 
-		$mock = $this->getMock('pixelpost\Request'); // whatever the class
+		$mock = $this->getMock('pixelpost\core\Request'); // whatever the class
 		$mock->expects($this->exactly(3))
 			 ->method('auto')
 			 ->with($this->equalTo('foo'))
@@ -876,14 +876,14 @@ EOF;
 	}
 
 	/**
-	 * @covers pixelpost\TemplateCompiler::replace_tag
+	 * @covers pixelpost\core\TemplateCompiler::replace_tag
 	 */
 	public function test_replace_tag_test_callback()
 	{
 		$test = 'This is a test class.';
 		$result = 'This is new.';
 
-		$mock = $this->getMock('pixelpost\Request'); // whatever the class
+		$mock = $this->getMock('pixelpost\core\Request'); // whatever the class
 		$mock->expects($this->once())
 			 ->method('auto')
 			 ->with($this->equalTo(' test '), $this->equalTo('a'), $this->equalTo('class'))
@@ -900,14 +900,14 @@ EOF;
 	}
 
 	/**
-	 * @covers pixelpost\TemplateCompiler::replace_tag
+	 * @covers pixelpost\core\TemplateCompiler::replace_tag
 	 */
 	public function test_replace_tag_no_included_tag()
 	{
 		$test = 'This is a test class or a cool class ?';
 		$result = 'This is new or genius ?';
 
-		$mock = $this->getMock('pixelpost\Request'); // whatever the class
+		$mock = $this->getMock('pixelpost\core\Request'); // whatever the class
 		$mock->expects($this->exactly(2))
 			 ->method('auto')
 			 ->will($this->onConsecutiveCalls('new', 'genius'));
@@ -923,14 +923,14 @@ EOF;
 	}
 
 	/**
-	 * @covers pixelpost\TemplateCompiler::replace_tag
+	 * @covers pixelpost\core\TemplateCompiler::replace_tag
 	 */
 	public function test_replace_tag_included_tag()
 	{
 		$test = 'This is a test, or a cool class, class or a new class ?';
 		$result = 'This is bad or genius ?';
 
-		$mock = $this->getMock('pixelpost\Request'); // whatever the class
+		$mock = $this->getMock('pixelpost\core\Request'); // whatever the class
 		$mock->expects($this->exactly(3))
 			 ->method('auto')
 			 ->will($this->onConsecutiveCalls('new', 'bad', 'genius'));

@@ -3,12 +3,12 @@
 namespace pixelpost\plugins\api;
 
 use
-pixelpost\Event,
-pixelpost\Filter,
-pixelpost\PluginInterface,
-pixelpost\plugins\api\Exception as ApiException,
-Exception,
-stdClass;
+	pixelpost\core\Event,
+	pixelpost\core\Filter,
+	pixelpost\core\PluginInterface,
+	pixelpost\plugins\api\Exception as ApiException,
+	Exception,
+	stdClass;
 
 /**
  * API router for pixelpost api urls.
@@ -74,7 +74,7 @@ class Plugin implements PluginInterface
 	 * starting by the fifth character ERROR. this allow to be can be tracked
 	 * by the client.
 	 *
-	 * @param  pixelpost\Event $event
+	 * @param  pixelpost\core\Event $event
 	 * @return bool
 	 */
 	public static function api_request(Event $event)

@@ -2,9 +2,9 @@
 
 namespace pixelpost\plugins\photo;
 
-use pixelpost;
-use pixelpost\plugins\api\Exception as ApiError;
-use pixelpost\plugins\auth\Plugin as Auth;
+use pixelpost\core\Filter,
+	pixelpost\plugins\api\Exception as ApiError,
+	pixelpost\plugins\auth\Plugin as Auth;
 
 // check grants
 if (!Auth::is_granted('read')) throw new ApiError\Ungranted('photo.list');
@@ -17,7 +17,7 @@ if (!isset($event->request->size)) throw new ApiError\FieldRequired('photo.path'
 $id   = $event->request->id;
 $size = $event->request->size;
 
-pixelpost\Filter::assume_int($id);
+Filter::assume_int($id);
 
 $options = array('original', 'resized', 'thumb');
 

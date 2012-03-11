@@ -2,8 +2,8 @@
 
 namespace pixelpost\plugins\auth;
 
-use pixelpost\Event,
-	pixelpost\Filter,
+use pixelpost\core\Event,
+	pixelpost\core\Filter,
 	pixelpost\plugins\api\Exception\FieldRequired,
 	pixelpost\plugins\api\Exception\FieldEmpty;
 

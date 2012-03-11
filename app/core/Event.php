@@ -1,6 +1,8 @@
 <?php
 
-namespace pixelpost;
+namespace pixelpost\core;
+
+use ArrayObject;
 
 /**
  * Event support
@@ -10,12 +12,11 @@ namespace pixelpost;
  * @version    0.0.1
  * @since      File available since Release 1.0.0
  */
-class Event extends \ArrayObject
+class Event extends ArrayObject
 {
 
 	/**
-	 * @var array containts the list of callback indexed by event name
-	 * and priority.
+	 * @var array containts the list of callback indexed by event name and priority.
 	 */
 	protected static $_listen  = array();
 	protected static $_ordered = array();
@@ -36,14 +37,14 @@ class Event extends \ArrayObject
 	 */
 	public function __construct(array $data = array())
 	{
-		parent::__construct($data, \ArrayObject::ARRAY_AS_PROPS);
+		parent::__construct($data, ArrayObject::ARRAY_AS_PROPS);
 	}
 
 	/**
 	 * Returns an instance of Event class
 	 *
-	 * @param array $data
-	 * @return Event
+	 * @param  array $data
+	 * @return pixelpost\core\Event
 	 */
 	public static function create(array $data = array())
 	{
@@ -61,23 +62,23 @@ class Event extends \ArrayObject
 	 */
 	public static function register($eventName, $callback, $priority = 100)
 	{
-		Filter::assume_string($eventName);
+		$eventName = strval($eventName);
 
-		if (!isset(self::$_listen[$eventName]))
+		if (!isset(static::$_listen[$eventName]))
 		{
-			self::$_listen[$eventName] = array();
+			static::$_listen[$eventName] = array();
 		}
 
 		// If an event with the same priority exists, increase the priority by one.
-		if (isset(self::$_listen[$eventName][$priority]))
+		if (isset(static::$_listen[$eventName][$priority]))
 		{
 			// BECAREFUL ! The $priority need to be pre-incremented
 			// post-increment on it create an infinite loop.
-			return self::register($eventName, $callback, ++$priority);
+			return static::register($eventName, $callback, ++$priority);
 		}
 
-		self::$_listen[$eventName][$priority] = $callback;
-		self::$_ordered[$eventName] = false;
+		static::$_listen[$eventName][$priority] = $callback;
+		static::$_ordered[$eventName] = false;
 	}
 
 	/**
@@ -92,11 +93,11 @@ class Event extends \ArrayObject
 	 * The event is auto forged with submitted array $data.
 	 *
 	 * @param  array $data The data loaded in the Event class.
-	 * @return Event
+	 * @return pixelpost\core\Event
 	 */
 	public static function signal($eventName, array $data = array())
 	{
-		return self::raise($eventName, self::create($data));
+		return static::raise($eventName, static::create($data));
 	}
 
 	/**
@@ -108,28 +109,28 @@ class Event extends \ArrayObject
 	 * A listener may explicitly return false to stop the propagation of the
 	 * event to other listeners.
 	 *
-	 * @param  Event $event The event will be thrown.
-	 * @return Event
+	 * @param  pixelpost\core\Event $event The event will be thrown.
+	 * @return pixelpost\core\Event
 	 */
 	public static function raise($eventName, Event $event)
 	{
-		Filter::assume_string($eventName);
+		$eventName = strval($eventName);
 
 		$event->set_name($eventName);
 
-		if (!isset(self::$_listen[$eventName])) return $event;
+		if (!isset(static::$_listen[$eventName])) return $event;
 
-		if (count(self::$_listen[$eventName]) <= 0) return $event;
+		if (count(static::$_listen[$eventName]) <= 0) return $event;
 
-		if (!self::$_ordered[$eventName])
+		if (!static::$_ordered[$eventName])
 		{
-			ksort(self::$_listen[$eventName]);
-			self::$_ordered[$eventName];
+			ksort(static::$_listen[$eventName]);
+			static::$_ordered[$eventName];
 		}
 
 		$event->set_processed();
 
-		foreach (self::$_listen[$eventName] as $callback)
+		foreach (static::$_listen[$eventName] as $callback)
 		{
 			if (call_user_func($callback, $event) === false) break;
 		}
@@ -140,8 +141,8 @@ class Event extends \ArrayObject
 	/**
 	 * Change the 'processed' state of an event.
 	 *
-	 * @param bool $processed By default the value is TRUE
-	 * @return pixelpost\Event
+	 * @param  bool $processed By default the value is TRUE
+	 * @return pixelpost\core\Event
 	 */
 	public function set_processed($processed = true)
 	{
@@ -155,8 +156,8 @@ class Event extends \ArrayObject
 	/**
 	 * Change the event name.
 	 *
-	 * @param string $name The new event name
-	 * @return pixelpost\Event
+	 * @param  string $name The new event name
+	 * @return pixelpost\core\Event
 	 */
 	public function set_name($name)
 	{
@@ -199,7 +200,7 @@ class Event extends \ArrayObject
 		// by default the redirection is not processed
 		$this->_processed = false;
 
-		self::raise($to, $this);
+		static::raise($to, $this);
 
 		// redirect worked ?
 		$result = $this->_processed;

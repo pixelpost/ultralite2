@@ -2,9 +2,9 @@
 
 namespace pixelpost\plugins\photo;
 
-use pixelpost\Template;
-use pixelpost\plugins\api\Plugin as Api;
-use pixelpost\Filter;
+use pixelpost\core\Template,
+	pixelpost\core\Filter,
+	pixelpost\plugins\api\Plugin as Api;
 
 // retrieve the page number of paginated photo list
 $urlParams = $event->params + array('page:1');

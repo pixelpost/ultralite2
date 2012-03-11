@@ -1,6 +1,6 @@
 <?php
 
-namespace pixelpost;
+namespace pixelpost\core;
 
 /**
  * Test class for Filter.
@@ -130,124 +130,124 @@ class FilterTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers pixelpost\Filter::assume_string
+	 * @covers pixelpost\core\Filter::assume_string
 	 */
 	public function test_assume_string()
 	{
-        $foo = 'hello';
-        Filter::assume_string($foo);
-        $this->assertSame('hello', $foo);
+		$foo = 'hello';
+		Filter::assume_string($foo);
+		$this->assertSame('hello', $foo);
 
-        $foo = 3;
-        Filter::assume_string($foo);
-        $this->assertSame('3', $foo);
+		$foo = 3;
+		Filter::assume_string($foo);
+		$this->assertSame('3', $foo);
 
-        $foo = 3.3;
-        Filter::assume_string($foo);
-        $this->assertSame('3.3', $foo);
+		$foo = 3.3;
+		Filter::assume_string($foo);
+		$this->assertSame('3.3', $foo);
 	}
 
 	/**
-	 * @covers pixelpost\Filter::assume_int
+	 * @covers pixelpost\core\Filter::assume_int
 	 */
 	public function test_assume_int()
 	{
-        $foo = 'hello';
-        Filter::assume_int($foo);
-        $this->assertSame(0, $foo);
+		$foo = 'hello';
+		Filter::assume_int($foo);
+		$this->assertSame(0, $foo);
 
-        $foo = 3;
-        Filter::assume_int($foo);
-        $this->assertSame(3, $foo);
+		$foo = 3;
+		Filter::assume_int($foo);
+		$this->assertSame(3, $foo);
 
-        $foo = 3.3;
-        Filter::assume_int($foo);
-        $this->assertSame(3, $foo);
+		$foo = 3.3;
+		Filter::assume_int($foo);
+		$this->assertSame(3, $foo);
 	}
 
 	/**
-	 * @covers pixelpost\Filter::assume_float
+	 * @covers pixelpost\core\Filter::assume_float
 	 */
 	public function test_assume_float()
 	{
-        $foo = 'hello';
-        Filter::assume_float($foo);
-        $this->assertSame(0.0, $foo);
+		$foo = 'hello';
+		Filter::assume_float($foo);
+		$this->assertSame(0.0, $foo);
 
-        $foo = 3;
-        Filter::assume_float($foo);
-        $this->assertSame(3.0, $foo);
+		$foo = 3;
+		Filter::assume_float($foo);
+		$this->assertSame(3.0, $foo);
 
-        $foo = 3.3;
-        Filter::assume_float($foo);
-        $this->assertSame(3.3, $foo);
+		$foo = 3.3;
+		Filter::assume_float($foo);
+		$this->assertSame(3.3, $foo);
 	}
 
 	/**
-	 * @covers pixelpost\Filter::assume_bool
+	 * @covers pixelpost\core\Filter::assume_bool
 	 */
 	public function test_assume_bool()
 	{
-        $foo = 'hello';
-        Filter::assume_bool($foo);
-        $this->assertSame(true, $foo);
+		$foo = 'hello';
+		Filter::assume_bool($foo);
+		$this->assertSame(true, $foo);
 
-        $foo = '';
-        Filter::assume_bool($foo);
-        $this->assertSame(false, $foo);
+		$foo = '';
+		Filter::assume_bool($foo);
+		$this->assertSame(false, $foo);
 
-        $foo = 3;
-        Filter::assume_bool($foo);
-        $this->assertSame(true, $foo);
+		$foo = 3;
+		Filter::assume_bool($foo);
+		$this->assertSame(true, $foo);
 
-        $foo = 0;
-        Filter::assume_bool($foo);
-        $this->assertSame(false, $foo);
+		$foo = 0;
+		Filter::assume_bool($foo);
+		$this->assertSame(false, $foo);
 
-        $foo = 3.3;
-        Filter::assume_bool($foo);
-        $this->assertSame(true, $foo);
+		$foo = 3.3;
+		Filter::assume_bool($foo);
+		$this->assertSame(true, $foo);
 
-        $foo = null;
-        Filter::assume_bool($foo);
-        $this->assertSame(false, $foo);
+		$foo = null;
+		Filter::assume_bool($foo);
+		$this->assertSame(false, $foo);
 	}
 
 	/**
-	 * @covers pixelpost\Filter::assume_array
+	 * @covers pixelpost\core\Filter::assume_array
 	 */
 	public function test_assume_array()
 	{
-        $foo = 'hello';
-        Filter::assume_array($foo);
-        $this->assertSame(array('hello'), $foo);
+		$foo = 'hello';
+		Filter::assume_array($foo);
+		$this->assertSame(array('hello'), $foo);
 
-        $foo = 3;
-        Filter::assume_array($foo);
-        $this->assertSame(array(3), $foo);
+		$foo = 3;
+		Filter::assume_array($foo);
+		$this->assertSame(array(3), $foo);
 
-        $foo = 3.3;
-        Filter::assume_array($foo);
-        $this->assertSame(array(3.3), $foo);
+		$foo = 3.3;
+		Filter::assume_array($foo);
+		$this->assertSame(array(3.3), $foo);
 
-        $foo = array('foo', 'bar');
-        Filter::assume_array($foo);
-        $this->assertSame(array('foo', 'bar'), $foo);
+		$foo = array('foo', 'bar');
+		Filter::assume_array($foo);
+		$this->assertSame(array('foo', 'bar'), $foo);
 	}
 
 	/**
-	 * @covers pixelpost\Filter::validate_email
+	 * @covers pixelpost\core\Filter::validate_email
 	 */
 	public function test_validate_email()
 	{
-        $this->assertTrue(Filter::validate_email('aaa@aaaa.com'));
-        $this->assertFalse(Filter::validate_email('aaa-aaa_ccc@bb_aa.aa-aa.co.uk'));
-        $this->assertFalse(Filter::validate_email('aaa-aaa_ccc@bb_aa'));
-        $this->assertFalse(Filter::validate_email('aaa-aaa_ccc'));
+		$this->assertTrue(Filter::validate_email('aaa@aaaa.com'));
+		$this->assertFalse(Filter::validate_email('aaa-aaa_ccc@bb_aa.aa-aa.co.uk'));
+		$this->assertFalse(Filter::validate_email('aaa-aaa_ccc@bb_aa'));
+		$this->assertFalse(Filter::validate_email('aaa-aaa_ccc'));
 	}
 
 	/**
-	 * @covers pixelpost\Filter::validate_date
+	 * @covers pixelpost\core\Filter::validate_date
 	 */
 	public function test_validate_date()
 	{
@@ -257,36 +257,36 @@ class FilterTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers pixelpost\Filter::format_without_accent
+	 * @covers pixelpost\core\Filter::format_without_accent
 	 */
 	public function test_format_without_accent()
 	{
 		$accent	  = 'ÀÁÂÃÄÅàáâãäåÒÓÔÕÖØòóôõöøÈÉÊËéèêëÇçÌÍÎÏìíîïÙÚÛÜùúûüÿÑñ';
 		$noaccent = 'AAAAAAaaaaaaOOOOOOooooooEEEEeeeeCcIIIIiiiiUUUUuuuuyNn';
 
-        $this->assertSame($noaccent, Filter::format_without_accent($accent));
+		$this->assertSame($noaccent, Filter::format_without_accent($accent));
 	}
 
 	/**
-	 * @covers pixelpost\Filter::format_for_url
+	 * @covers pixelpost\core\Filter::format_for_url
 	 */
 	public function test_format_for_url()
 	{
-        $orig = 'Test My\'test';
-        $url  = 'test-my-test';
+		$orig = 'Test My\'test';
+		$url  = 'test-my-test';
 
-        $this->assertSame($url, Filter::format_for_url($orig));
+		$this->assertSame($url, Filter::format_for_url($orig));
 	}
 
 	/**
-	 * @covers pixelpost\Filter::format_for_xml
+	 * @covers pixelpost\core\Filter::format_for_xml
 	 */
 	public function test_format_for_xml()
 	{
-        $orig = 'Test <My\'test> & luna ^^';
-        $xml  = 'Test My\'test  luna ^^';
+		$orig = 'Test <My\'test> & luna ^^';
+		$xml  = 'Test My\'test  luna ^^';
 
-        $this->assertSame($xml, Filter::format_for_xml($orig));
+		$this->assertSame($xml, Filter::format_for_xml($orig));
 	}
 
 	/**
@@ -301,18 +301,18 @@ class FilterTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers pixelpost\Filter::urlencode
+	 * @covers pixelpost\core\Filter::urlencode
 	 */
 	public function test_urlencode()
 	{
 		$test   = 'http://www.something.com/';
-		$result = 'http%3A%252F%252Fwww.something.com%252F'; 
-		
+		$result = 'http%3A%252F%252Fwww.something.com%252F';
+
 		$this->assertSame($result, Filter::urlencode($test));
 	}
 
 	/**
-	 * @covers pixelpost\Filter::array_to_object
+	 * @covers pixelpost\core\Filter::array_to_object
 	 */
 	public function test_array_to_object()
 	{
@@ -323,13 +323,13 @@ class FilterTest extends \PHPUnit_Framework_TestCase
 				'orange' => 'bad',
 			),
 		);
-		
+
 		$object = Filter::array_to_object($array);
-		
+
 		$this->assertTrue(is_object($object));
 		$this->assertTrue(property_exists($object, 'foo'));
 		$this->assertTrue(property_exists($object, 'baz'));
-		$this->assertSame('bar', $object->foo);		
+		$this->assertSame('bar', $object->foo);
 		$this->assertTrue(is_object($object->baz));
 		$this->assertTrue(property_exists($object->baz, 'apple'));
 		$this->assertTrue(property_exists($object->baz, 'orange'));
@@ -338,7 +338,7 @@ class FilterTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers pixelpost\Filter::object_to_array
+	 * @covers pixelpost\core\Filter::object_to_array
 	 */
 	public function test_object_to_array()
 	{
@@ -347,16 +347,16 @@ class FilterTest extends \PHPUnit_Framework_TestCase
 		$foo->foo = new \stdClass();
 		$foo->foo->bar = 'baz';
 		$foo->foo->foo = 56;
-		
+
 		$array = Filter::object_to_array($foo);
-		
+
 		$this->assertTrue(is_array($array));
 		$this->assertTrue(array_key_exists('foo', $array));
 		$this->assertTrue(array_key_exists('bar', $array));
 
 		$this->assertSame('baz', $array['bar']);
 		$this->assertTrue(is_array($array['foo']));
-		
+
 		$this->assertTrue(array_key_exists('foo', $array['foo']));
 		$this->assertTrue(array_key_exists('bar', $array['foo']));
 
@@ -365,14 +365,14 @@ class FilterTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers pixelpost\Filter::object_to_array
+	 * @covers pixelpost\core\Filter::object_to_array
 	 */
 	public function test_object_to_array_with_numeric_index()
 	{
 		$foo = (object) array('foo', 'bar', 'baz');
-		
+
 		$array = Filter::object_to_array($foo);
-		
+
 		$this->assertTrue(is_array($array));
 		$this->assertTrue(array_key_exists(0, $array));
 		$this->assertTrue(array_key_exists(1, $array));
@@ -384,20 +384,20 @@ class FilterTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers pixelpost\Filter::str_to_date
+	 * @covers pixelpost\core\Filter::str_to_date
 	 */
 	public function test_str_to_date()
 	{
 		$date = '2010-01-23T02:34:56+02:00';
-		
+
 		Filter::str_to_date($date);
-		
+
 		$this->assertTrue($date instanceof \DateTime);
 		$this->assertSame('2010/01/23 02:34', $date->format('Y/m/d H:i'));
 	}
 
 	/**
-	 * @covers pixelpost\Filter::compare_version
+	 * @covers pixelpost\core\Filter::compare_version
 	 */
 	public function test_compare_version()
 	{

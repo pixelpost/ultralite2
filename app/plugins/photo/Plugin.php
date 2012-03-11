@@ -2,9 +2,9 @@
 
 namespace pixelpost\plugins\photo;
 
-use pixelpost\Config,
-	pixelpost\Event,
-	pixelpost\PluginInterface,
+use pixelpost\core\Config,
+	pixelpost\core\Event,
+	pixelpost\core\PluginInterface,
 	RecursiveIteratorIterator as RII,
 	RecursiveDirectoryIterator as RDI;
 

@@ -1,6 +1,8 @@
 <?php
 
-namespace pixelpost;
+namespace pixelpost\core;
+
+use Closure;
 
 /**
  * Utility For SQLite database, permit to map personnal field to sql field
@@ -35,11 +37,11 @@ class SqlMapper
 	/**
 	 * Return an SqlMapper object
 	 *
-	 * @return SqlMapper
+	 * @return pixelpost\core\SqlMapper
 	 */
 	public static function create()
 	{
-		return new SqlMapper();
+		return new static;
 	}
 
 	/**
@@ -56,7 +58,7 @@ class SqlMapper
 	 * @param  string    $sqlField
 	 * @param  int       $dataType
 	 * @param  int       $sqlType
-	 * @return SqlMapper
+	 * @return pixelpost\core\SqlMapper
 	 */
 	public function map($dataName, $sqlField, $dataType, $sqlType = null)
 	{
@@ -64,13 +66,13 @@ class SqlMapper
 		{
 			switch($dataType)
 			{
-				case self::DATA_STRING : $sqlType = self::SQL_TEXT; break;
-				case self::DATA_INT    : $sqlType = self::SQL_INT;  break;
-				case self::DATA_FLOAT  : $sqlType = self::SQL_REAL; break;
-				case self::DATA_BOOL   : $sqlType = self::SQL_INT;  break;
-				case self::DATA_DATE   : $sqlType = self::SQL_DATE; break;
-				case self::DATA_NULL   : $sqlType = self::SQL_NULL; break;
-				default                : $sqlType = self::SQL_NULL; break;
+				case static::DATA_STRING : $sqlType = static::SQL_TEXT; break;
+				case static::DATA_INT    : $sqlType = static::SQL_INT;  break;
+				case static::DATA_FLOAT  : $sqlType = static::SQL_REAL; break;
+				case static::DATA_BOOL   : $sqlType = static::SQL_INT;  break;
+				case static::DATA_DATE   : $sqlType = static::SQL_DATE; break;
+				case static::DATA_NULL   : $sqlType = static::SQL_NULL; break;
+				default                  : $sqlType = static::SQL_NULL; break;
 			}
 		}
 
@@ -93,12 +95,12 @@ class SqlMapper
 	{
 		switch($dataType)
 		{
-			case self::DATA_STRING : return strval($value);
-			case self::DATA_INT    : return intval($value);
-			case self::DATA_FLOAT  : return floatval($value);
-			case self::DATA_BOOL   : return (bool) intval($value);
-			case self::DATA_DATE   : return Db::date_unserialize($value);
-			default                : return null;
+			case static::DATA_STRING : return strval($value);
+			case static::DATA_INT    : return intval($value);
+			case static::DATA_FLOAT  : return floatval($value);
+			case static::DATA_BOOL   : return (bool) intval($value);
+			case static::DATA_DATE   : return Db::date_unserialize($value);
+			default                  : return null;
 		}
 	}
 
@@ -113,12 +115,12 @@ class SqlMapper
 	{
 		switch($sqlType)
 		{
-			case self::SQL_TEXT : return Db::escape(strval($value));
-			case self::SQL_INT  : return intval($value);
-			case self::SQL_REAL : return floatval($value);
-			case self::SQL_BLOB : return Db::escape($value);
-			case self::SQL_DATE : return Db::date_serialize($value);
-			default             : return null;
+			case static::SQL_TEXT : return Db::escape(strval($value));
+			case static::SQL_INT  : return intval($value);
+			case static::SQL_REAL : return floatval($value);
+			case static::SQL_BLOB : return Db::escape($value);
+			case static::SQL_DATE : return Db::date_serialize($value);
+			default               : return null;
 		}
 	}
 
@@ -202,7 +204,7 @@ class SqlMapper
 	 * @param  Closure $todo
 	 * @return array
 	 */
-	public function genArrayResult(array $result, \Closure $todo = null)
+	public function genArrayResult(array $result, Closure $todo = null)
 	{
 		$list = array();
 

@@ -2,8 +2,8 @@
 
 namespace pixelpost\plugins\photo;
 
-use pixelpost\Event,
-	pixelpost\Template,
+use pixelpost\core\Event,
+	pixelpost\core\Template,
 	pixelpost\plugins\api\Plugin as Api;
 
 class Admin

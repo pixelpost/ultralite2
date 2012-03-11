@@ -2,19 +2,20 @@
 
 namespace pixelpost\plugins\photo;
 
-use pixelpost;
-use pixelpost\plugins\api\Exception as ApiError;
-use pixelpost\plugins\auth\Plugin as Auth;
+use pixelpost\core\Config,
+	pixelpost\core\Filter,
+	pixelpost\plugins\api\Exception as ApiError,
+	pixelpost\plugins\auth\Plugin   as Auth;
 
 // check grants
 if (!Auth::is_granted('config')) throw new ApiError\Ungranted('photo.config.set');
 
-$conf = pixelpost\Config::create();
+$conf = Config::create();
 
 $myConf = $conf->plugin_photo;
 
-$newConf  = pixelpost\Filter::object_to_array($event->request);
-$newConf += pixelpost\Filter::object_to_array($myConf);
+$newConf  = Filter::object_to_array($event->request);
+$newConf += Filter::object_to_array($myConf);
 
 // change a directory
 $checkDir = function($name, $base) use ($myConf, $newConf, &$conf)

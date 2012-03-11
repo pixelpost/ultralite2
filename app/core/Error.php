@@ -1,6 +1,8 @@
 <?php
 
-namespace pixelpost;
+namespace pixelpost\core;
+
+use Exception;
 
 /**
  * Error support
@@ -10,9 +12,8 @@ namespace pixelpost;
  * @version    0.0.1
  * @since      File available since Release 1.0.0
  */
-class Error extends \Exception
+class Error extends Exception
 {
-
 	/**
 	 * Create a new instance of the Error class
 	 *
@@ -22,12 +23,12 @@ class Error extends \Exception
 	public function __construct($code = 0, array $args = array())
 	{
 		// check code is a int
-		\is_int($code) or $code = $this->get_default_code();
+		is_int($code) or $code = $this->get_default_code();
 
 		// get the error message
 		$message = $this->get_message_by_code($code);
 
-		\is_string($message) or $message = $this->get_default_message();
+		is_string($message) or $message = $this->get_default_message();
 
 		// if there are some arguments, format them
 		if (empty($args) == false && $message !== false)
@@ -42,9 +43,9 @@ class Error extends \Exception
 	/**
 	 * Create a new Error instance and return it
 	 *
-	 * @param int   $code The error code (see: get_message_by_code())
-	 * @param array $args The optionnals args (array of string)
-	 * @return Error
+	 * @param  int   $code The error code (see: get_message_by_code())
+	 * @param  array $args The optionnals args (array of string)
+	 * @return pixelpost\core\Error
 	 */
 	public static function create($code = 0, array $args = array())
 	{
@@ -80,9 +81,9 @@ class Error extends \Exception
 
 		// change $search range(1..NumARgs) to range(%s1..%sNumARgs)
 		array_walk($search, function (&$value, $key)
-				{
-					$value = '%s' . $value;
-				});
+		{
+			$value = '%s' . $value;
+		});
 
 		// replace each %sX by its arguments
 		return str_replace($search, $args, $message);
@@ -111,7 +112,7 @@ class Error extends \Exception
 	/**
 	 * Return the message corresponding to a code number
 	 *
-	 * @param int $code code number
+	 * @param  int $code code number
 	 * @return string
 	 */
 	public function get_message_by_code($code)
@@ -142,6 +143,5 @@ class Error extends \Exception
 			case 23: return 'TemplateCompiler: Try to include a template from a non existant template file : "%s1".';
 		}
 	}
-
 }
 

@@ -1,6 +1,8 @@
 <?php
 
-error_reporting(E_ALL | E_STRICT);
+namespace pixelpost;
+
+error_reporting(-1);
 
 ini_set('date.timezone',                 'GMT');
 ini_set('default_socket_timeout',        '10');
@@ -19,7 +21,6 @@ ini_set('register_argc_argv',            'off');
 ini_set('register_long_arrays',          'off');
 ini_set('safe_mode',                     'off');
 ini_set('short_open_tag',                'off');
-ini_set('magic_quotes_gpc',              'off');
 
 defined('VERSION')   or define('VERSION',   "0.0.1",                     true);
 defined('SEP')       or define('SEP',       DIRECTORY_SEPARATOR,         true);
@@ -29,45 +30,26 @@ defined('CORE_PATH') or define('CORE_PATH', APP_PATH  . SEP . 'core',    true);
 defined('PLUG_PATH') or define('PLUG_PATH', APP_PATH  . SEP . 'plugins', true);
 defined('PRIV_PATH') or define('PRIV_PATH', ROOT_PATH . SEP . 'private', true);
 
-spl_autoload_register(function($className)
+spl_autoload_register(function($name)
 {
-    // the main namespace, all other is ignored
-    $nsPrefix = 'pixelpost\\';
-	
-	// we need to keep $className, so we work on $class
-	$class    = $className;
+	// some security checking
+	if (strpos($name, '/') !== false) return false;
+	if (strpos($name, '.') !== false) return false;
 
-    // some security checking
-    if (strpos($class, '/') !== false) return false;
-    if (strpos($class, '.') !== false) return false;
-    
-    // remove the beginning backslash
-    if (substr($class, 0, 1) == '\\') $class = substr($class, 1);
-    
-    // check if the class start with the main namespace
-    if (substr($class, 0, strlen($nsPrefix)) != $nsPrefix) return false;
+	// the main namespace, all other is ignored
+	$ns  = __NAMESPACE__;
+	$len = strlen($ns);
 
-    // remove the main namespace of the class name
-    $class = substr($class, strlen($nsPrefix));
+	// remove the beginning backslash
+	$class = (substr($name, 0, 1) == '\\') ? substr($name, 1) : $name;
 
-    // get all parts of the class name
-    $items = explode('\\', $class);
+	// check if the class start with the main namespace
+	if (substr($class, 0, $len) != $ns) return false;
 
-    // extract the file name
-    $class = array_pop($items);
+	// remove the main namespace of the class name and apply psr-0
+	$file = APP_PATH . str_replace('\\', SEP, substr($class, $len)) . '.php';
 
-    // create the related path
-    $path = (count($items) == 0) ? 'Core' : implode('\\', $items);  
-    
-    // create the absolute path with the complete file name
-    $file = APP_PATH . SEP . str_replace('\\', SEP, $path) . SEP . $class . '.php';
+	is_file($file) and require_once $file;
 
-    // check if file exists...
-    if ( ! is_file($file)) return false;
-
-    // include him...
-    require_once $file;
-    
-    // return if the class is loaded...
-    return class_exists($className);
+	return class_exists($name);
 });

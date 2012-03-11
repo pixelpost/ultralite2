@@ -2,7 +2,7 @@
 
 namespace pixelpost\plugins\auth;
 
-use pixelpost\Config,
+use pixelpost\core\Config,
 	pixelpost\plugins\api\Exception\FieldRequired,
 	pixelpost\plugins\api\Exception\FieldNotValid;
 
