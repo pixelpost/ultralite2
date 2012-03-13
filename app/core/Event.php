@@ -56,30 +56,20 @@ class Event extends ArrayObject
 	 * thrown (see: signal()), the callback method is called with the event
 	 * class argument.
 	 *
-	 * @param string   $event    The name of the event want to listen.
-	 * @param callback $callback The callback method to call when the event is throw
-	 * @param int      $priotiy  The default priority is set to 100, less is highter
+	 * @param string   $name     The name of the event want to listen.
+	 * @param callback $callback The callback method to call when the event is thrown
+	 * @param int      $priotiy  The default priority is set to 100, less is more prior
 	 */
-	public static function register($eventName, $callback, $priority = 100)
+	public static function register($name, $callback, $priority = 100)
 	{
-		while (true)
-		{
-			$eventName = strval($eventName);
+		$name = strval($name);
 
-			if (!isset(static::$_listen[$eventName]))
-			{
-				static::$_listen[$eventName] = array();
-			}
+		isset(static::$_listen[$name]) or static::$_listen[$name] = array();
 
-			if (!isset(static::$_listen[$eventName][$priority]))
-			{
-				static::$_listen[$eventName][$priority] = $callback;
-				static::$_ordered[$eventName] = false;
-				break;
-			}
+		while (isset(static::$_listen[$name][$priority])) ++$priority;
 
-			++$priority;
-		}
+		static::$_listen[$name][$priority] = $callback;
+		static::$_ordered[$name] = false;
 	}
 
 	/**
@@ -126,7 +116,7 @@ class Event extends ArrayObject
 		if (!static::$_ordered[$eventName])
 		{
 			ksort(static::$_listen[$eventName]);
-			static::$_ordered[$eventName];
+			static::$_ordered[$eventName] = true;
 		}
 
 		$event->set_processed();
