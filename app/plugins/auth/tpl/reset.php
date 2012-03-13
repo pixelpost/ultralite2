@@ -3,7 +3,7 @@
 {% block Title %}Reset your password{% endblock %}
 
 {% block Css %}
-<style type="text/css">
+<style>
 	form { display:none; }
 </style>
 {% endblock %}
@@ -18,7 +18,7 @@
 		<ol>
 			<li>
 				<label for="pass">Password:</label>
-				<input type="password" id="pass" required />
+				<input type="password" id="pass" required>
 			</li>
 		</ol>
 	</fieldset>
@@ -30,7 +30,7 @@
 {% endblock %}
 
 {% block Js %}
-<script type="text/javascript">
+<script>
 	$(document).ready(function() {
 		$('form').show().submit(function(e) {
 			e.preventDefault();

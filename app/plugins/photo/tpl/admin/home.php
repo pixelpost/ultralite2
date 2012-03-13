@@ -2,7 +2,7 @@
 
 
 {% block Css %}
-<link rel="stylesheet" href="{{ @CONTENT_URL }}photo/public/css/admin.css" />
+<link rel="stylesheet" href="{{ @CONTENT_URL }}photo/public/css/admin.css">
 {% endblock %}
 
 

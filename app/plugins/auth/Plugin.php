@@ -65,7 +65,7 @@ class Plugin implements PluginInterface
 
 	public static function depends()
 	{
-		return array('api' => '0.0.1', 'router' => '0.0.1');
+		return array('api' => '0.0.1', 'router' => '0.0.1', 'admin' => '0.0.1');
 	}
 
 	public static function install()

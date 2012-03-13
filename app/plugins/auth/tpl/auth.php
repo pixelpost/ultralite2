@@ -3,7 +3,7 @@
 {% block Title %}Authentification{% endblock %}
 
 {% block Css %}
-<style type="text/css">
+<style>
 	form { display:none; }
 	#forget { display:none; }
 	#message {
@@ -32,15 +32,15 @@
 		<ol>
 			<li>
 				<label for="user">Username:</label>
-				<input type="text" id="user" value="{{ user }}" placeholder="username" required />
+				<input type="text" id="user" value="{{ user }}" placeholder="username" required>
 			</li>
 			<li>
 				<label for="pass">Password:</label>
-				<input type="password" id="pass" placeholder="password" required />
+				<input type="password" id="pass" placeholder="password" required>
 			</li>
 		</ol>
 		<p>
-			<input type="hidden" id="data" value="{{ priv }}" />
+			<input type="hidden" id="data" value="{{ priv }}">
 			<button class="btn" type="submit">CONTINUE</button>
 			<span id="message" class="btn"></span>
 		</p>
@@ -52,7 +52,7 @@
 {% endblock %}
 
 {% block Js %}
-<script type="text/javascript">
+<script>
 	$(document).ready(function() {
 		$('form').show().submit(function(e) {
 			e.preventDefault();
