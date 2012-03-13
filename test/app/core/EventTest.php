@@ -200,6 +200,161 @@ class EventTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
+	 * @covers pixelpost\core\Event::register_list
+	 * @covers pixelpost\core\Event::signal
+	 */
+	public function test_register_list_and_signal()
+	{
+		$this->assertFalse(self::$event1Called);
+		$this->assertFalse(self::$event2Called);
+		$this->assertFalse(self::$event3Called);
+
+		$eventName = 'my-unit-test-event-11';
+
+		$event = Event::signal($eventName);
+
+		$this->assertTrue($event instanceof Event);
+		$this->assertFalse($event->is_processed());
+		$this->assertFalse(property_exists($event, 'unit_test'));
+		$this->assertFalse(self::$event1Called);
+		$this->assertFalse(self::$event2Called);
+		$this->assertFalse(self::$event3Called);
+
+		Event::register_list(array(
+			array($eventName, __CLASS__ . '::on_event1')
+		));
+
+		$event = Event::signal($eventName);
+
+		$this->assertTrue($event instanceof Event);
+		$this->assertTrue($event->is_processed());
+		$this->assertTrue(property_exists($event, 'unit_test'));
+		$this->assertTrue($event->unit_test);
+		$this->assertTrue(self::$event1Called);
+		$this->assertFalse(self::$event2Called);
+		$this->assertFalse(self::$event3Called);
+	}
+
+	/**
+	 * @covers pixelpost\core\Event::register_list
+	 * @covers pixelpost\core\Event::signal
+	 */
+	public function test_register_list_and_signal_normal_order_call()
+	{
+		$this->assertFalse(self::$event1Called);
+		$this->assertFalse(self::$event2Called);
+		$this->assertFalse(self::$event3Called);
+
+		$eventName = 'my-unit-test-event-12';
+
+		$event = Event::signal($eventName);
+
+		$this->assertTrue($event instanceof Event);
+		$this->assertFalse($event->is_processed());
+		$this->assertFalse(property_exists($event, 'unit_test'));
+
+		$this->assertFalse(self::$event1Called);
+		$this->assertFalse(self::$event2Called);
+		$this->assertFalse(self::$event3Called);
+
+		Event::register_list(array(
+			array($eventName, __CLASS__ . '::on_event1'),
+			array($eventName, __CLASS__ . '::on_event2')
+		));
+
+		$event = Event::signal($eventName);
+
+		$this->assertTrue($event instanceof Event);
+		$this->assertTrue($event->is_processed());
+		$this->assertTrue(property_exists($event, 'unit_test'));
+		$this->assertSame('bar', $event->unit_test);
+
+		$this->assertTrue(self::$event1Called);
+		$this->assertTrue(self::$event2Called);
+		$this->assertFalse(self::$event3Called);
+	}
+
+	/**
+	 * @covers pixelpost\core\Event::register_list
+	 * @covers pixelpost\core\Event::signal
+	 */
+	public function test_register_list_and_signal_event_break_call_chain()
+	{
+		$this->assertFalse(self::$event1Called);
+		$this->assertFalse(self::$event2Called);
+		$this->assertFalse(self::$event3Called);
+
+		$eventName = 'my-unit-test-event-13';
+
+		$event = Event::signal($eventName);
+
+		$this->assertTrue($event instanceof Event);
+		$this->assertFalse($event->is_processed());
+		$this->assertFalse(property_exists($event, 'unit_test'));
+
+		$this->assertFalse(self::$event1Called);
+		$this->assertFalse(self::$event2Called);
+		$this->assertFalse(self::$event3Called);
+
+		Event::register_list(array(
+			array($eventName, __CLASS__ . '::on_event1'),
+			array($eventName, __CLASS__ . '::on_event3'),
+			array($eventName, __CLASS__ . '::on_event2')
+		));
+
+		$event = Event::signal($eventName);
+
+		$this->assertTrue($event instanceof Event);
+		$this->assertTrue($event->is_processed());
+		$this->assertTrue(property_exists($event, 'unit_test'));
+		$this->assertSame('foo', $event->unit_test);
+
+		$this->assertTrue(self::$event1Called);
+		$this->assertFalse(self::$event2Called);
+		$this->assertTrue(self::$event3Called);
+	}
+
+	/**
+	 * @covers pixelpost\core\Event::register_list
+	 * @covers pixelpost\core\Event::signal
+	 */
+	public function test_register_list_and_signal_priority()
+	{
+		$this->assertFalse(self::$event1Called);
+		$this->assertFalse(self::$event2Called);
+		$this->assertFalse(self::$event3Called);
+
+		$eventName = 'my-unit-test-event-14';
+
+		$event = Event::signal($eventName);
+
+		$this->assertTrue($event instanceof Event);
+		$this->assertFalse($event->is_processed());
+		$this->assertFalse(property_exists($event, 'unit_test'));
+
+		$this->assertFalse(self::$event1Called);
+		$this->assertFalse(self::$event2Called);
+		$this->assertFalse(self::$event3Called);
+
+		Event::register_list(array(
+			array($eventName, __CLASS__ . '::on_event1', 120),
+			array($eventName, __CLASS__ . '::on_event2', 5),
+			array($eventName, __CLASS__ . '::on_event3', 120)
+		));
+
+		$event = Event::signal($eventName);
+
+		$this->assertTrue($event instanceof Event);
+		$this->assertTrue($event->is_processed());
+		$this->assertTrue(property_exists($event, 'unit_test'));
+		$this->assertSame('foo', $event->unit_test);
+
+		$this->assertTrue(self::$event1Called);
+		$this->assertTrue(self::$event2Called);
+		$this->assertTrue(self::$event3Called);
+	}
+
+	/**
 	 * @covers pixelpost\core\Event::register
 	 * @covers pixelpost\core\Event::signal
 	 */
@@ -233,5 +388,4 @@ class EventTest extends \PHPUnit_Framework_TestCase
 		$event->set_processed(true);
 		$this->assertTrue($event->is_processed());
 	}
-
 }

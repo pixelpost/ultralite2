@@ -56,6 +56,8 @@ class Event extends ArrayObject
 	 * thrown (see: signal()), the callback method is called with the event
 	 * class argument.
 	 *
+	 * Note: If you want register two or more listener, see `register_list` method.
+	 *
 	 * @param string   $name     The name of the event want to listen.
 	 * @param callback $callback The callback method to call when the event is thrown
 	 * @param int      $priotiy  The default priority is set to 100, less is more prior
@@ -70,6 +72,30 @@ class Event extends ArrayObject
 
 		static::$_listen[$name][$priority] = $callback;
 		static::$_ordered[$name] = false;
+	}
+
+	/**
+	 * Register a list of callback method to events name. See `register()` method
+	 * The list is an array where values are `event`, `callback` and optionnaly
+	 * `priority`.
+	 *
+	 * Note: If you want register two or more listener, this method is the fastest one.
+	 *
+	 * @param array $event The name of the event want to listen.
+	 */
+	public static function register_list(array $listeners)
+	{
+		foreach ($listeners as $l)
+		{
+			list($name, $callback, $priority) = ($l + array(2 => 100));
+
+			isset(static::$_listen[$name]) or static::$_listen[$name] = array();
+
+			while (isset(static::$_listen[$name][$priority])) ++$priority;
+
+			static::$_listen[$name][$priority] = $callback;
+			static::$_ordered[$name] = false;
+		}
 	}
 
 	/**
