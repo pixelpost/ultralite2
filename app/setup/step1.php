@@ -26,7 +26,7 @@ else
 		$messageVeryLong  = '.htaccess` already exists: '
 						  . 'we cannot install the mod_rewrite rule, '
 						  . 'and secure your private data... '
-						  . ' Take a look at the `app/setup/htaccess_sample` '
+						  . ' Take a look at the `app/setup/samples/htaccess_sample` '
 						  . ' file for manual install.';
 
 		$warnings[] = '`' . ROOT_PATH . SEP . $messageVeryLong;
