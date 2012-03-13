@@ -43,9 +43,9 @@ class Plugin implements PluginInterface
 
 	public static function register()
 	{
-		$self = '\\' . __CLASS__;
-		$api  = '\\' . __NAMESPACE__ . '\\Api';
-		$page = '\\' . __NAMESPACE__ . '\\Page';
+		$self = __CLASS__;
+		$api  = __NAMESPACE__ . '\Api';
+		$page = __NAMESPACE__ . '\Page';
 
 		Event::register('request.admin',         $self . '::admin_router');
 

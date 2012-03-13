@@ -21,7 +21,7 @@
 		<button class="btn">Upload Files</button>
 	</div>
 	<a id="dropselect" href="#">…or select a file.</a>
-	<input id="dropfiles" accept="image/*" type="file" multiple />
+	<input id="dropfiles" accept="image/*" type="file" multiple>
 </div>
 
 <div class="photos">
@@ -30,13 +30,13 @@
 		<figure>
 			<strong>{{ photo.id }}</strong>
 			<a href="#">edit</a>
-			<br />
-			<img src="{{ photo.thumb-url }}" />
+			<br>
+			<img src="{{ photo.thumb-url }}">
 			<figcaption>
 				{{ photo.title }}
-				<br />
+				<br>
 				{{ photo.visible|if('published', 'hidden') }}
-				<br />
+				<br>
 				<time pubdate datetime="{{ photo.publish-date|datetime('iso', true) }}">
 					{{ photo.publish-date|date }}
 				</time>

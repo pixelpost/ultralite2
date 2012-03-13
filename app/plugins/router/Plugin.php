@@ -9,17 +9,6 @@ use pixelpost\core\Config,
 /**
  * Base router for pixelpost.
  *
- * Tracks Event :
- *
- * router.version
- * request.new
- *
- * Sends Event :
- *
- * request.api
- * request.admin
- * request.web
- *
  * @copyright  2011 Alban LEROUX <seza@paradoxal.org>
  * @license    http://creativecommons.org/licenses/by-sa/3.0/ Creative Commons
  * @version    0.0.1
@@ -27,7 +16,6 @@ use pixelpost\core\Config,
  */
 class Plugin implements PluginInterface
 {
-
 	public static function version()
 	{
 		return '0.0.1';
@@ -75,13 +63,7 @@ class Plugin implements PluginInterface
 		define('API_URL',   WEB_URL . $conf->plugin_router->api   . '/', true);
 		define('ADMIN_URL', WEB_URL . $conf->plugin_router->admin . '/', true);
 
-		Event::register('router.version', '\\' . __CLASS__ . '::router_version');
-		Event::register('request.new',    '\\' . __CLASS__ . '::request_new');
-	}
-
-	public static function router_version(Event $event)
-	{
-		$event->response = array('version' => self::version());
+		Event::register('request.new', __CLASS__ . '::request_new');
 	}
 
 	public static function request_new(Event $event)

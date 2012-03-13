@@ -13,13 +13,6 @@ use
 /**
  * API router for pixelpost api urls.
  *
- * Tracks Event :
- * - 'api.version'
- * - 'request.api'
- *
- * Sends Event :
- * - 'api.*'
- *
  * @copyright  2011 Alban LEROUX <seza@paradoxal.org>
  * @license    http://creativecommons.org/licenses/by-sa/3.0/ Creative Commons
  * @version    0.0.1
@@ -27,7 +20,6 @@ use
  */
 class Plugin implements PluginInterface
 {
-
 	public static function version()
 	{
 		return '0.0.1';
@@ -55,13 +47,7 @@ class Plugin implements PluginInterface
 
 	public static function register()
 	{
-		Event::register('request.api', '\\' . __CLASS__ . '::api_request');
-		Event::register('api.version', '\\' . __CLASS__ . '::api_version');
-	}
-
-	public static function api_version(Event $event)
-	{
-		$event->response = array('version' => self::version());
+		Event::register('request.api', __CLASS__ . '::api_request');
 	}
 
 	/**
@@ -302,4 +288,3 @@ class Plugin implements PluginInterface
 		}
 	}
 }
-

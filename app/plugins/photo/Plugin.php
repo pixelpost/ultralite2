@@ -28,7 +28,11 @@ class Plugin implements PluginInterface
 
 	public static function depends()
 	{
-		return array('api' => '0.0.1', 'auth' => '0.0.1');
+		return array(
+			'router' => '0.0.1',
+			'api'    => '0.0.1',
+			'auth'   => '0.0.1',
+		);
 	}
 
 	public static function install()
@@ -107,8 +111,8 @@ class Plugin implements PluginInterface
 
 	public static function register()
 	{
-		$api    = '\\' . __NAMESPACE__ . '\\Api';
-		$admin  = '\\' . __NAMESPACE__ . '\\Admin';
+		$api    = __NAMESPACE__ . '\Api';
+		$admin  = __NAMESPACE__ . '\Admin';
 		$router = '\pixelpost\plugins\router\Plugin';
 
 		Event::register('api.photo.version',    $api . '::photo_version');
@@ -135,4 +139,3 @@ class Plugin implements PluginInterface
 		Event::register('admin.template.widget', $admin  . '::template_widget');
 	}
 }
-

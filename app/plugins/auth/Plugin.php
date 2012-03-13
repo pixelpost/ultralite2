@@ -65,7 +65,10 @@ class Plugin implements PluginInterface
 
 	public static function depends()
 	{
-		return array('api' => '0.0.1', 'router' => '0.0.1', 'admin' => '0.0.1');
+		return array(
+			'api'    => '0.0.1',
+			'router' => '0.0.1',
+		);
 	}
 
 	public static function install()
@@ -103,10 +106,10 @@ class Plugin implements PluginInterface
 
 	public static function register()
 	{
-		$self   = '\\' . __CLASS__;
-		$api    = '\\' . __NAMESPACE__ . '\\Api';
-		$admin  = '\\' . __NAMESPACE__ . '\\Admin';
-		$router = '\pixelpost\plugins\Router\Plugin';
+		$self   = __CLASS__;
+		$api    = __NAMESPACE__ . '\Api';
+		$admin  = __NAMESPACE__ . '\Admin';
+		$router = 'pixelpost\plugins\Router\Plugin';
 
 		// check api auth before api event method is called
 		Event::register('api.request.raw',  $self . '::api_request');
