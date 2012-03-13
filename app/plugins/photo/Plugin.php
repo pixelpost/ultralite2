@@ -115,27 +115,28 @@ class Plugin implements PluginInterface
 		$admin  = __NAMESPACE__ . '\Admin';
 		$router = '\pixelpost\plugins\router\Plugin';
 
-		Event::register('api.photo.version',    $api . '::photo_version');
-		Event::register('api.photo.add',        $api . '::photo_add');
-		Event::register('api.photo.del',        $api . '::photo_del');
-		Event::register('api.photo.set',        $api . '::photo_set');
-		Event::register('api.photo.get',        $api . '::photo_get');
-		Event::register('api.photo.list',       $api . '::photo_list');
-		Event::register('api.photo.count',      $api . '::photo_count');
-		Event::register('api.photo.path',       $api . '::photo_path');
-		Event::register('api.photo.size',       $api . '::photo_size');
-		Event::register('api.photo.config.get', $api . '::config_get');
-		Event::register('api.photo.config.set', $api . '::config_set');
-
-		Event::register('api.upload.init',      $api . '::upload_init');
-		Event::register('api.upload.send',      $api . '::upload_send');
-		Event::register('api.upload.end',       $api . '::upload_end');
-		Event::register('api.upload.max-size',  $api . '::upload_max_size');
-
-		Event::register('admin.photos',          $router . '::route');
-		Event::register('admin.photos.index',    $admin  . '::page_index');
-
-		Event::register('admin.template.nav',    $admin  . '::template_nav');
-		Event::register('admin.template.widget', $admin  . '::template_widget');
+		Event::register_list(array(
+			// api events
+			array('api.photo.version',     $api    . '::photo_version'),
+			array('api.photo.add',         $api    . '::photo_add'),
+			array('api.photo.del',         $api    . '::photo_del'),
+			array('api.photo.set',         $api    . '::photo_set'),
+			array('api.photo.get',         $api    . '::photo_get'),
+			array('api.photo.list',        $api    . '::photo_list'),
+			array('api.photo.count',       $api    . '::photo_count'),
+			array('api.photo.path',        $api    . '::photo_path'),
+			array('api.photo.size',        $api    . '::photo_size'),
+			array('api.photo.config.get',  $api    . '::config_get'),
+			array('api.photo.config.set',  $api    . '::config_set'),
+			array('api.upload.init',       $api    . '::upload_init'),
+			array('api.upload.send',       $api    . '::upload_send'),
+			array('api.upload.end',        $api    . '::upload_end'),
+			array('api.upload.max-size',   $api    . '::upload_max_size'),
+			// admin web interface
+			array('admin.photos',          $router . '::route'),
+			array('admin.photos.index',    $admin  . '::page_index'),
+			array('admin.template.nav',    $admin  . '::template_nav'),
+			array('admin.template.widget', $admin  . '::template_widget'),
+		));
 	}
 }

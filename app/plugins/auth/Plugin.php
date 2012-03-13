@@ -111,49 +111,46 @@ class Plugin implements PluginInterface
 		$admin  = __NAMESPACE__ . '\Admin';
 		$router = 'pixelpost\plugins\Router\Plugin';
 
-		// check api auth before api event method is called
-		Event::register('api.request.raw',  $self . '::api_request');
-		// check api hmac before api response is sent
-		Event::register('api.response.raw', $self . '::api_response');
-		// check admin auth before admin event method is called
-		Event::register('request.admin',    $self . '::request_admin', 99);
-
-		Event::register('api.auth.version',          $api . '::auth_version');
-		Event::register('api.auth.request',          $api . '::auth_request');
-		Event::register('api.auth.token',            $api . '::auth_token');
-		Event::register('api.auth.refresh',          $api . '::auth_refresh');
-		Event::register('api.auth.destroy',          $api . '::auth_destroy');
-		Event::register('api.auth.config.get',       $api . '::auth_config_get');
-		Event::register('api.auth.config.set',       $api . '::auth_config_set');
-		Event::register('api.auth.user.add',         $api . '::auth_user_add');
-		Event::register('api.auth.user.set',         $api . '::auth_user_set');
-		Event::register('api.auth.user.get',         $api . '::auth_user_get');
-		Event::register('api.auth.user.del',         $api . '::auth_user_del');
-		Event::register('api.auth.user.list',        $api . '::auth_user_list');
-		Event::register('api.auth.entity.add',       $api . '::auth_entity_add');
-		Event::register('api.auth.entity.set',       $api . '::auth_entity_set');
-		Event::register('api.auth.entity.get',       $api . '::auth_entity_get');
-		Event::register('api.auth.entity.del',       $api . '::auth_entity_del');
-		Event::register('api.auth.entity.list',      $api . '::auth_entity_list');
-		Event::register('api.auth.grant.add',        $api . '::auth_grant_add');
-		Event::register('api.auth.grant.set',        $api . '::auth_grant_set');
-		Event::register('api.auth.grant.get',        $api . '::auth_grant_get');
-		Event::register('api.auth.grant.del',        $api . '::auth_grant_del');
-		Event::register('api.auth.grant.list',       $api . '::auth_grant_list');
-		Event::register('api.auth.user.grant.add',   $api . '::auth_user_grant_add');
-		Event::register('api.auth.user.grant.del',   $api . '::auth_user_grant_del');
-		Event::register('api.auth.entity.grant.add', $api . '::auth_entity_grant_add');
-		Event::register('api.auth.entity.grant.del', $api . '::auth_entity_grant_del');
-
-		Event::register('admin.template.nav',    $admin . '::template_nav', 150);
-		Event::register('admin.template.footer', $admin . '::template_footer');
-		Event::register('admin.template.css',    $admin . '::template_css');
-		Event::register('admin.template.js',     $admin . '::template_js');
-
-		Event::register('admin.auth',            $router . '::route');
-		Event::register('admin.auth.api-bridge', $admin  . '::page_api_bridge');
-		Event::register('admin.auth.account',    $admin  . '::page_account');
-
+		Event::register_list(array(
+			// api events
+			array('api.request.raw',           $self   . '::api_request'),
+			array('api.response.raw',          $self   . '::api_response'),
+			array('api.auth.version',          $api    . '::auth_version'),
+			array('api.auth.request',          $api    . '::auth_request'),
+			array('api.auth.token',            $api    . '::auth_token'),
+			array('api.auth.refresh',          $api    . '::auth_refresh'),
+			array('api.auth.destroy',          $api    . '::auth_destroy'),
+			array('api.auth.config.get',       $api    . '::auth_config_get'),
+			array('api.auth.config.set',       $api    . '::auth_config_set'),
+			array('api.auth.user.add',         $api    . '::auth_user_add'),
+			array('api.auth.user.set',         $api    . '::auth_user_set'),
+			array('api.auth.user.get',         $api    . '::auth_user_get'),
+			array('api.auth.user.del',         $api    . '::auth_user_del'),
+			array('api.auth.user.list',        $api    . '::auth_user_list'),
+			array('api.auth.entity.add',       $api    . '::auth_entity_add'),
+			array('api.auth.entity.set',       $api    . '::auth_entity_set'),
+			array('api.auth.entity.get',       $api    . '::auth_entity_get'),
+			array('api.auth.entity.del',       $api    . '::auth_entity_del'),
+			array('api.auth.entity.list',      $api    . '::auth_entity_list'),
+			array('api.auth.grant.add',        $api    . '::auth_grant_add'),
+			array('api.auth.grant.set',        $api    . '::auth_grant_set'),
+			array('api.auth.grant.get',        $api    . '::auth_grant_get'),
+			array('api.auth.grant.del',        $api    . '::auth_grant_del'),
+			array('api.auth.grant.list',       $api    . '::auth_grant_list'),
+			array('api.auth.user.grant.add',   $api    . '::auth_user_grant_add'),
+			array('api.auth.user.grant.del',   $api    . '::auth_user_grant_del'),
+			array('api.auth.entity.grant.add', $api    . '::auth_entity_grant_add'),
+			array('api.auth.entity.grant.del', $api    . '::auth_entity_grant_del'),
+			// admin web interface
+			array('request.admin',             $self   . '::request_admin', 99),
+			array('admin.template.nav',        $admin  . '::template_nav', 150),
+			array('admin.template.footer',     $admin  . '::template_footer'),
+			array('admin.template.css',        $admin  . '::template_css'),
+			array('admin.template.js',         $admin  . '::template_js'),
+			array('admin.auth',                $router . '::route'),
+			array('admin.auth.api-bridge',     $admin  . '::page_api_bridge'),
+			array('admin.auth.account',        $admin  . '::page_account'),
+		));
 	}
 
 	/**
