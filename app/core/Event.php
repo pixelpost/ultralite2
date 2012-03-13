@@ -62,23 +62,24 @@ class Event extends ArrayObject
 	 */
 	public static function register($eventName, $callback, $priority = 100)
 	{
-		$eventName = strval($eventName);
-
-		if (!isset(static::$_listen[$eventName]))
+		while (true)
 		{
-			static::$_listen[$eventName] = array();
-		}
+			$eventName = strval($eventName);
 
-		// If an event with the same priority exists, increase the priority by one.
-		if (isset(static::$_listen[$eventName][$priority]))
-		{
-			// BECAREFUL ! The $priority need to be pre-incremented
-			// post-increment on it create an infinite loop.
-			return static::register($eventName, $callback, ++$priority);
-		}
+			if (!isset(static::$_listen[$eventName]))
+			{
+				static::$_listen[$eventName] = array();
+			}
 
-		static::$_listen[$eventName][$priority] = $callback;
-		static::$_ordered[$eventName] = false;
+			if (!isset(static::$_listen[$eventName][$priority]))
+			{
+				static::$_listen[$eventName][$priority] = $callback;
+				static::$_ordered[$eventName] = false;
+				break;
+			}
+
+			++$priority;
+		}
 	}
 
 	/**
