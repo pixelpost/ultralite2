@@ -49,8 +49,8 @@ class Plugin implements PluginInterface
 	{
 		$error = $event->exception;
 
-		if (DEBUG) include __DIR__ . SEP . 'tpl' . SEP . 'error_debug.php';
-		else       include __DIR__ . SEP . 'tpl' . SEP . 'error.php';
+		if (DEBUG) include __DIR__ . '/tpl/error_debug.php';
+		else       include __DIR__ . '/tpl/error.php';
 
 		// we need to stop the script, if not, PHP understand that the exception
 		// was not caugth. And raise an error:

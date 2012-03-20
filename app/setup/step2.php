@@ -10,100 +10,81 @@ try
 	$error = '';
 	$rollbackTo = 0;
 
-	// create the private directory
+	// create the /private directory
 	if (mkdir(PRIV_PATH, 0775) == false)
 	{
-		throw new Exception('Cannot create `' . PRIV_PATH . '`.');
+		throw new Exception(sprintf('Cannot create `%s`.', PRIV_PATH));
 	}
 
 	$rollbackTo = 1;
 
-	// copy the config file
-	$src = APP_PATH . SEP . 'setup' . SEP . 'samples' . SEP . 'config_sample.json';
-	$dst = PRIV_PATH . SEP . 'config.json';
+	// copy the /config.json file
+	$src = APP_PATH  . '/setup/samples/config_sample.json';
+	$dst = PRIV_PATH . '/config.json';
 
 	if (copy($src, $dst) == false)
 	{
-		throw new Exception('Cannot copy `'. $src . '` to `' . $dst . '`.');
+		throw new Exception(sprintf('Cannot copy `%s` to `%s`.', $src, $dst));
 	}
 
 	$rollbackTo = 2;
 
-	// copy the .htaccess file
-	$src = APP_PATH . SEP . 'setup' . SEP . 'samples' . SEP . 'htaccess_sample';
-	$dst = ROOT_PATH . SEP . '.htaccess';
+	// copy the /.htaccess file
+	$src = APP_PATH  . '/setup/samples/htaccess_sample';
+	$dst = ROOT_PATH . '/.htaccess';
 
 	if (copy($src, $dst) == false)
 	{
-		throw new Exception('Cannot copy `'. $src . '` to `' . $dst . '`.');
+		throw new Exception(sprintf('Cannot copy `%s` to `%s`.', $src, $dst));
 	}
 
 	$rollbackTo = 3;
 
-	// copy the private/.htaccess file
-	$src = APP_PATH . SEP . 'setup' . SEP . 'samples' . SEP . 'htaccess_priv_sample';
-	$dst = PRIV_PATH . SEP . '.htaccess';
+	// copy the /private/.htaccess file
+	$src = APP_PATH  . '/setup/samples/htaccess_priv_sample';
+	$dst = PRIV_PATH . '/.htaccess';
 
 	if (copy($src, $dst) == false)
 	{
-		throw new Exception('Cannot copy `'. $src . '` to `' . $dst . '`.');
+		throw new Exception(sprintf('Cannot copy `%s` to `%s`.', $src, $dst));
 	}
 
 	$rollbackTo = 4;
 
-	// copy the index.php file
-	$src = APP_PATH . SEP . 'setup' . SEP . 'samples' . SEP . 'index_sample.php';
-	$dst = ROOT_PATH . SEP . 'index.php';
+	// copy the /index.php file
+	$src = APP_PATH  . '/setup/samples/index_sample.php';
+	$dst = ROOT_PATH . '/index.php';
 
 	if (copy($src, $dst) == false)
 	{
-		throw new Exception('Cannot copy `'. $src . '` to `' . $dst . '`.');
+		throw new Exception(sprintf('Cannot copy `%s` to `%s`.', $src, $dst));
 	}
 
 	$rollbackTo = 5;
 
-	// Load the request
+	// create the database
+	core\Db::create();
+
+	$rollbackTo = 6;
+
+	// Load the request and retrieve step1 form and userdir in url data
 	$request = core\Request::create()->auto();
-
-	// retrieve the posted data
-	$post = $request->get_post();
-
-	// Load the config file
-	$conf = core\Config::load(PRIV_PATH . SEP . 'config.json');
-
-	// retreive the userdir
+	$post    = $request->get_post();
 	$userdir = $request->get_params();
 
 	array_pop($userdir); // remove install.php
 	array_pop($userdir); // remove app
 
-	$conf->userdir = implode('/', $userdir);
-
-	// retreive the website url
-	$conf->url = $request->set_userdir($conf->userdir)->get_base_url();
-
-	// retrieve the timezone
+	// Load, update and save the config file
+	$conf           = core\Config::load(PRIV_PATH . '/config.json');
+	$conf->userdir  = implode('/', $userdir);
+	$conf->url      = $request->set_userdir($conf->userdir)->get_base_url();
 	$conf->timezone = $post['timezone'];
-
-	// retrieve the title
-	$conf->title = $post['title'];
-
-	// retrieve the email
-	$conf->email = $post['email'];
-
-	// create an uniq id for this installation
-	$conf->uid = md5(uniqid() . microtime() . $request->get_request_url());
-
-	// set the version number of the installation
-	$conf->version = VERSION;
-
-	// save the configuration file
+	$conf->title    = $post['title'];
+	$conf->email    = $post['email'];
+	$conf->uid      = md5(uniqid() . microtime() . $request->get_request_url());
+	$conf->version  = VERSION;
 	$conf->save();
-
-	// create the database
-	$db = core\Db::create();
-
-	$rollbackTo = 6;
 
 	// detect all plugins already in the package (and store the list in conf)
 	core\Plugin::detect();
@@ -113,11 +94,11 @@ try
 
 	foreach($manager->process() as $plugin)
 	{
-		if (core\Plugin::active($plugin) == false)
-		{
-			$e = core\Plugin::get_last_error();
-			throw new Exception("Error activating plugin '$plugin'. Error: $e.");
-		}
+		if (core\Plugin::active($plugin)) continue;
+
+		$e = core\Plugin::get_last_error();
+		$m = 'Error activating plugin `%s`. Error: %s.';
+		throw new Exception(sprintf($m, $plugin, $e));
 	}
 
 	$rollbackTo = 7;
@@ -146,22 +127,18 @@ catch(Exception $e)
 	$error = $e->getMessage() . ', on line: ' . $e->getLine() . ' : ' . $e->getFile();
 
 	if ($rollbackTo >= 7) photo\Plugin::uninstall();
-	if ($rollbackTo >= 6) unlink(PRIV_PATH . SEP . 'sqlite3.db');
-	if ($rollbackTo >= 5) unlink(ROOT_PATH . SEP . 'index.php');
-	if ($rollbackTo >= 4) unlink(PRIV_PATH . SEP . '.htaccess');
-	if ($rollbackTo >= 3) unlink(ROOT_PATH . SEP . '.htaccess');
-	if ($rollbackTo >= 2) unlink(PRIV_PATH . SEP . 'config.json');
+	if ($rollbackTo >= 6) unlink(PRIV_PATH . '/sqlite3.db');
+	if ($rollbackTo >= 5) unlink(ROOT_PATH . '/index.php');
+	if ($rollbackTo >= 4) unlink(PRIV_PATH . '/.htaccess');
+	if ($rollbackTo >= 3) unlink(ROOT_PATH . '/.htaccess');
+	if ($rollbackTo >= 2) unlink(PRIV_PATH . '/config.json');
 	if ($rollbackTo >= 1) rmdir(PRIV_PATH);
 }
 
-$template = ($error != '') ? 'step2-fail.tpl' : 'step2-success.tpl';
-
-$tpl = core\Template::create();
-
-$tpl->set_cache_raw_template(false)->set_template_path(__DIR__ . SEP . 'tpl');
+$tpl = core\Template::create()->set_cache_raw_template(false)->set_template_path(__DIR__ . '/tpl');
 
 $tpl->error = $error;
 $tpl->data  = core\Filter::array_to_object($post);
 $tpl->home  = ADMIN_URL;
 
-$tpl->publish($template);
+$tpl->publish(($error != '') ? 'step2-fail.tpl' : 'step2-success.tpl');

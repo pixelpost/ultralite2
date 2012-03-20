@@ -43,9 +43,9 @@ class Api
 		$conf   = Config::create();
 		$myConf = $conf->plugin_photo;
 
-		$format = ($local)
-				? ROOT_PATH . SEP . $myConf->directory . SEP . '%s' . SEP . '%s'
-				: $conf->url . $myConf->directory . '/%s/%s';
+		$format = ($local) ? ROOT_PATH . '/' : $conf->url;
+
+		$format .= $myConf->directory . '/%s/%s';
 
 		return function($filename, $size) use ($myConf, $format)
 		{
@@ -155,37 +155,37 @@ class Api
 
 	public static function photo_add(Event $event)
 	{
-		require __DIR__ . SEP . 'api' . SEP . 'photo_add.php';
+		require __DIR__ . '/api/photo_add.php';
 	}
 
 	public static function photo_del(Event $event)
 	{
-		require __DIR__ . SEP . 'api' . SEP . 'photo_del.php';
+		require __DIR__ . '/api/photo_del.php';
 	}
 
 	public static function photo_set(Event $event)
 	{
-		require __DIR__ . SEP . 'api' . SEP . 'photo_set.php';
+		require __DIR__ . '/api/photo_set.php';
 	}
 
 	public static function photo_get(Event $event)
 	{
-		require __DIR__ . SEP . 'api' . SEP . 'photo_get.php';
+		require __DIR__ . '/api/photo_get.php';
 	}
 
 	public static function photo_list(Event $event)
 	{
-		require __DIR__ . SEP . 'api' . SEP . 'photo_list.php';
+		require __DIR__ . '/api/photo_list.php';
 	}
 
 	public static function photo_count(Event $event)
 	{
-		require __DIR__ . SEP . 'api' . SEP . 'photo_count.php';
+		require __DIR__ . '/api/photo_count.php';
 	}
 
 	public static function photo_path(Event $event)
 	{
-		require __DIR__ . SEP . 'api' . SEP . 'photo_path.php';
+		require __DIR__ . '/api/photo_path.php';
 	}
 
 	public static function photo_size(Event $event)
@@ -204,22 +204,22 @@ class Api
 
 	public static function config_set(Event $event)
 	{
-		require __DIR__ . SEP . 'api' . SEP . 'config_set.php';
+		require __DIR__ . '/api/config_set.php';
 	}
 
 	public static function upload_init(Event $event)
 	{
-		require __DIR__ . SEP . 'api' . SEP . 'upload_init.php';
+		require __DIR__ . '/api/upload_init.php';
 	}
 
 	public static function upload_send(Event $event)
 	{
-		require __DIR__ . SEP . 'api' . SEP . 'upload_send.php';
+		require __DIR__ . '/api/upload_send.php';
 	}
 
 	public static function upload_end(Event $event)
 	{
-		require __DIR__ . SEP . 'api' . SEP . 'upload_end.php';
+		require __DIR__ . '/api/upload_end.php';
 	}
 
 	public static function upload_max_size(Event $event)

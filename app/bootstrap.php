@@ -36,13 +36,12 @@ ini_set('html_errors',                   'off');
 
 
 // Step 2. A little of constant creation
-defined('VERSION')   or define('VERSION',   '0.0.1',                     true);
-defined('SEP')       or define('SEP',       DIRECTORY_SEPARATOR,         true);
-defined('ROOT_PATH') or define('ROOT_PATH', dirname(__DIR__),            true);
-defined('APP_PATH')  or define('APP_PATH',  ROOT_PATH . SEP . 'app',     true);
-defined('CORE_PATH') or define('CORE_PATH', APP_PATH  . SEP . 'core',    true);
-defined('PLUG_PATH') or define('PLUG_PATH', APP_PATH  . SEP . 'plugins', true);
-defined('PRIV_PATH') or define('PRIV_PATH', ROOT_PATH . SEP . 'private', true);
+defined('VERSION')   or define('VERSION',   '0.0.1',                true);
+defined('ROOT_PATH') or define('ROOT_PATH', dirname(__DIR__),       true);
+defined('APP_PATH')  or define('APP_PATH',  ROOT_PATH . '/app',     true);
+defined('CORE_PATH') or define('CORE_PATH', APP_PATH  . '/core',    true);
+defined('PLUG_PATH') or define('PLUG_PATH', APP_PATH  . '/plugins', true);
+defined('PRIV_PATH') or define('PRIV_PATH', ROOT_PATH . '/private', true);
 
 // Step 3. A little of error handling
 set_error_handler(function ($errno, $errstr, $errfile, $errline)
@@ -87,7 +86,7 @@ spl_autoload_register(function($name)
 	if (substr($class, 0, $len) != $ns) return false;
 
 	// remove the main namespace of the class name and apply psr-0
-	$file = APP_PATH . str_replace('\\', SEP, substr($class, $len)) . '.php';
+	$file = APP_PATH . str_replace('\\', '/', substr($class, $len)) . '.php';
 
 	is_file($file) and require_once $file;
 
@@ -95,7 +94,7 @@ spl_autoload_register(function($name)
 });
 
 // Step 5. We need to parse the config file and set properly the environnement
-$conf = Config::load(PRIV_PATH . SEP . 'config.json');
+$conf = Config::load(PRIV_PATH . '/config.json');
 
 // Debug can also be switched on by setting the Apache envrionment
 // variable `APPLICATION_ENV` to `development` in .htaccess
@@ -112,7 +111,7 @@ date_default_timezone_set($conf->timezone);
 // Step 6. Check auto update if needed
 if (Filter::compare_version($conf->version, VERSION))
 {
-	require_once APP_PATH . SEP . 'update.php';
+	require_once APP_PATH . '/update.php';
 }
 
 // Step 7. Registers activated plugins

@@ -43,7 +43,7 @@ if ($file_max_size < $size)
 }
 
 // where are stored uploads
-$path = PRIV_PATH . SEP . 'upload';
+$path = PRIV_PATH . '/upload';
 
 // the metadata filename
 $fname = tempnam($path, 'up_');

@@ -31,6 +31,6 @@ class Admin
 
 	public static function page_index(Event $event)
 	{
-		require __DIR__ . SEP . 'admin' . SEP . 'home.php';
+		require __DIR__ . '/admin/home.php';
 	}
 }

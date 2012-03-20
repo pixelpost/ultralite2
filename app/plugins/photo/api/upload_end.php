@@ -23,13 +23,13 @@ $is_id = (bool) preg_match('/^up_[\w\._-]+$/', $id);
 if ($is_id === false) throw new ApiError\FieldNotValid('id', 'not a valid id');
 
 // where are stored uploads
-$path = PRIV_PATH . SEP . 'upload';
+$path = PRIV_PATH . '/upload';
 
 // the metadata file name
-$fname  = $path . SEP . $id;
+$fname  = $path . '/' . $id;
 
 //  chunk filename base
-$chunks = $fname . '_chunks' . SEP . 'chunk_';
+$chunks = $fname . '_chunks/chunk_';
 
 // check if it's a valid id
 if (!file_exists($fname)) throw new ApiError\FieldNonExists('id');
@@ -44,7 +44,7 @@ $metadata = json_decode(file_get_contents($fname . '_final'));
 unlink($fname . '_final');
 
 // create the final file
-$file = $path . SEP . 'image_' . uniqid() . self::$valid_mime[$metadata->type];
+$file = $path . '/image_' . uniqid() . self::$valid_mime[$metadata->type];
 
 // open the file in binary mode, push each chunks in and close.
 $fp = fopen($file, 'wb');

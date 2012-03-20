@@ -44,6 +44,6 @@ class Admin
 
 	public static function page_account(Event $event)
 	{
-		require __DIR__ . SEP . 'admin' . SEP . 'account.php';
+		require __DIR__ . '/admin/account.php';
 	}
 }

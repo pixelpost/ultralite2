@@ -21,15 +21,15 @@ else
 	}
 
 	// check if a .htaccess file allready exists
-	if (file_exists(ROOT_PATH . SEP . '.htaccess'))
+	if (file_exists(ROOT_PATH . '/.htaccess'))
 	{
-		$messageVeryLong  = '.htaccess` already exists: '
+		$messageVeryLong  = '/.htaccess` already exists: '
 						  . 'we cannot install the mod_rewrite rule, '
 						  . 'and secure your private data... '
 						  . ' Take a look at the `app/setup/samples/htaccess_sample` '
 						  . ' file for manual install.';
 
-		$warnings[] = '`' . ROOT_PATH . SEP . $messageVeryLong;
+		$warnings[] = '`' . ROOT_PATH . $messageVeryLong;
 	}
 
 	// check if GD is installed in version 2
@@ -56,7 +56,7 @@ $template = (count($warnings) > 0) ? 'step1-fail.tpl' : 'step1-form.tpl';
 
 $tpl = pixelpost\core\Template::create();
 
-$tpl->set_cache_raw_template(false)->set_template_path(__DIR__ . SEP . 'tpl');
+$tpl->set_cache_raw_template(false)->set_template_path(__DIR__ . '/tpl');
 
 $tpl->warnings  = $warnings;
 $tpl->phpTZ     = $phpTZ;

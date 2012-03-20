@@ -14,22 +14,19 @@ $phpTZ            = ini_get('date.timezone');
 if (!defined('PHP_VERSION_ID') || PHP_VERSION_ID < 50300)
 {
 	// use dirname(__FILE__) here because __DIR__ exists since PHP 5.3.0
-	include dirname(__FILE__) . DIRECTORY_SEPARATOR . 'setup'
-			                  . DIRECTORY_SEPARATOR . 'tpl'
-			                  . DIRECTORY_SEPARATOR . 'step0-fail.tpl';
-
+	include dirname(__FILE__) . 'setup/tpl/step0-fail.tpl';
 	exit();
 }
 
 try
 {
-	require_once __DIR__ . DIRECTORY_SEPARATOR . 'bootstrap.php';
+	require_once __DIR__ . '/bootstrap.php';
 }
-// we can't use pixelpost\core\Error here because we consider we can be in PHP < 5.3
-// so namespace can't be used.
 catch(Exception $e)
 {
-	// use get_class instead of is_a() or instanceof because is_a() throw
+	// we can't use pixelpost\core\Error here because we consider we can be in PHP < 5.3
+	// so namespace can't be used.
+	// use get_class() instead of is_a() or instanceof because is_a() throw
 	// a E_STRICT between PHP5.0.0 and PHP 5.3.0 and instanceof exists since
 	// PHP 5.0.0 (and instanceof can call __autoload() before PHP 5.1.0)
 	if (get_class($e) == 'pixelpost\core\Error' && $e->getCode() == 3) $isConfFileExists = false;
@@ -43,10 +40,6 @@ if ($step > $maxStep) $step = $maxStep;
 
 switch($step)
 {
-	case 1:
-		require __DIR__ . SEP . 'setup' . SEP . 'step1.php';
-		break;
-	case 2:
-		require __DIR__ . SEP . 'setup' . SEP . 'step2.php';
-		break;
+	case 1: require __DIR__ . '/setup/step1.php'; break;
+	case 2: require __DIR__ . '/setup/step2.php'; break;
 }

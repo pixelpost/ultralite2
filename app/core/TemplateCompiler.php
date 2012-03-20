@@ -491,11 +491,11 @@ class TemplateCompiler
 
 		if (is_null($filename)) return;
 
-		$filename = str_replace('/', SEP, trim($filename));
+		$filename = trim($filename);
 
 		if ($filename == '') throw Error::create(20);
 
-		$file = $this->path . $filename;
+		$file = $this->path . '/' . $filename;
 
 		if (!file_exists($file)) throw Error::create(21, array($file));
 
@@ -529,11 +529,11 @@ class TemplateCompiler
 
 		foreach($includes as $id => $include)
 		{
-			$filename = str_replace('/', SEP, trim($include));
+			$filename = trim($include);
 
 			if ($filename == '') throw Error::create(22);
 
-			$file = $this->path . $filename;
+			$file = $this->path . '/' . $filename;
 
 			if (!file_exists($file)) throw Error::create(23, array($file));
 

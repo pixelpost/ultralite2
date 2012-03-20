@@ -22,10 +22,10 @@ $checkDir = function($name, $base) use ($myConf, $newConf, &$conf)
 {
 	if ($newConf[$name] == $myConf->$name) return;
 
-	if ($base != '') $base .= SEP;
+	if ($base != '') $base .= '/';
 
-	$oldPath = ROOT_PATH . SEP . $base . $myConf->$name;
-	$newPath = ROOT_PATH . SEP . $base . $newConf[$name];
+	$oldPath = ROOT_PATH . '/' . $base . $myConf->$name;
+	$newPath = ROOT_PATH . '/' . $base . $newConf[$name];
 
 	if (file_exists($newPath))
 	{

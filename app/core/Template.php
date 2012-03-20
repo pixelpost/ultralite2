@@ -42,8 +42,8 @@ class Template
 	public static function create()
 	{
 		$tpl = new static;
-		$tpl->set_template_path(PLUG_PATH . SEP);
-		$tpl->set_template_cache_path(PRIV_PATH . SEP . 'cache' . SEP);
+		$tpl->set_template_path(PLUG_PATH);
+		$tpl->set_template_cache_path(PRIV_PATH . '/cache');
 		return $tpl;
 	}
 
@@ -71,7 +71,7 @@ class Template
 	{
 		Filter::assume_string($var);
 
-		$this->_tplPath = $path . ((substr($path, -1) == SEP) ? '' : SEP);
+		$this->_tplPath = $path;
 
 		return $this;
 	}
@@ -85,7 +85,7 @@ class Template
 	{
 		Filter::assume_string($var);
 
-		$this->_tplCache = $path . ((substr($path, -1) == SEP) ? '' : SEP);
+		$this->_tplCache = $path;
 
 		return $this;
 	}
@@ -425,10 +425,8 @@ class Template
 
 		try
 		{
-			$templateFile = str_replace('/', SEP, $templateFile);
-
-			$tpl   = $this->_tplPath . $templateFile;
-			$cache = $this->_tplCache . $templateFile;
+			$tpl   = $this->_tplPath  . '/' . $templateFile;
+			$cache = $this->_tplCache . '/' . $templateFile;
 
 			if (!file_exists($tpl)) throw new Error(16, array($tpl));
 

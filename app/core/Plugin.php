@@ -115,7 +115,7 @@ class Plugin
 	{
 		Filter::is_string($plugin);
 
-		return PLUG_PATH . SEP . $plugin . SEP . static::PLUG_FILE;
+		return PLUG_PATH . '/' . $plugin . '/' . static::PLUG_FILE;
 	}
 
 	/**
@@ -195,7 +195,7 @@ class Plugin
 
 		while (false !== $file = readdir($rd))
 		{
-			$f = PLUG_PATH . SEP . $file;
+			$f = PLUG_PATH . '/' . $file;
 
 			if (!is_dir($f) || $file == '.' || $file == '..') continue;
 
@@ -232,7 +232,7 @@ class Plugin
 
 		$conf->save();
 
-		$path = PLUG_PATH . SEP . $plugin;
+		$path = PLUG_PATH . '/' . $plugin;
 
 		foreach(new RII(new RDI($path), RII::CHILD_FIRST) as $file)
 		{

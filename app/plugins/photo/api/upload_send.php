@@ -28,13 +28,13 @@ if ($chunk === false) throw new ApiError\FieldNotValid('id',   'not an integer')
 if ($data  === false) throw new ApiError\FieldNotValid('data', 'not base64');
 
 // where are stored uploads
-$path = PRIV_PATH . SEP . 'upload';
+$path = PRIV_PATH . '/upload';
 
 // the metadata file name
-$fname  = $path . SEP . $id;
+$fname  = $path . '/' . $id;
 
 // where are stored the chunks
-$fchunk = $fname . '_chunks' . SEP . 'chunk_' . $chunk;
+$fchunk = $fname . '_chunks/chunk_' . $chunk;
 
 // check if it's a valid id
 if (!file_exists($fname)) throw new ApiError\FieldNonExists('id');

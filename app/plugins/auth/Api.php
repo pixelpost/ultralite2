@@ -133,126 +133,126 @@ class Api
 
 	public static function auth_request(Event $event)
 	{
-		require __DIR__ . SEP . 'api' . SEP . 'auth_request.php';
+		require __DIR__ . '/api/auth_request.php';
 	}
 
 	public static function auth_token(Event $event)
 	{
-		require __DIR__ . SEP . 'api' . SEP . 'auth_token.php';
+		require __DIR__ . '/api/auth_token.php';
 	}
 
 	public static function auth_refresh(Event $event)
 	{
-		require __DIR__ . SEP . 'api' . SEP . 'auth_refresh.php';
+		require __DIR__ . '/api/auth_refresh.php';
 	}
 
 	public static function auth_destroy(Event $event)
 	{
-		require __DIR__ . SEP . 'api' . SEP . 'auth_destroy.php';
+		require __DIR__ . '/api/auth_destroy.php';
 	}
 
 	public static function auth_config_get(Event $event)
 	{
-		require __DIR__ . SEP . 'api' . SEP . 'auth_config_get.php';
+		require __DIR__ . '/api/auth_config_get.php';
 	}
 
 	public static function auth_config_set(Event $event)
 	{
-		require __DIR__ . SEP . 'api' . SEP . 'auth_config_set.php';
+		require __DIR__ . '/api/auth_config_set.php';
 	}
 
 	public static function auth_user_add(Event $event)
 	{
-		require __DIR__ . SEP . 'api' . SEP . 'auth_user_add.php';
+		require __DIR__ . '/api/auth_user_add.php';
 	}
 
 	public static function auth_user_set(Event $event)
 	{
-		require __DIR__ . SEP . 'api' . SEP . 'auth_user_set.php';
+		require __DIR__ . '/api/auth_user_set.php';
 	}
 
 	public static function auth_user_get(Event $event)
 	{
-		require __DIR__ . SEP . 'api' . SEP . 'auth_user_get.php';
+		require __DIR__ . '/api/auth_user_get.php';
 	}
 
 	public static function auth_user_del(Event $event)
 	{
-		require __DIR__ . SEP . 'api' . SEP . 'auth_user_del.php';
+		require __DIR__ . '/api/auth_user_del.php';
 	}
 
 	public static function auth_user_list(Event $event)
 	{
-		require __DIR__ . SEP . 'api' . SEP . 'auth_user_list.php';
+		require __DIR__ . '/api/auth_user_list.php';
 	}
 
 	public static function auth_user_grant_add(Event $event)
 	{
-		require __DIR__ . SEP . 'api' . SEP . 'auth_user_grant_add.php';
+		require __DIR__ . '/api/auth_user_grant_add.php';
 	}
 
 	public static function auth_user_grant_del(Event $event)
 	{
-		require __DIR__ . SEP . 'api' . SEP . 'auth_user_grant_del.php';
+		require __DIR__ . '/api/auth_user_grant_del.php';
 	}
 
 	public static function auth_entity_add(Event $event)
 	{
-		require __DIR__ . SEP . 'api' . SEP . 'auth_entity_add.php';
+		require __DIR__ . '/api/auth_entity_add.php';
 	}
 
 	public static function auth_entity_set(Event $event)
 	{
-		require __DIR__ . SEP . 'api' . SEP . 'auth_entity_set.php';
+		require __DIR__ . '/api/auth_entity_set.php';
 	}
 
 	public static function auth_entity_get(Event $event)
 	{
-		require __DIR__ . SEP . 'api' . SEP . 'auth_entity_get.php';
+		require __DIR__ . '/api/auth_entity_get.php';
 	}
 
 	public static function auth_entity_del(Event $event)
 	{
-		require __DIR__ . SEP . 'api' . SEP . 'auth_entity_del.php';
+		require __DIR__ . '/api/auth_entity_del.php';
 	}
 
 	public static function auth_entity_list(Event $event)
 	{
-		require __DIR__ . SEP . 'api' . SEP . 'auth_entity_list.php';
+		require __DIR__ . '/api/auth_entity_list.php';
 	}
 
 	public static function auth_entity_grant_add(Event $event)
 	{
-		require __DIR__ . SEP . 'api' . SEP . 'auth_entity_grant_add.php';
+		require __DIR__ . '/api/auth_entity_grant_add.php';
 	}
 
 	public static function auth_entity_grant_del(Event $event)
 	{
-		require __DIR__ . SEP . 'api' . SEP . 'auth_entity_grant_del.php';
+		require __DIR__ . '/api/auth_entity_grant_del.php';
 	}
 
 	public static function auth_grant_add(Event $event)
 	{
-		require __DIR__ . SEP . 'api' . SEP . 'auth_grant_add.php';
+		require __DIR__ . '/api/auth_grant_add.php';
 	}
 
 	public static function auth_grant_set(Event $event)
 	{
-		require __DIR__ . SEP . 'api' . SEP . 'auth_grant_set.php';
+		require __DIR__ . '/api/auth_grant_set.php';
 	}
 
 	public static function auth_grant_get(Event $event)
 	{
-		require __DIR__ . SEP . 'api' . SEP . 'auth_grant_get.php';
+		require __DIR__ . '/api/auth_grant_get.php';
 	}
 
 	public static function auth_grant_del(Event $event)
 	{
-		require __DIR__ . SEP . 'api' . SEP . 'auth_grant_del.php';
+		require __DIR__ . '/api/auth_grant_del.php';
 	}
 
 	public static function auth_grant_list(Event $event)
 	{
-		require __DIR__ . SEP . 'api' . SEP . 'auth_grant_list.php';
+		require __DIR__ . '/api/auth_grant_list.php';
 	}
 }

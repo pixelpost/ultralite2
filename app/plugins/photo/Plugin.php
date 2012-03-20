@@ -61,14 +61,14 @@ class Plugin implements PluginInterface
 
 		Model::table_create();
 
-		$path = ROOT_PATH . SEP . 'photos';
+		$path = ROOT_PATH . '/photos';
 
-		mkdir($path                   , 0775);
-		mkdir($path . SEP . 'original', 0775);
-		mkdir($path . SEP . 'resized' , 0775);
-		mkdir($path . SEP . 'thumb'   , 0775);
+		mkdir($path              , 0775);
+		mkdir($path . '/original', 0775);
+		mkdir($path . '/resized' , 0775);
+		mkdir($path . '/thumb'   , 0775);
 
-		mkdir(PRIV_PATH . SEP . 'upload', 0775);
+		mkdir(PRIV_PATH . '/upload', 0775);
 
 		return true;
 	}
@@ -77,8 +77,8 @@ class Plugin implements PluginInterface
 	{
 		$conf = Config::create();
 
-		$photo_dir  = ROOT_PATH . SEP . $conf->plugin_photo->directory;
-		$upload_dir = PRIV_PATH . SEP . 'upload';
+		$photo_dir  = ROOT_PATH . '/' . $conf->plugin_photo->directory;
+		$upload_dir = PRIV_PATH . '/upload';
 
 		unset($conf->plugin_photo);
 
