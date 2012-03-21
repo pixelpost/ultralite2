@@ -401,9 +401,14 @@ class FilterTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function test_compare_version()
 	{
-		$this->assertTrue(Filter::compare_version('2.3.3', '2.3.4'));
-		$this->assertNull(Filter::compare_version('2.3.4', '2.3.4'));
+		$this->assertTrue( Filter::compare_version('2.3.3', '2.3.4'));
+		$this->assertNull( Filter::compare_version('2.3.4', '2.3.4'));
 		$this->assertFalse(Filter::compare_version('2.3.5', '2.3.4'));
-	}
 
+		$this->assertTrue( Filter::compare_version('2',           '2.3'));
+		$this->assertTrue( Filter::compare_version('2.3',         '2.3.4'));
+		$this->assertFalse(Filter::compare_version('2.3.4',       '2.3.4-beta'));
+		$this->assertTrue( Filter::compare_version('2.3.4-alpha', '2.3.4-beta'));
+		$this->assertTrue( Filter::compare_version('2.3.4-alpha1','2.3.4-alpha2'));
+	}
 }

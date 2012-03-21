@@ -406,7 +406,7 @@ class Filter
 	}
 
 	/**
-	 * Compare two version number formater like A.B.C where:
+	 * Compare two version number formater like A.B.C-alpha where:
 	 * A is the major version (BC break possible)
 	 * B is the minor version (Non BC beak)
 	 * C is the bug fixes release version
@@ -421,14 +421,10 @@ class Filter
 	 */
 	public static function compare_version($old, $new)
 	{
-		list($A1, $B1, $C1) = explode(".", $old);
-		list($A2, $B2, $C2) = explode(".", $old);
+		$cmp = version_compare($old, $new);
 
-		$old = intval(vsprintf("%02s%02s%02s", explode('.', $old)));
-		$new = intval(vsprintf("%02s%02s%02s", explode('.', $new)));
-
-		if ($new > $old)  return true;
-		if ($new == $old) return null;
+		if ($cmp < 0)   return true;
+	    if ($cmp === 0) return null;
 
 		return false;
 	}
