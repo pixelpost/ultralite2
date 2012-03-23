@@ -14,7 +14,7 @@ $phpTZ            = ini_get('date.timezone');
 if (!defined('PHP_VERSION_ID') || PHP_VERSION_ID < 50300)
 {
 	// use dirname(__FILE__) here because __DIR__ exists since PHP 5.3.0
-	include dirname(__FILE__) . 'setup/tpl/step0-fail.tpl';
+	include dirname(__FILE__) . '/setup/tpl/step0-fail.tpl';
 	exit();
 }
 
