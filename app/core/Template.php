@@ -150,7 +150,7 @@ class Template
 	 */
 	public function __isset($key)
 	{
-		if ('_' != substr($key, 0, 1)) return isset($this->$key);
+		if ('_' != mb_substr($key, 0, 1)) return isset($this->$key);
 
 		return false;
 	}
@@ -183,7 +183,7 @@ class Template
 	 */
 	public function __set($key, $val)
 	{
-		if ('_' == substr($key, 0, 1)) throw Error::create(15, array($key));
+		if ('_' == mb_substr($key, 0, 1)) throw Error::create(15, array($key));
 
 		$this->$key = $val;
 	}
@@ -196,7 +196,7 @@ class Template
 	 */
 	public function __unset($key)
 	{
-		if ('_' != substr($key, 0, 1) && isset($this->$key)) unset($this->$key);
+		if ('_' != mb_substr($key, 0, 1) && isset($this->$key)) unset($this->$key);
 	}
 
 	/**

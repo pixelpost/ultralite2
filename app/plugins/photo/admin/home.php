@@ -11,10 +11,10 @@ $urlParams = $event->params + array('page:1');
 
 $photoPage = array_shift($urlParams);
 
-if (substr($photoPage, 0, 5) != 'page:') $photoPage = 1;
+if (mb_substr($photoPage, 0, 5) != 'page:') $photoPage = 1;
 else
 {
-	$photoPage = substr($photoPage, 5);
+	$photoPage = mb_substr($photoPage, 5);
 	if (!is_numeric($photoPage)) $photoPage = 1;
 	else                         $photoPage = intval($photoPage);
 }

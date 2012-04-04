@@ -12,6 +12,7 @@ Requirements
 	* mod_rewrite
 
 * PHP 5.3.0 or higher
+	* MBString
 	* SQLite3
 	* GD2
 

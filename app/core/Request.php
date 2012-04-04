@@ -75,7 +75,7 @@ class Request
 
 		if ($serverPort != 80)
 		{
-			if (strpos($serverPort, ':') === false)
+			if (mb_strpos($serverPort, ':') === false)
 			{
 				$serverPort = $_SERVER['SERVER_PORT'];
 			}
@@ -125,19 +125,19 @@ class Request
 		isset($parse['pass'])     and $this->_pass   = $parse['pass'];
 		isset($parse['fragment']) and $this->_frag   = $parse['fragment'];
 		isset($parse['path'])     and $this->_path   = ltrim($parse['path'], '/');
-		isset($parse['query'])    and parse_str($parse['query'], $query);
+		isset($parse['query'])    and mb_parse_str($parse['query'], $query);
 
 		if ($query !== false) $this->set_query($query);
 
 		// delete userdir from path
 		if ($this->is_userdir() &&
-			strlen($this->_path) >= strlen($this->_userdir) &&
-			substr($this->_path, 0, strlen($this->_userdir)) == $this->_userdir)
+			mb_strlen($this->_path) >= mb_strlen($this->_userdir) &&
+			mb_substr($this->_path, 0, mb_strlen($this->_userdir)) == $this->_userdir)
 		{
-			$this->_path = ltrim(substr($this->_path, strlen($this->_userdir)), '/');
+			$this->_path = ltrim(mb_substr($this->_path, mb_strlen($this->_userdir)), '/');
 		}
 
-		$this->_isTrailingSlash = (substr($this->_path, -1) == '/');
+		$this->_isTrailingSlash = (mb_substr($this->_path, -1) == '/');
 
 		$this->_path   = rtrim($this->_path, '/');
 

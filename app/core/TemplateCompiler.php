@@ -127,8 +127,8 @@ class TemplateCompiler
 			return $index;
 		};
 
-		$double = strpos($data , '"');
-		$simple = strpos($data , '\'');
+		$double = mb_strpos($data , '"');
+		$simple = mb_strpos($data , '\'');
 
 		if ($double === false)
 		{
@@ -321,11 +321,11 @@ class TemplateCompiler
 			{
 				$me->block[$name] = $block;
 			}
-			elseif (strpos($me->block[$name], '{% parent %}') !== false)
+			elseif (mb_strpos($me->block[$name], '{% parent %}') !== false)
 			{
 				$me->block[$name] = str_replace('{% parent %}', $block, $me->block[$name]);
 			}
-			elseif (strpos($block, '{% child %}') !== false)
+			elseif (mb_strpos($block, '{% child %}') !== false)
 			{
 				$me->block[$name] = str_replace('{% child %}', $me->block[$name], $block);
 			}
@@ -363,7 +363,7 @@ class TemplateCompiler
 	{
 		$callback = function($data, $open)
 		{
-			return sprintf('<?php %s ({[ %s ]}) : ?>', substr($open, 3, -1), $data);
+			return sprintf('<?php %s ({[ %s ]}) : ?>', mb_substr($open, 3, -1), $data);
 		};
 
 		$this->replace_tag($this->tpl, '{% if ',     ' %}', $callback);
@@ -433,9 +433,9 @@ class TemplateCompiler
 					$v = explode('.', $v);
 					$v = array_shift($v);
 
-					if ($v == 'loop') return '#loop' . $loopIndex . substr($data, 4);
-					if ($v == $var)   return '#' . $var . substr($data, strlen($var));
-					if ($v == $key)   return '#' . $key . substr($data, strlen($key));
+					if ($v == 'loop') return '#loop' . $loopIndex . mb_substr($data, 4);
+					if ($v == $var)   return '#' . $var . mb_substr($data, mb_strlen($var));
+					if ($v == $key)   return '#' . $key . mb_substr($data, mb_strlen($key));
 
 					return $data;
 				});
@@ -454,7 +454,7 @@ class TemplateCompiler
 
 			$me->replace_inline($data, $callback);
 
-			if (strpos($data, '{% elsefor %}') !== false)
+			if (mb_strpos($data, '{% elsefor %}') !== false)
 			{
 				list($data, $else) = explode('{% elsefor %}', $data, 2);
 
@@ -638,21 +638,21 @@ class TemplateCompiler
 			case 'true'  : break;
 			case 'array' : break;
 			default:
-				switch(substr($var, 0, 1))
+				switch(mb_substr($var, 0, 1))
 				{
-					case ':' : break;                               // paren
-					case '-' : break;                               // quote
-					case '@' : $var = substr($var, 1); break;       // constant
-					case '#' : $var = '$' . substr($var, 1); break; // local
-					default  : $var = '$this.' . $var; break;      // template
+					case ':' : break;                                  // paren
+					case '-' : break;                                  // quote
+					case '@' : $var = mb_substr($var, 1);       break; // constant
+					case '#' : $var = '$' . mb_substr($var, 1); break; // local
+					default  : $var = '$this.' . $var;          break; // template
 				}
 
 				$addBraceToHyphensName = function($item)
 				{
-					return (strpos($item, '-') === false) ? $item : "{'$item'}";
+					return (mb_strpos($item, '-') === false) ? $item : "{'$item'}";
 				};
 
-				if (strpos($var, '.') !== false)
+				if (mb_strpos($var, '.') !== false)
 				{
 					$var = str_replace('->', '<>', $var);
 					$var = implode('->', array_map($addBraceToHyphensName, explode('.', $var)));
@@ -681,7 +681,7 @@ class TemplateCompiler
 
 		$param = (count($params) > 0) ? '::' . $params[0] . '::' : false;
 
-		if ($param) $this->paren[$param] = substr($this->paren[$param], 1, -1);
+		if ($param) $this->paren[$param] = mb_substr($this->paren[$param], 1, -1);
 
 		switch($filter)
 		{
@@ -697,12 +697,12 @@ class TemplateCompiler
 			case 'url'     : return 'urlencode(%s)';
 			case 'base64'  : return 'base64_encode(%s)';
 			case 'escape'  : return '$this->_filter_escape(%s)';
-			case 'len'     : return 'mb_strlen(%s, \'UTF-8\')';
-			case 'upper'   : return 'mb_strtoupper(%s, \'UTF-8\')';
-			case 'lower'   : return 'mb_strtolower(%s, \'UTF-8\')';
-			case 'capital' : return 'ucFirst(mb_strtolower(%s, \'UTF-8\'))';
-			case 'title'   : return 'ucWords(mb_strtolower(%s, \'UTF-8\'))';
-			case 'sub'     : return 'mb_substr(%s, ' . $param . ', \'UTF-8\')';
+			case 'len'     : return 'mb_strlen(%s)';
+			case 'upper'   : return 'mb_convert_case(%s, MB_CASE_UPPER)';
+			case 'lower'   : return 'mb_convert_case(%s, MB_CASE_LOWER)';
+			case 'capital' : return 'ucFirst(%s)';
+			case 'title'   : return 'mb_convert_case(%s, MB_CASE_TITLE)';
+			case 'sub'     : return 'mb_substr(%s, ' . $param . ')';
 			case 'replace' : return 'str_replace(' . $param . ', %s )';
 			case 'split'   : return 'explode(' . $param . ', %s)';
 			// math
@@ -807,17 +807,17 @@ class TemplateCompiler
 	public function replace_tag(&$data, $openTag, $closeTag, Closure $todo, $includedFirst = false, $startAt = 0, $includeLvl = 0)
 	{
 		// the len of the openTag, closeTag
-		$openLen  = mb_strlen($openTag, 'UTF-8');
-		$closeLen = mb_strlen($closeTag, 'UTF-8');
+		$openLen  = mb_strlen($openTag);
+		$closeLen = mb_strlen($closeTag);
 
 		// this is like a tail reccursion
 		while (true) :
 
 			// the len of data
-			$dataLen  = mb_strlen($data, 'UTF-8');
+			$dataLen  = mb_strlen($data);
 
 			// Let's go we find the first open tag after $startAt position.
-			$start = mb_strpos($data, $openTag, $startAt, 'UTF-8');
+			$start = mb_strpos($data, $openTag, $startAt);
 
 			// No open tag we return were we are in the scan.
 			if ($start === false) return $startAt;
@@ -827,13 +827,13 @@ class TemplateCompiler
 
 			// now we find the close tag or eat all the
 			// rest of data if there no close tag.
-			$stop = mb_strpos($data, $closeTag, $startAt, 'UTF-8') ?: $dataLen;
+			$stop = mb_strpos($data, $closeTag, $startAt) ?: $dataLen;
 
 			// if we should take care of included tag
 			if ($includedFirst)
 			{
 				// we look for the next open tag
-				$nextStart = mb_strpos($data, $openTag, $startAt, 'UTF-8');
+				$nextStart = mb_strpos($data, $openTag, $startAt);
 
 				// if an other open tag exists and its position is before our close tag
 				while ($nextStart !== false && $nextStart < $stop)
@@ -845,11 +845,11 @@ class TemplateCompiler
 					--$includeLvl;
 
 					// calc the new data length
-					$dataLen = mb_strlen($data, 'UTF-8');
+					$dataLen = mb_strlen($data);
 					// calc the new start tag
-					$nextStart = mb_strpos($data, $openTag, $startAt, 'UTF-8');
+					$nextStart = mb_strpos($data, $openTag, $startAt);
 					// and we redo the search of a close tag
-					$stop = mb_strpos($data, $closeTag, $startAt, 'UTF-8') ?: $dataLen;
+					$stop = mb_strpos($data, $closeTag, $startAt) ?: $dataLen;
 				}
 			}
 
@@ -858,19 +858,19 @@ class TemplateCompiler
 			$contentLen   = $stop - $contentStart;
 
 			// we get the data to replace
-			$content = mb_substr($data, $contentStart, $contentLen, 'UTF-8');
+			$content = mb_substr($data, $contentStart, $contentLen);
 
 			// retreive the replacement data
 			$content = $todo($content, $openTag, $closeTag);
 
 			// and replace it into the string (we don't use substr_replace()
 			// because there is no mb_substr_replace() function).
-			$data = mb_substr($data, 0, $start, 'UTF-8')
+			$data = mb_substr($data, 0, $start)
 				  . $content
-				  . mb_substr($data, $stop + $closeLen, $dataLen, 'UTF-8');
+				  . mb_substr($data, $stop + $closeLen, $dataLen);
 
 			// the new point to start the search
-			$startAt = $start + mb_strlen($content, 'UTF-8');
+			$startAt = $start + mb_strlen($content);
 
 			// if we are not in recursion, we follow our research
 			if ($includeLvl != 0) return $startAt;

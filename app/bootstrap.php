@@ -9,7 +9,7 @@ use pixelpost\core\Config,
 	pixelpost\core\Request,
 	pixelpost\core\Event;
 
-// Step 1. A little of PHP conf
+// Step 1. A little bit of PHP conf
 
 // report always all error (-1 is better than constant, php 5.3 & 5.4 compliant)
 error_reporting(-1);
@@ -18,22 +18,13 @@ ini_set('date.timezone',                 'UTC');
 ini_set('default_socket_timeout',        '10');
 ini_set('default_mimetype',              'text/html');
 ini_set('default_charset',               'UTF-8');
+ini_set('mbstring.language',             'neutral');
 ini_set('mbstring.internal_encoding',    'UTF-8');
-ini_set('mbstring.http_input',           'UTF-8');
-ini_set('mbstring.http_output',          'UTF-8');
-ini_set('mbstring.func_overload',        '7');
-ini_set('mbstring.encoding_translation', 'on');
-ini_set('asp_tags',                      'off');
-ini_set('allow_url_fopen',               'off');
-ini_set('allow_url_finclude',            'off');
-ini_set('file_uploads',                  'off');
-ini_set('register_argc_argv',            'off');
-ini_set('register_long_arrays',          'off');
-ini_set('safe_mode',                     'off');
+ini_set('mbstring.http_output',          'pass');
+ini_set('allow_url_include',             'off');
 ini_set('short_open_tag',                'off');
-ini_set('display_errors',                'stdout');
 ini_set('html_errors',                   'off');
-
+ini_set('display_errors',                'stdout');
 
 // Step 2. A little of constant creation
 defined('VERSION')   or define('VERSION',   '0.0.1',                true);

@@ -325,12 +325,12 @@ class WebAuth
 					->assign('key', self::_gen_reset_key($id, $user, $pass) . $id)
 					->render('auth/tpl/forget.php');
 
-				mail($email, 'Pixelpost reset password request', $content);
+				mb_send_mail($email, 'Pixelpost reset password request', $content);
 
 				// send an email to the admin with a reset link
 				$email = Config::create()->email;
 
-				mail($email, 'Pixelpost reset password request', $content);
+				mb_send_mail($email, 'Pixelpost reset password request', $content);
 			}
 
 			echo json_encode(array('status' => 'valid', 'message' => $message));
@@ -366,11 +366,11 @@ class WebAuth
 			$key = array_shift($params);
 
 			// if we have not key
-			if ($key === false || strlen($key) < 33) throw new Exception();
+			if ($key === false || mb_strlen($key) < 33) throw new Exception();
 
 			// get the user id from the key
-			$id  = intval(substr($key, 32));
-			$key = substr($key, 0, 32);
+			$id  = intval(mb_substr($key, 32));
+			$key = mb_substr($key, 0, 32);
 
 			// check if userID exists
 			if (!self::_check_userid($id, $user, $pass, $email)) throw new Exception();

@@ -54,7 +54,7 @@ class CodecGet
 		// extract extra parameters
 		foreach($params as $param)
 		{
-			if (false !== $pos = strpos($param, ':'))
+			if (false !== $pos = mb_strpos($param, ':'))
 			{
 				list($key, $val) = explode(':', $param, 2);
 

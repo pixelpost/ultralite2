@@ -323,8 +323,6 @@ class Filter
 	{
 		if (mb_check_encoding($str, $toEncoding) == false)
 		{
-			mb_detect_order('ASCII,ISO-8859-1,ISO-8859-15,UTF-8');
-
 			$str = mb_convert_encoding($str, $toEncoding, mb_detect_encoding($str));
 		}
 	}
@@ -439,7 +437,7 @@ class Filter
 	{
 		$size = trim($size);
 
-		switch (strtolower($size[strlen($size) - 1]))
+		switch (mb_strtolower($size[mb_strlen($size) - 1]))
 		{
 			case 'g': $size *= 1024;
 			case 'm': $size *= 1024;

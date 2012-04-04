@@ -590,7 +590,7 @@ EOF;
 	public function test_make_inline()
 	{
 		$test = 'This is my {{ name|upper }}: new {: #test|if("feature", "fonctionnality") :}.';
-		$result = 'This is my <?php echo mb_strtoupper($this->name, \'UTF-8\') ?>: new <?php $this->_filter_if($test, "feature", "fonctionnality") ?>.';
+		$result = 'This is my <?php echo mb_convert_case($this->name, MB_CASE_UPPER) ?>: new <?php $this->_filter_if($test, "feature", "fonctionnality") ?>.';
 
 		$this->object->tpl = $test;
 		$this->object->make_inline();
@@ -742,7 +742,7 @@ EOF;
 	public function test_extract_var_real_example()
 	{
 		$test   = '1 + foo[bar-foo] + big_Filter|default(#array[(foo + @bar)|upper|sub(bar|len)]|exists) + 23';
-		$result = '1 + $this->foo[$this->{\'bar-foo\'}] + (isset($this->big_Filter) ? $this->big_Filter : isset($array[mb_substr(mb_strtoupper(($this->foo + bar), \'UTF-8\'), mb_strlen($this->bar, \'UTF-8\'), \'UTF-8\')])) + 23';
+		$result = '1 + $this->foo[$this->{\'bar-foo\'}] + (isset($this->big_Filter) ? $this->big_Filter : isset($array[mb_substr(mb_convert_case(($this->foo + bar), MB_CASE_UPPER), mb_strlen($this->bar))])) + 23';
 
 		$object = $this->object;
 
