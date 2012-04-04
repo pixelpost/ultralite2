@@ -128,6 +128,7 @@ class Error extends Exception
 			case 7 : return 'Plugin: plugin "%s1" should provide a "%s2" class (fullname: "%s3").';
 			case 8 : return 'Plugin: plugin "%s1" should provide a "%s2" class that implements "%s3".';
 			case 9 : return 'Plugin: Could not open the directory "%s1".';
+			case 10: return 'Log: %s1() method require at least a message argument.';
 			case 11: return 'Template: Method assign require the first argument is a string or an array.';
 			case 12: return 'Template: Try to access property "%s1", this property is not set (use Template::assign("%s1")).';
 			case 13: return 'Template: Try to call method "%s1", this method is not set (use Template::assign("%s1")).';

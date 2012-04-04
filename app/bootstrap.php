@@ -33,6 +33,7 @@ defined('APP_PATH')  or define('APP_PATH',  ROOT_PATH . '/app',     true);
 defined('CORE_PATH') or define('CORE_PATH', APP_PATH  . '/core',    true);
 defined('PLUG_PATH') or define('PLUG_PATH', APP_PATH  . '/plugins', true);
 defined('PRIV_PATH') or define('PRIV_PATH', ROOT_PATH . '/private', true);
+defined('LOG_FILE')  or define('LOG_FILE',  PRIV_PATH . '/log',     true);
 
 // Step 3. A little of error handling
 set_error_handler(function ($errno, $errstr, $errfile, $errline)
@@ -92,10 +93,12 @@ $conf = Config::load(PRIV_PATH . '/config.json');
 $debug = ($conf->debug or 'development' == getenv('APPLICATION_ENV'));
 
 defined('DEBUG')       or define('DEBUG',       $debug,                      true);
+defined('PROCESS_ID')  or define('PROCESS_ID',  uniqid(),                    true);
 defined('WEB_URL')     or define('WEB_URL',     $conf->url,                  true);
 defined('CONTENT_URL') or define('CONTENT_URL', $conf->url . 'app/plugins/', true);
 
 DEBUG or error_reporting(0);
+DEBUG or assert_options(ASSERT_ACTIVE, false);
 
 date_default_timezone_set($conf->timezone);
 
