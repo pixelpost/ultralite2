@@ -10,9 +10,8 @@ use pixelpost\core\Config,
 	pixelpost\core\Event;
 
 // Step 1. A little bit of PHP conf
-
-// report always all error (-1 is better than constant, php 5.3 & 5.4 compliant)
 error_reporting(-1);
+assert_options(ASSERT_ACTIVE, false);
 
 ini_set('date.timezone',                 'UTC');
 ini_set('default_socket_timeout',        '10');
@@ -97,22 +96,42 @@ defined('PROCESS_ID')  or define('PROCESS_ID',  uniqid(),                    tru
 defined('WEB_URL')     or define('WEB_URL',     $conf->url,                  true);
 defined('CONTENT_URL') or define('CONTENT_URL', $conf->url . 'app/plugins/', true);
 
-DEBUG or error_reporting(0);
-DEBUG or assert_options(ASSERT_ACTIVE, false);
+DEBUG or  error_reporting(0);
+DEBUG and assert_options(ASSERT_ACTIVE, true);
 
 date_default_timezone_set($conf->timezone);
+
+assert('pixelpost\core\Log::info("(bootstrap) new process: %s", PROCESS_ID)');
+assert('pixelpost\core\Log::debug("(bootstrap) VERSION: %s",     VERSION)');
+assert('pixelpost\core\Log::debug("(bootstrap) ROOT_PATH: %s",   ROOT_PATH)');
+assert('pixelpost\core\Log::debug("(bootstrap) APP_PATH: %s",    APP_PATH)');
+assert('pixelpost\core\Log::debug("(bootstrap) CORE_PATH: %s",   CORE_PATH)');
+assert('pixelpost\core\Log::debug("(bootstrap) PLUG_PATH: %s",   PLUG_PATH)');
+assert('pixelpost\core\Log::debug("(bootstrap) PRIV_PATH: %s",   PRIV_PATH)');
+assert('pixelpost\core\Log::debug("(bootstrap) WEB_URL: %s",     WEB_URL)');
+assert('pixelpost\core\Log::debug("(bootstrap) CONTENT_URL: %s", CONTENT_URL)');
 
 // Step 6. Check auto update if needed
 if (Filter::compare_version($conf->version, VERSION))
 {
+	assert('pixelpost\core\Log::info("(bootstrap) upgrade detected")');
+
 	require_once APP_PATH . '/update.php';
 }
 
 // Step 7. Registers activated plugins
+assert('pixelpost\core\Log::info("(bootstrap) plugin registration")');
+
 Plugin::make_registration();
 
 // Step 8. We need to parse the incoming request
+assert('pixelpost\core\Log::info("(bootstrap) Web request creation")');
+
 $request = Request::create()->set_userdir($conf->userdir)->auto();
 
 // Step 9. We just said we have a new request ! Enjoy :)
+assert('pixelpost\core\Log::info("(bootstrap) Handle %s", $request->get_request_url())');
+
 $event = Event::signal('request.new', array('request' => $request));
+
+assert('pixelpost\core\Log::info("(bootstrap) Terminated")');

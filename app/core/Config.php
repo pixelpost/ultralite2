@@ -100,6 +100,8 @@ class Config extends ArrayObject
 	 */
 	public function save()
 	{
+		assert('pixelpost\core\Log::info("(Config) store a new config file")');
+
 		$data = json_encode($this, JSON_HEX_QUOT);
 
 		return (bool) file_put_contents(static::$_file, $data, LOCK_EX);

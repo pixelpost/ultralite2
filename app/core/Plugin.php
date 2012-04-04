@@ -418,6 +418,8 @@ class Plugin
 		{
 			if ($status != static::STATE_ACTIVE) continue;
 
+			assert('pixelpost\core\Log::info("(Plugin) Register %s", $plugin)');
+
 			static::register($plugin);
 		}
 	}

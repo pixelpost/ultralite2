@@ -133,6 +133,8 @@ class Event extends ArrayObject
 	{
 		$eventName = strval($eventName);
 
+		assert('pixelpost\core\Log::info("(Event) Event %s", $eventName)');
+
 		$event->set_name($eventName);
 
 		if (!isset(static::$_listen[$eventName])) return $event;
@@ -149,6 +151,8 @@ class Event extends ArrayObject
 
 		foreach (static::$_listen[$eventName] as $callback)
 		{
+			assert('pixelpost\core\Log::debug("(Event) call: %s", $callback)');
+
 			if (call_user_func($callback, $event) === false) break;
 		}
 
