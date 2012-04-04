@@ -33,7 +33,7 @@ else
 	}
 
 	// check if GD is installed in version 2
-	if (!defined('GD_MAJOR_VERSION'))
+	if (extension_loaded('gd'))
 	{
 		$warnings[] = 'GD 2 library is not installed.';
 	}
@@ -46,9 +46,14 @@ else
 
 	// check if sqlite3 is present (some distribution like debian
 	// provide sqlite3 support in a separated paquet.
-	if (!class_exists('SQLite3'))
+	if (extension_loaded('sqlite3'))
 	{
-		$warnings[] = 'SQLite3 library is not installed.';
+		$warnings[] = 'sqlite3 extension is not installed.';
+	}
+
+	if (extension_loaded('mbstring'))
+	{
+		$warnings[] = 'mbstring extension is not installed.';
 	}
 }
 
