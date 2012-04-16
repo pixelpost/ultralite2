@@ -1,30 +1,30 @@
 <FilesMatch "config\.json|\.(htaccess|db|git)$">
- Order Allow,Deny
- Deny from all
+	Order Allow,Deny
+	Deny from all
 </FilesMatch>
 
 <IfModule mod_rewrite.c>
-    RewriteEngine on
-    RewriteRule ^.*\.(css|js|gif|png|jpe?g|ico|swf|flv|txt)$ - [L]
-    RewriteRule index.php$ - [L]
-    RewriteRule ^.*$ index.php [L]
+	RewriteEngine on
+	RewriteRule public/.*$ - [L]
+	RewriteRule index\.php$ - [L]
+	RewriteRule ^.*$ index.php [L]
 </IfModule>
 
 <IfModule deflate_module>
-    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/x-javascript
+	AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/x-javascript
 </IfModule>
 
 <IfModule mod_expires.c>
-    ExpiresActive On
-    ExpiresDefault A0
+	ExpiresActive On
+	ExpiresDefault A0
 
-    <FilesMatch "\.(gif|jpe?g|png|js|css|ico)$">
-        ExpiresDefault A3600
-    </FilesMatch>
+	<FilesMatch "\.(gif|jpe?g|png|js|css|ico)$">
+		ExpiresDefault A3600
+	</FilesMatch>
 </IfModule>
 
 <IfModule mod_php5.c>
-    php_flag magic_quotes_gpc Off
+	php_flag magic_quotes_gpc Off
 </IfModule>
 
 <IfModule mod_env.c>

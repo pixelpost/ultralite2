@@ -20,6 +20,12 @@ else
 		$warnings[] = '`' . PRIV_PATH . '` already exists (config file and database, will not be created).';
 	}
 
+	// check if public folder already exists
+	if (file_exists(PUB_PATH))
+	{
+		$warnings[] = '`' . PUB_PATH . '` already exists (files in it will be exposed on internet).';
+	}
+
 	// check if a .htaccess file allready exists
 	if (file_exists(ROOT_PATH . '/.htaccess'))
 	{

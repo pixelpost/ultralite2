@@ -31,6 +31,7 @@ defined('ROOT_PATH') or define('ROOT_PATH', dirname(__DIR__),       true);
 defined('APP_PATH')  or define('APP_PATH',  ROOT_PATH . '/app',     true);
 defined('CORE_PATH') or define('CORE_PATH', APP_PATH  . '/core',    true);
 defined('PLUG_PATH') or define('PLUG_PATH', APP_PATH  . '/plugins', true);
+defined('PUB_PATH')  or define('PUB_PATH',  ROOT_PATH . '/public',  true);
 defined('PRIV_PATH') or define('PRIV_PATH', ROOT_PATH . '/private', true);
 defined('LOG_FILE')  or define('LOG_FILE',  PRIV_PATH . '/log',     true);
 
@@ -91,10 +92,10 @@ $conf = Config::load(PRIV_PATH . '/config.json');
 // variable `APPLICATION_ENV` to `development` in .htaccess
 $debug = ($conf->debug or 'development' == getenv('APPLICATION_ENV'));
 
-defined('DEBUG')       or define('DEBUG',       $debug,                      true);
-defined('PROCESS_ID')  or define('PROCESS_ID',  uniqid(),                    true);
-defined('WEB_URL')     or define('WEB_URL',     $conf->url,                  true);
-defined('CONTENT_URL') or define('CONTENT_URL', $conf->url . 'app/plugins/', true);
+defined('DEBUG')       or define('DEBUG',       $debug,                 true);
+defined('PROCESS_ID')  or define('PROCESS_ID',  uniqid(),               true);
+defined('WEB_URL')     or define('WEB_URL',     $conf->url,             true);
+defined('CONTENT_URL') or define('CONTENT_URL', $conf->url . 'public/', true);
 
 DEBUG or  error_reporting(0);
 DEBUG and assert_options(ASSERT_ACTIVE, true);

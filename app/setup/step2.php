@@ -18,6 +18,14 @@ try
 
 	$rollbackTo = 1;
 
+	// create the /public directory
+	if (mkdir(PUB_PATH, 0775) == false)
+	{
+		throw new Exception(sprintf('Cannot create `%s`.', PUB_PATH));
+	}
+
+	$rollbackTo = 2;
+
 	// copy the /config.json file
 	$src = APP_PATH  . '/setup/samples/config_sample.json';
 	$dst = PRIV_PATH . '/config.json';
@@ -27,7 +35,7 @@ try
 		throw new Exception(sprintf('Cannot copy `%s` to `%s`.', $src, $dst));
 	}
 
-	$rollbackTo = 2;
+	$rollbackTo = 3;
 
 	// copy the /.htaccess file
 	$src = APP_PATH  . '/setup/samples/htaccess_sample';
@@ -38,7 +46,7 @@ try
 		throw new Exception(sprintf('Cannot copy `%s` to `%s`.', $src, $dst));
 	}
 
-	$rollbackTo = 3;
+	$rollbackTo = 4;
 
 	// copy the /private/.htaccess file
 	$src = APP_PATH  . '/setup/samples/htaccess_priv_sample';
@@ -49,7 +57,7 @@ try
 		throw new Exception(sprintf('Cannot copy `%s` to `%s`.', $src, $dst));
 	}
 
-	$rollbackTo = 4;
+	$rollbackTo = 5;
 
 	// copy the /index.php file
 	$src = APP_PATH  . '/setup/samples/index_sample.php';
@@ -60,12 +68,12 @@ try
 		throw new Exception(sprintf('Cannot copy `%s` to `%s`.', $src, $dst));
 	}
 
-	$rollbackTo = 5;
+	$rollbackTo = 6;
 
 	// create the database
 	core\Db::create();
 
-	$rollbackTo = 6;
+	$rollbackTo = 7;
 
 	// Load the request and retrieve step1 form and userdir in url data
 	$request = core\Request::create()->auto();
@@ -101,7 +109,7 @@ try
 		throw new Exception(sprintf($m, $plugin, $e));
 	}
 
-	$rollbackTo = 7;
+	$rollbackTo = 8;
 
 	// add user / password (not use api because api require grant access)
 	$userName  = $post['username'];
@@ -126,12 +134,13 @@ catch(Exception $e)
 {
 	$error = $e->getMessage() . ', on line: ' . $e->getLine() . ' : ' . $e->getFile();
 
-	if ($rollbackTo >= 7) photo\Plugin::uninstall();
-	if ($rollbackTo >= 6) unlink(PRIV_PATH . '/sqlite3.db');
-	if ($rollbackTo >= 5) unlink(ROOT_PATH . '/index.php');
-	if ($rollbackTo >= 4) unlink(PRIV_PATH . '/.htaccess');
-	if ($rollbackTo >= 3) unlink(ROOT_PATH . '/.htaccess');
-	if ($rollbackTo >= 2) unlink(PRIV_PATH . '/config.json');
+	if ($rollbackTo >= 8) photo\Plugin::uninstall();
+	if ($rollbackTo >= 7) unlink(PRIV_PATH . '/sqlite3.db');
+	if ($rollbackTo >= 6) unlink(ROOT_PATH . '/index.php');
+	if ($rollbackTo >= 5) unlink(PRIV_PATH . '/.htaccess');
+	if ($rollbackTo >= 4) unlink(ROOT_PATH . '/.htaccess');
+	if ($rollbackTo >= 3) unlink(PRIV_PATH . '/config.json');
+	if ($rollbackTo >= 2) rmdir(PUB_PATH);
 	if ($rollbackTo >= 1) rmdir(PRIV_PATH);
 }
 

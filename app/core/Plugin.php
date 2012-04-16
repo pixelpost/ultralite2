@@ -329,6 +329,23 @@ class Plugin
 
 		if (!call_user_func(static::get_method($plugin, 'install'))) return false;
 
+		$from = PLUG_PATH . '/' . $plugin . '/public';
+		$to   = PUB_PATH  . '/' . $plugin;
+
+		if (is_dir($from))
+		{
+			$len = mb_strlen($from);
+
+			foreach(new RII(new RDI($from), RII::LEAVES_ONLY) as $file)
+			{
+				$path = $to . mb_substr($file->getPath(), $len);
+
+				if (!is_dir($path)) mkdir($path, 0775, true);
+
+				copy($file->getPathName(), $path . '/' . $file->getBaseName());
+			}
+		}
+
 		static::set_state($plugin, static::STATE_INACTIVE);
 
 		return true;
@@ -352,6 +369,19 @@ class Plugin
 		if (!static::inactive($plugin)) return false;
 
 		if (!call_user_func(static::get_method($plugin, 'uninstall'))) return false;
+
+		$path = PUB_PATH . '/' . $plugin;
+
+		if (is_dir($path))
+		{
+			foreach(new RII(new RDI($path), RII::CHILD_FIRST) as $file)
+			{
+				$method = $file->isDir() ? "rmdir" : 'unlink';
+				$method($file->getPathName());
+			}
+
+			rmdir($path);
+		}
 
 		static::set_state($plugin, static::STATE_UNINSTALLED);
 
