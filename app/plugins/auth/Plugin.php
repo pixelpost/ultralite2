@@ -66,8 +66,8 @@ class Plugin implements PluginInterface
 	public static function depends()
 	{
 		return array(
-			'api'    => '0.0.1',
-			'router' => '0.0.1',
+			'api'       => '0.0.1',
+			'pixelpost' => '0.0.1',
 		);
 	}
 
@@ -106,10 +106,10 @@ class Plugin implements PluginInterface
 
 	public static function register()
 	{
-		$self   = __CLASS__;
-		$api    = __NAMESPACE__ . '\Api';
-		$admin  = __NAMESPACE__ . '\Admin';
-		$router = 'pixelpost\plugins\Router\Plugin';
+		$self  = __CLASS__;
+		$api   = __NAMESPACE__ . '\Api';
+		$admin = __NAMESPACE__ . '\Admin';
+		$pp    = 'pixelpost\plugins\pixelpost\Plugin';
 
 		Event::register_list(array(
 			// api events
@@ -147,7 +147,7 @@ class Plugin implements PluginInterface
 			array('admin.template.footer',     $admin  . '::template_footer'),
 			array('admin.template.css',        $admin  . '::template_css'),
 			array('admin.template.js',         $admin  . '::template_js'),
-			array('admin.auth',                $router . '::route'),
+			array('admin.auth',                $pp     . '::route'),
 			array('admin.auth.api-bridge',     $admin  . '::page_api_bridge'),
 			array('admin.auth.account',        $admin  . '::page_account'),
 		));

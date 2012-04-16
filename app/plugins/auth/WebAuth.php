@@ -195,7 +195,7 @@ class WebAuth
 		// Cookie's path is limited to the admin directory and this domain.
 		// We register the user in a permanent cookie and the auth in a session cookie.
 		$conf   = Config::create();
-		$path   = '/' . $conf->userdir . '/' . $conf->plugin_router->admin . '/';
+		$path   = '/' . $conf->userdir . '/' . $conf->pixelpost->admin . '/';
 		$expire = time() + (365 * 24 * 3600);
 		$key    = base64_encode(self::_gen_auth_key($id, $user, $pass));
 		$user   = base64_encode($user);
@@ -428,7 +428,7 @@ class WebAuth
 	public static function disconnect(Request $request)
 	{
 		$conf   = Config::create();
-		$path   = '/' . $conf->userdir . '/' . $conf->plugin_router->admin . '/';
+		$path   = '/' . $conf->userdir . '/' . $conf->pixelpost->admin . '/';
 		$expire = time() - (365 * 24 * 3600);
 		$domain = $request->get_host();
 

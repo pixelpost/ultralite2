@@ -2,7 +2,7 @@
 
 namespace pixelpost\plugins\admin;
 
-use pixelpost\plugins\router\Plugin as Router,
+use pixelpost\plugins\pixelpost\Plugin as PP,
 	pixelpost\core\PluginInterface,
 	pixelpost\core\Event;
 
@@ -23,7 +23,7 @@ class Plugin implements PluginInterface
 
 	public static function depends()
 	{
-		return array('router' => '0.0.1');
+		return array('pixelpost' => '0.0.1');
 	}
 
 	public static function install()
@@ -84,7 +84,7 @@ class Plugin implements PluginInterface
 	{
 		$event->set_name('admin');
 
-		Router::route($event);
+		PP::route($event);
 
 		if (!$event->is_processed())
 		{

@@ -1,13 +1,13 @@
 <?php
 
-namespace pixelpost\plugins\router;
+namespace pixelpost\plugins\pixelpost;
 
 use pixelpost\core\Config,
 	pixelpost\core\PluginInterface,
 	pixelpost\core\Event;
 
 /**
- * Base router for pixelpost.
+ * Base for pixelpost.
  *
  * @copyright  2011 Alban LEROUX <seza@paradoxal.org>
  * @license    http://creativecommons.org/licenses/by-sa/3.0/ Creative Commons
@@ -18,7 +18,7 @@ class Plugin implements PluginInterface
 {
 	public static function version()
 	{
-		return '0.0.1';
+		return VERSION;
 	}
 
 	public static function depends()
@@ -34,7 +34,7 @@ class Plugin implements PluginInterface
 		}';
 
 		$conf = Config::create();
-		$conf->plugin_router = json_decode($configuration);
+		$conf->pixelpost = json_decode($configuration);
 		$conf->save();
 
 		return true;
@@ -44,7 +44,7 @@ class Plugin implements PluginInterface
 	{
 		$conf = Config::create();
 
-		unset($conf->plugin_router);
+		unset($conf->pixelpost);
 
 		$conf->save();
 
@@ -60,8 +60,8 @@ class Plugin implements PluginInterface
 	{
 		$conf = Config::create();
 
-		define('API_URL',   WEB_URL . $conf->plugin_router->api   . '/', true);
-		define('ADMIN_URL', WEB_URL . $conf->plugin_router->admin . '/', true);
+		define('API_URL',   WEB_URL . $conf->pixelpost->api   . '/', true);
+		define('ADMIN_URL', WEB_URL . $conf->pixelpost->admin . '/', true);
 
 		Event::register('request.new', __CLASS__ . '::request_new');
 	}
@@ -69,7 +69,7 @@ class Plugin implements PluginInterface
 	public static function request_new(Event $event)
 	{
 		// retrieve the configuration plugin
-		$conf    = Config::create()->plugin_router;
+		$conf    = Config::create()->pixelpost;
 
 		// get the request and its url paramters
 		$request = $event->request;

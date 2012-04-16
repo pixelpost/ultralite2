@@ -27,7 +27,7 @@ class Plugin implements PluginInterface
 
 	public static function depends()
 	{
-		return array('router' => '0.0.1');
+		return array('pixelpost' => '0.0.1');
 	}
 
 	public static function install()

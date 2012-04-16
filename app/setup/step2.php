@@ -117,7 +117,7 @@ try
 	}
 
 	// need ADMIN_URL constant for webAuth
-	define('ADMIN_URL', $conf->url . $conf->plugin_router->admin . '/');
+	define('ADMIN_URL', $conf->url . $conf->pixelpost->admin . '/');
 
 	// authentificate the user
 	auth\WebAuth::register($userName, $userPass, $userId, $request->get_host());
