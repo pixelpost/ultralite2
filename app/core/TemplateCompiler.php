@@ -697,6 +697,7 @@ class TemplateCompiler
 			case 'url'     : return 'urlencode(%s)';
 			case 'base64'  : return 'base64_encode(%s)';
 			case 'escape'  : return '$this->_filter_escape(%s)';
+			case 'asset'   : return '$this->_filter_asset(%s)';
 			case 'len'     : return 'mb_strlen(%s)';
 			case 'upper'   : return 'mb_convert_case(%s, MB_CASE_UPPER)';
 			case 'lower'   : return 'mb_convert_case(%s, MB_CASE_LOWER)';

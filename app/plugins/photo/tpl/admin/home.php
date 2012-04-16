@@ -2,12 +2,12 @@
 
 
 {% block Css %}
-<link rel="stylesheet" href="{{ @CONTENT_URL }}photo/css/admin.css">
+<link rel="stylesheet" href="{{ 'photo::css/admin.css'|asset }}">
 {% endblock %}
 
 
 {% block Js %}
-<script src="{{ @CONTENT_URL }}photo/js/dropbox.js"></script>
+<script src="{{ 'photo::js/dropbox.js'|asset }}"></script>
 <script>
 	PP_DROPBOX_MAX_SIZE = {{ post_max_size }};
 </script>

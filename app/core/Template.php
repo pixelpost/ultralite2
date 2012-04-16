@@ -381,6 +381,14 @@ class Template
 		return number_format($number, 2);
 	}
 
+
+	protected function _filter_asset($asset)
+	{
+		list($plugin, $path) = explode('::', $asset, 2);
+
+		return CONTENT_URL . $plugin . '/' . $path;
+	}
+
 	/**
 	 * Compile a template into a raw template. (eg. Transform it into a valid
 	 * php code without associating the template data to it).
