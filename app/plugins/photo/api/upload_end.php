@@ -5,8 +5,7 @@ namespace app\plugins\photo;
 use pixelpost\plugins\auth\Plugin   as Auth,
 	pixelpost\plugins\api\Plugin    as Api,
 	pixelpost\plugins\api\Exception as ApiError,
-	RecursiveIteratorIterator       as RII,
-	RecursiveDirectoryIterator      as RDI;
+	pixelpost\core\Fs;
 
 // grants checks
 if (!Auth::is_granted('write')) throw new ApiError\Ungranted('upload.end');
@@ -62,13 +61,7 @@ for($i = 1; !$aborted && $i <= $metadata->chunks; ++$i)
 fclose($fp);
 
 // clean chunks
-foreach(new RII(new RDI($fname . '_chunks'), RII::CHILD_FIRST) as $fd)
-{
-	$method = $fd->isDir() ? 'rmdir' : 'unlink';
-	$method($fd->getPathName());
-}
-
-rmdir($fname . '_chunks');
+Fs::delete($fname . '_chunks');
 
 // if we had a problem
 if ($aborted)

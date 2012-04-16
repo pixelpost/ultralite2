@@ -142,6 +142,7 @@ class Error extends Exception
 			case 21: return 'TemplateCompiler: Try to extends a template with a non existant template file : "%s1".';
 			case 22: return 'TemplateCompiler: Please provide a filename in the include tag.';
 			case 23: return 'TemplateCompiler: Try to include a template from a non existant template file : "%s1".';
+			case 24: return 'Fs: Couldn\'t create directory "%s1".';
 		}
 	}
 }

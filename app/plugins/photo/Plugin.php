@@ -5,8 +5,7 @@ namespace pixelpost\plugins\photo;
 use pixelpost\core\Config,
 	pixelpost\core\Event,
 	pixelpost\core\PluginInterface,
-	RecursiveIteratorIterator as RII,
-	RecursiveDirectoryIterator as RDI;
+	pixelpost\core\Fs;
 
 /**
  * Photo plugin, provide API methods for managing photo content
@@ -86,20 +85,8 @@ class Plugin implements PluginInterface
 
 		Model::table_delete();
 
-		foreach(new RII(new RDI($photo_dir), RII::CHILD_FIRST) as $file)
-		{
-			$method = $file->isDir() ? 'rmdir' : 'unlink';
-			$method($file->getPathName());
-		}
-
-		foreach(new RII(new RDI($upload_dir), RII::CHILD_FIRST) as $file)
-		{
-			$method = $file->isDir() ? 'rmdir' : 'unlink';
-			$method($file->getPathName());
-		}
-
-		rmdir($photo_dir);
-		rmdir($upload_dir);
+		Fs::delete($photo_dir);
+		Fs::delete($upload_dir);
 
 		return true;
 	}
