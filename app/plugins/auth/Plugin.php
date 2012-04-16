@@ -67,6 +67,7 @@ class Plugin implements PluginInterface
 	{
 		return array(
 			'api'       => '0.0.1',
+			'admin'     => '0.0.1',
 			'pixelpost' => '0.0.1',
 		);
 	}
