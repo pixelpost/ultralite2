@@ -18,7 +18,7 @@ class DbTest extends \PHPUnit_Framework_TestCase
 	 */
 	protected function setUp()
 	{
-		$this->_dababase = realpath(sys_get_temp_dir()) . SEP . 'pp_ut_db_sqlite3_' . uniqid();
+		$this->_dababase = realpath(sys_get_temp_dir()) . '/pp_ut_db_sqlite3_' . uniqid();
 	}
 
 	/**
