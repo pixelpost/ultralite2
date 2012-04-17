@@ -78,25 +78,40 @@ EOF;
 	public function test_escape_quote()
 	{
 		$test = 'This is \'quoted word\', normal words and "words" in quotes.';
-		$inter = 'This is --0--, normal numbers and --1-- in marks.';
+		$inter1 = 'This is --0--, normal words and --1-- in quotes.';
+		$inter2 = 'This is --0--, normal numbers and --1-- in marks.';
 		$result = 'This is \'quoted word\', normal numbers and "words" in marks.';
+		$quotes = array(
+			'--0--' => "'quoted word'",
+			'--1--' => '"words"',
+		);
 
 		$this->object->escape_quote($test);
-
+		$this->assertSame($quotes, $this->object->quote);
+		$this->assertSame($inter1, $test);
 		$test = str_replace('quote', 'mark', $test);
 		$test = str_replace('word', 'number', $test);
-
-		$this->assertSame($inter, $test);
-
-		$this->assertArrayHasKey('--0--', $this->object->quote);
-		$this->assertArrayHasKey('--1--', $this->object->quote);
-
-		$this->assertSame("'quoted word'", $this->object->quote['--0--']);
-		$this->assertSame('"words"',       $this->object->quote['--1--']);
-
+		$this->assertSame($inter2, $test);
 		$this->object->unescape_quote($test);
-
 		$this->assertSame($result, $test);
+	}
+
+	/**
+	 * @covers pixelpost\core\TemplateCompiler::escape_quote
+	 */
+	public function test_escape_quote_reset()
+	{
+		$test = '"foo" "bar"';
+		$this->object->escape_quote($test);
+		$this->assertSame('--0-- --1--', $test);
+		$this->object->unescape_quote($test);
+		$this->assertSame('"foo" "bar"', $test);
+
+		$test = '"foo2" "bar2"';
+		$this->object->escape_quote($test);
+		$this->assertSame('--0-- --1--', $test);
+		$this->object->unescape_quote($test);
+		$this->assertSame('"foo2" "bar2"', $test);
 	}
 
 	/**
@@ -131,6 +146,24 @@ EOF;
 	}
 
 	/**
+	 * @covers pixelpost\core\TemplateCompiler::escape_square
+	 */
+	public function test_escape_square_reset()
+	{
+		$test = '[foo] [bar]';
+		$this->object->escape_square($test);
+		$this->assertSame('§§0§§ §§1§§', $test);
+		$this->object->unescape_square($test);
+		$this->assertSame('[foo] [bar]', $test);
+
+		$test = '[foo2] [bar2]';
+		$this->object->escape_square($test);
+		$this->assertSame('§§0§§ §§1§§', $test);
+		$this->object->unescape_square($test);
+		$this->assertSame('[foo2] [bar2]', $test);
+	}
+
+	/**
 	 * @covers pixelpost\core\TemplateCompiler::escape_paren
 	 * @covers pixelpost\core\TemplateCompiler::unescape_paren
 	 */
@@ -159,6 +192,24 @@ EOF;
 		$this->object->unescape_paren($test);
 
 		$this->assertSame($result, $test);
+	}
+
+	/**
+	 * @covers pixelpost\core\TemplateCompiler::escape_paren
+	 */
+	public function test_escape_paren_reset()
+	{
+		$test = '(foo) (bar)';
+		$this->object->escape_paren($test);
+		$this->assertSame('::0:: ::1::', $test);
+		$this->object->unescape_paren($test);
+		$this->assertSame('(foo) (bar)', $test);
+
+		$test = '(foo2) (bar2)';
+		$this->object->escape_paren($test);
+		$this->assertSame('::0:: ::1::', $test);
+		$this->object->unescape_paren($test);
+		$this->assertSame('(foo2) (bar2)', $test);
 	}
 
 	/**
@@ -212,6 +263,27 @@ EOF;
 	}
 
 	/**
+	 * @covers pixelpost\core\TemplateCompiler::extract_block
+	 */
+	public function test_extract_block_with_sub_blocks()
+	{
+		$test = 'Head, {% block Body %}foo, {% block Inner %}bar{% endblock %}{% endblock %}.';
+
+		$tpl = 'Head, {% BLOCK Body %}.';
+
+		$block = array(
+			'{% BLOCK Inner %}' => 'bar',
+			'{% BLOCK Body %}'  => 'foo, {% BLOCK Inner %}',
+		);
+
+		$this->object->tpl = $test;
+		$this->object->extract_block();
+
+		$this->assertSame($block, $this->object->block);
+		$this->assertSame($tpl,   $this->object->tpl);
+	}
+
+	/**
 	 * @covers pixelpost\core\TemplateCompiler::compile_block
 	 */
 	public function test_compiler_block()
@@ -231,6 +303,9 @@ EOF;
 		$this->assertSame($result, $this->object->tpl);
 	}
 
+	/**
+	 * @covers pixelpost\core\TemplateCompiler::extract_block
+	 */
 	public function test_extract_block_display()
 	{
 		// here we assume that $child_tpl contains a {% extends $parent_tpl %} tag
@@ -263,6 +338,9 @@ EOF;
 		$this->assertSame($result3, $this->object->tpl);
 	}
 
+	/**
+	 * @covers pixelpost\core\TemplateCompiler::extract_block
+	 */
 	public function test_extract_block_display_non_exists()
 	{
 		$tpl = 'Hello, my name is {% display name %}.';
@@ -394,6 +472,29 @@ EOF;
 	/**
 	 * @covers pixelpost\core\TemplateCompiler::extract_block
 	 */
+	public function test_extract_block_with_child_tag_and_no_child()
+	{
+		$tpl = 'Hello {% block name %}{% child %}, how are you?{% endblock %}.';
+
+		$result1 = 'Hello {% BLOCK name %}.';
+		$result2 = 'Hello , how are you?.';
+
+		$this->object->tpl = $tpl;
+
+		$this->object->extract_block();
+
+		$this->assertArrayHasKey('{% BLOCK name %}', $this->object->block);
+		$this->assertSame(', how are you?', $this->object->block['{% BLOCK name %}']);
+		$this->assertSame($result1, $this->object->tpl);
+
+		$this->object->compile_block();
+
+		$this->assertSame($result2, $this->object->tpl);
+	}
+
+	/**
+	 * @covers pixelpost\core\TemplateCompiler::extract_block
+	 */
 	public function test_extract_block_with_child_and_parent_tag()
 	{
 		// this is really a weird thing to do...
@@ -404,7 +505,7 @@ EOF;
 
 		$result1 = '{% BLOCK name %}';
 		$result2 = 'Hello, {% BLOCK name %}.';
-		$result3 = 'Hello, my name is {% child %} Alban.';
+		$result3 = 'Hello, my name is  Alban.';
 
 		$this->object->tpl = $child_tpl;
 
@@ -419,7 +520,7 @@ EOF;
 		$this->object->extract_block();
 
 		$this->assertArrayHasKey('{% BLOCK name %}', $this->object->block);
-		$this->assertSame('my name is {% child %} Alban', $this->object->block['{% BLOCK name %}']);
+		$this->assertSame('my name is  Alban', $this->object->block['{% BLOCK name %}']);
 		$this->assertSame($result2, $this->object->tpl);
 
 		$this->object->compile_block();

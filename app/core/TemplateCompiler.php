@@ -116,13 +116,12 @@ class TemplateCompiler
 	{
 		$this->quote = array();
 
-		$me = $this;
+		$quote = & $this->quote;
 
-		$callback = function($inQuote, $open) use ($me)
+		$callback = function($inQuote, $open) use (&$quote)
 		{
-			$index = '--' . count($me->quote) . '--';
-
-			$me->quote[$index] = $open . $inQuote . $open;
+			$index         = '--' . count($quote) . '--';
+			$quote[$index] = $open . $inQuote . $open;
 
 			return $index;
 		};
@@ -176,13 +175,12 @@ class TemplateCompiler
 	{
 		$this->square = array();
 
-		$me = $this;
+		$square = & $this->square;
 
-		$callback = function($inSquare) use ($me)
+		$callback = function($inSquare) use (&$square)
 		{
-			$index = '§§' . count($me->square) . '§§';
-
-			$me->square[$index] = '[' . $inSquare . ']';
+			$index          = '§§' . count($square) . '§§';
+			$square[$index] = '[' . $inSquare . ']';
 
 			return $index;
 		};
@@ -218,13 +216,12 @@ class TemplateCompiler
 	{
 		$this->paren = array();
 
-		$me = $this;
+		$paren = & $this->paren;
 
-		$callback = function($inSquare) use ($me)
+		$callback = function($inParen) use (&$paren)
 		{
-			$index = '::' . count($me->paren) . '::';
-
-			$me->paren[$index] = '(' . $inSquare . ')';
+			$index         = '::' . count($paren) . '::';
+			$paren[$index] = '(' . $inParen . ')';
 
 			return $index;
 		};
@@ -256,12 +253,12 @@ class TemplateCompiler
 	 */
 	public function escape_raw_block()
 	{
-		$me = $this;
+		$raw = & $this->raw;
 
-		$todo = function($data) use ($me)
+		$todo = function($data) use (&$raw)
 		{
-			$index           = '{% RAW ' . count($me->raw) . ' %}';
-			$me->raw[$index] = $data;
+			$index       = '{% RAW ' . count($raw) . ' %}';
+			$raw[$index] = $data;
 
 			return $index;
 		};
@@ -297,45 +294,50 @@ class TemplateCompiler
 	 */
 	public function extract_block()
 	{
-		$me = $this;
+		$childs = & $this->block;
 
-		$display_tag = function($data) use ($me)
+		$display_tag = function($data) use (&$childs)
 		{
 			$name  = '{% BLOCK ' . trim($data) . ' %}';
 
 			// false are display as empty string
-			if (!isset($me->block[$name])) $me->block[$name] = false;
+			if (!isset($childs[$name])) $childs[$name] = false;
 
 			return $name;
 		};
 
-		$block_tag = function($data) use ($me)
+		$block_tag = function($data) use (&$childs)
 		{
-			list($data, $block) = explode(' %}', $data, 2);
+			list($name, $block) = explode(' %}', $data, 2);
 
-			$name  = '{% BLOCK ' . trim($data) . ' %}';
+			$name  = '{% BLOCK ' . trim($name) . ' %}';
 
 			$block = trim($block);
 
-			if (!isset($me->block[$name]) || $me->block[$name] === false)
+			// $childs[$name] is the child block (if exist).
+			// $block            is the parent block.
+			if (!isset($childs[$name]) || $childs[$name] === false)
 			{
-				$me->block[$name] = $block;
+				$childs[$name] = str_replace('{% child %}', '', $block);
 			}
-			elseif (mb_strpos($me->block[$name], '{% parent %}') !== false)
+			elseif (mb_strpos($childs[$name], '{% parent %}') !== false)
 			{
-				$me->block[$name] = str_replace('{% parent %}', $block, $me->block[$name]);
+				$block = str_replace('{% child %}', '', $block);
+				$childs[$name] = str_replace('{% parent %}', $block, $childs[$name]);
 			}
 			elseif (mb_strpos($block, '{% child %}') !== false)
 			{
-				$me->block[$name] = str_replace('{% child %}', $me->block[$name], $block);
+				$childs[$name] = str_replace('{% child %}', $childs[$name], $block);
 			}
+			// else the child erase the parent
+			// $childs[$name] = $childs[$name];
 
-			return $name . '{% endblock';
+			return $name;
 		};
 
-		$this->replace_tag($this->tpl, '{% block '   , '{% endblock', $block_tag);
-		$this->replace_tag($this->tpl, '{% display ' , ' %}'        , $display_tag);
-		$this->replace_tag($this->tpl, '{% endblock ', '%}'         , function() { return ''; });
+		$this->replace_tag($this->tpl, '{% endblock ', '%}' , function() { return '{%}'; });
+		$this->replace_tag($this->tpl, '{% display ' , ' %}', $display_tag);
+		$this->replace_tag($this->tpl, '{% block '   , '{%}', $block_tag, true);
 	}
 
 	/**
@@ -343,10 +345,8 @@ class TemplateCompiler
 	 */
 	public function compile_block()
 	{
-		$this->block = array_reverse($this->block, true);
-		$names       = array_keys($this->block);
-		$values      = array_values($this->block);
-		$this->tpl   = str_replace($names, $values, $this->tpl);
+		$block     = array_reverse($this->block, true);
+		$this->tpl = str_replace(array_keys($block), array_values($block), $this->tpl);
 	}
 
 	/**
@@ -426,12 +426,9 @@ class TemplateCompiler
 			{
 				$data = trim($data);
 
-				$me->extract_var($data, function($data) use ($me, $loopIndex, $key, $var)
+				$me->extract_var($data, function($data) use ($loopIndex, $key, $var)
 				{
-					$v = explode('|', $data);
-					$v = array_shift($v);
-					$v = explode('.', $v);
-					$v = array_shift($v);
+					$v = current(explode('.', current(explode('|', $data))));
 
 					if ($v == 'loop') return '#loop' . $loopIndex . mb_substr($data, 4);
 					if ($v == $var)   return '#' . $var . mb_substr($data, mb_strlen($var));
@@ -444,12 +441,10 @@ class TemplateCompiler
 
 				switch($type)
 				{
-					case $class::INLINE_ECHO : $format = '{{ %s }}'; break;
-					case $class::INLINE_PHP  : $format = '{: %s :}'; break;
-					default :                  $format = '{[ %s ]}'; break;
+					case $class::INLINE_ECHO : return '{{ ' . $data . ' }}';
+					case $class::INLINE_PHP  : return '{: ' . $data . ' :}';
+					default :                  return '{[ ' . $data . ' ]}';
 				}
-
-				return sprintf($format, $data);
 			};
 
 			$me->replace_inline($data, $callback);
