@@ -5,10 +5,10 @@ namespace pixelpost\plugins\auth;
 use pixelpost\core\Template,
 	pixelpost\plugins\api\Plugin as Api;
 
-$message = '';
-
 // who is connected
-$user_online = Plugin::get_entity_name();
+$user_online    = Plugin::get_entity_name();
+$flag_success   = false;
+$flag_reconnect = false;
 
 // is form posted ?
 if ($event->request->is_post())
@@ -31,12 +31,12 @@ if ($event->request->is_post())
 	// make the update
 	Api::call_api_method('auth.user.set', $post + array('user' => $user_online));
 
-	// template response...
-	$message = 'Updated.';
+	// template response
+	$flag_success = 'Updated.';
 
 	if (isset($post['name']) || isset($post['password']))
 	{
-		$message .= ' You need to reconnect on next page.';
+		$flag_reconnect .= ' You need to reconnect on next page.';
 	}
 
 	if (isset($post['name'])) $user_online = $post['name'];
@@ -52,8 +52,9 @@ $entities = Api::call_api_method('auth.entity.list', array());
 $grants = Api::call_api_method('auth.grant.list', array('user' => $user_online));
 
 Template::create()
-	->assign('message',  $message)
-	->assign('user',     $user)
-	->assign('entities', $entities['list'])
-	->assign('grants',   $grants['list'])
+	->assign('flag_success',   $flag_success)
+	->assign('flag_reconnect', $flag_reconnect)
+	->assign('user',           $user)
+	->assign('entities',       $entities['list'])
+	->assign('grants',         $grants['list'])
 	->publish('auth/tpl/account.php');

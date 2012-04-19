@@ -145,8 +145,7 @@ class Plugin implements PluginInterface
 			// admin web interface
 			array('request.admin',             $self   . '::request_admin', 99),
 			array('admin.template.nav',        $admin  . '::template_nav', 150),
-			array('admin.template.footer',     $admin  . '::template_footer'),
-			array('admin.template.css',        $admin  . '::template_css'),
+			array('admin.template.navbar',     $admin  . '::template_navbar'),
 			array('admin.template.js',         $admin  . '::template_js'),
 			array('admin.auth',                $pp     . '::route'),
 			array('admin.auth.api-bridge',     $admin  . '::page_api_bridge'),

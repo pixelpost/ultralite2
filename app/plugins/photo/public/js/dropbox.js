@@ -147,10 +147,7 @@ dropbox = function(config) {
 		// after chunks are uploaded
 		var upload_end = function(it) {
 			api_call('upload.end', {'id': it.context().id}, function(resp) {
-				if (resp.status == 'valid')
-				{
-					api_call('photo.add', {'file': resp.response.file});
-				}
+				api_call_raw('photo.add', {'file': resp.file});
 			});
 			callback();
 		};
@@ -162,7 +159,7 @@ dropbox = function(config) {
 				'chunk' : it.key(),
 				'data'  : it.current(),
 			};
-			api_call('upload.send', data, function() {
+			api_call_raw('upload.send', data, function() {
 				self.progress.add(it.current().length);
 				it.next();
 			});
@@ -170,21 +167,19 @@ dropbox = function(config) {
 
 		// UPLOAD THE FILE
 		api_call('upload.init', data, function(upload) {
-			if (upload.status == 'valid') {
-				// server accept and provide an "upload" id, process all chunks
-				var it = new iterator(chunks, {
-					'id'          : upload.response.id,
-					'on_start'    : upload_begin,
-					'on_progress' : upload_chunk,
-					'on_end'      : upload_end,
-				});
-				it.iterate();
-			} else {
-				// server won't accept the upload, move the next file
-				self.progress.add(file.size * 4/3);
-				self.progress.error();
-				callback();
-			}
+			// server accept and provide an "upload" id, process all chunks
+			var it = new iterator(chunks, {
+				'id'          : upload.id,
+				'on_start'    : upload_begin,
+				'on_progress' : upload_chunk,
+				'on_end'      : upload_end,
+			});
+			it.iterate();
+		}, function() {
+			// server won't accept the upload, move the next file
+			self.progress.add(file.size * 4/3);
+			self.progress.error();
+			callback();
 		});
 	};
 

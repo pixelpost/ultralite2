@@ -381,7 +381,7 @@ class Model
 		Filter::is_int($entity_id);
 
 		$query = 'UPDATE auth_entity SET name = %s WHERE id = %d;';
-		$query = sprintf($query, Db::escape($name));
+		$query = sprintf($query, Db::escape($name), $entity_id);
 
 		$db = Db::create();
 

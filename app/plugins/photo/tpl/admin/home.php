@@ -1,5 +1,6 @@
 {% extends admin/tpl/_main.php %}
 
+{% block Title %}Photos managment{% endblock %}
 
 {% block Css %}
 <link rel="stylesheet" href="{{ 'photo::css/admin.css'|asset }}">
@@ -24,15 +25,15 @@
 	<input id="dropfiles" accept="image/*" type="file" multiple>
 </div>
 
-<div class="photos">
+<ul class="thumbnails">
 	{% for photo in photos %}
-	<div class="photo">
-		<figure>
-			<strong>{{ photo.id }}</strong>
-			<a href="#">edit</a>
-			<br>
+	<li>
+		<figure class="thumbnail">
 			<img src="{{ photo.thumb-url }}">
 			<figcaption>
+				<strong>{{ photo.id }}</strong>
+				<a href="#">edit</a>
+				<br>
 				{{ photo.title }}
 				<br>
 				{{ photo.visible|if('published', 'hidden') }}
@@ -42,11 +43,11 @@
 				</time>
 			</figcaption>
 		</figure>
-	</div>
+	</li>
 	{% elsefor %}
-	<p>
+	<li>
 		You haven't uploaded any photos yet.
-	</p>
+	</li>
 	{% endfor %}
-</div>
+</ul>
 {% endblock %}

@@ -17,11 +17,11 @@ class Admin
 			  ->render('admin/tpl/_menu.php');
 	}
 
-	public static function template_footer(Event $event)
+	public static function template_navbar(Event $event)
 	{
 		$event->response[] = Template::create()
 				->assign('user', Plugin::get_entity_name())
-				->render('auth/tpl/admin-footer.php');
+				->render('auth/tpl/admin-navbar.php');
 	}
 
 	public static function template_css(Event $event)

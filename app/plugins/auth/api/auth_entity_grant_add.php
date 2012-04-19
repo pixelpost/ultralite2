@@ -3,7 +3,7 @@
 namespace pixelpost\plugins\auth;
 
 use pixelpost\plugins\api\Exception\Ungranted,
-	pixelpost\plugins\api\Exception\FieldNotValid;
+	pixelpost\plugins\api\Exception\FieldNotValid,
 	pixelpost\plugins\api\Exception\FieldNonExists;
 
 // method

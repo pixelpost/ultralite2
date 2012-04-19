@@ -288,6 +288,24 @@ function json_serialize(obj) {
 	}
 }
 
+// print a notification popover
+function notify(type, message, timer) {
+	var alert = $('<div class="alert alert-block span4 fade in"><i class="close" data-dismiss="alert">×</i></div>');
+
+	switch (type)
+	{
+		case 'success': alert.addClass('alert-success'); break;
+		case 'error'  : alert.addClass('alert-error');   break;
+		case 'info'   : alert.addClass('alert-info');    break;
+	}
+
+	alert.append(message).appendTo('#notify').alert();
+
+	if (timer == undefined) timer = 3000;
+
+	if (timer != false) setTimeout(function() { alert.alert('close') }, timer);
+}
+
 // objects
 iterator = function (list, context) {
 	// vars

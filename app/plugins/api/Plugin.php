@@ -284,7 +284,7 @@ class Plugin implements PluginInterface
 		// if you don't the user receive the error message of your internal call
 		catch(ApiException $e)
 		{
-			throw new Exception("event `$method` threw an exception", 0, $e);
+			throw new Exception("event `$method` throw an exception", 0, $e);
 		}
 	}
 }

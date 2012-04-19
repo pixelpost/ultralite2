@@ -1,32 +1,32 @@
 {% extends auth/tpl/_main.php %}
 
-{% block Title %}Reset your password{% endblock %}
-
-{% block Css %}
-<style>
-	form { display:none; }
-</style>
-{% endblock %}
+{% block Title %}Password reset{% endblock %}
 
 {% block Content %}
 <noscript>
-	You need to have javascript actived !
+	<div class="row-fluid alert alert-warning">
+		You need to have javascript actived !
+	</div>
 </noscript>
-<form>
+<form class="row-fluid form-horizontal">
 	<fieldset>
 		<legend>Enter a new password</legend>
-		<ol>
-			<li>
-				<label for="pass">Password:</label>
+		<div class="control-group">
+			<label class="control-label" for="pass">Password:</label>
+			<div class="controls">
 				<input type="password" id="pass" required>
-			</li>
-		</ol>
-	</fieldset>
-	<fieldset>
-		<button class="btn" type="submit">CONTINUE</button>
-		<span id="message"></span>
+			</div>
+		</div>
+		<div class="form-actions">
+			<button class="btn btn-primary btn-large" type="submit">Continue</button>
+			<span id="message" class="label label-important"></span>
+		</div>
 	</fieldset>
 </form>
+{% endblock %}
+
+{% block Css %}
+<style>form, #message { display:none; }</style>
 {% endblock %}
 
 {% block Js %}

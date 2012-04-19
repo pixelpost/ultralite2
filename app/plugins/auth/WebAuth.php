@@ -297,7 +297,7 @@ class WebAuth
 	 */
 	public static function forget(Request $request)
 	{
-		$message = 'an email has been sent to the account owner';
+		$message = 'a reset link has been sent via email';
 
 		try
 		{
@@ -366,17 +366,17 @@ class WebAuth
 			$key = array_shift($params);
 
 			// if we have not key
-			if ($key === false || mb_strlen($key) < 33) throw new Exception();
+			if ($key === false || mb_strlen($key) < 33) throw new Exception('bad key');
 
 			// get the user id from the key
 			$id  = intval(mb_substr($key, 32));
 			$key = mb_substr($key, 0, 32);
 
 			// check if userID exists
-			if (!self::_check_userid($id, $user, $pass, $email)) throw new Exception();
+			if (!self::_check_userid($id, $user, $pass, $email)) throw new Exception('unknown user');
 
 			// check if key is valid
-			if ($key != self::_gen_reset_key($id, $user, $pass)) throw new Exception();
+			if ($key != self::_gen_reset_key($id, $user, $pass)) throw new Exception('security key invalid');
 
 			// change the password page
 			try

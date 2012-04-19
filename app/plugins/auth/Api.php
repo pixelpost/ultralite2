@@ -30,8 +30,7 @@ class Api
 	{
 		try
 		{
-			// create $id
-			extract(Model::grant_get_by_name($name));
+			$id = Model::grant_get($name);
 			return true;
 		}
 		catch(ModelExceptionNoResult $e)

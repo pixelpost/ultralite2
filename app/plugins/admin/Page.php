@@ -18,11 +18,6 @@ class Page
 		require __DIR__ . '/page/404.php';
 	}
 
-	public static function page_api_test(Event $event)
-	{
-		require __DIR__ . '/page/api_test.php';
-	}
-
 	public static function template_nav_phpinfo(Event $event)
 	{
 		$event->response[] = Template::create()

@@ -54,7 +54,6 @@ class Plugin implements PluginInterface
 			array('request.admin',         $self . '::admin_router'),
 			array('admin.index',           $page . '::page_index'),
 			array('admin.404',             $page . '::page_404'),
-			array('admin.api-test',        $page . '::page_api_test'),
 			array('admin.phpinfo',         $self . '::phpinfo'),
 			array('admin.template.widget', $page . '::template_widget', 200),
 		));

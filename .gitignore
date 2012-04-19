@@ -5,6 +5,6 @@
 *.db
 *.un~
 private/
-public/
+/public/
 photos/
 index.php

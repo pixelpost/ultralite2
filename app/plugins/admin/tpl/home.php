@@ -1,7 +1,7 @@
 {% extends admin/tpl/_main.php %}
 
 {% block Content %}
-<div id="widget">
+<div class="row-fluid">
 	{% for w in widgets %}{{ w }}{% endfor %}
 </div>
 {% endblock %}

@@ -1,6 +1,6 @@
 {% extends admin/tpl/_main.php %}
 
-{% block Title %}{% parent %} - 404{% endblock %}
+{% block Title %}404 page not found{% endblock %}
 
 {% block Content %}
 <p>
