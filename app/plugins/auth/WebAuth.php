@@ -167,15 +167,28 @@ class WebAuth
 	 */
 	public static function check(&$id, &$user)
 	{
+		assert('pixelpost\core\Log::debug("(auth) Webauth::check() check cookie...")');
+
 		// retrieve cookie data (see admin login page how the auth is generated)
 		if ('' === $user = self::_get_user()) return false;
+
+		assert('pixelpost\core\Log::debug("(auth) Webauth::check() — username: %s", $user)');
+
 		if ('' === $key  = self::_get_key())  return false;
+
+		assert('pixelpost\core\Log::debug("(auth) Webauth::check() — auth key: %s", $key)');
+
+		assert('pixelpost\core\Log::debug("(auth) Webauth::check() validate data...")');
 
 		// check if user exists (and get it's password)
 		if (!self::_check_username($user, $id, $pass)) return false;
 
+		assert('pixelpost\core\Log::debug("(auth) Webauth::check() - valid: username.")');
+
 		// check if key is valid
 		if ($key != self::_gen_auth_key($id, $user, $pass)) return false;
+
+		assert('pixelpost\core\Log::debug("(auth) Webauth::check() — valid: auth key.")');
 
 		return true;
 	}
@@ -204,8 +217,16 @@ class WebAuth
 
 		if ($domain == 'localhost') $domain = null;
 
+		assert('pixelpost\core\Log::debug("(auth) Webauth::register() create cookie...")');
+		assert('pixelpost\core\Log::debug("(auth) Webauth::register() — path: %s",   $path)');
+		assert('pixelpost\core\Log::debug("(auth) Webauth::register() — expire: %s", $expire)');
+		assert('pixelpost\core\Log::debug("(auth) Webauth::register() — domain: %s", $domain)');
+		assert('pixelpost\core\Log::debug("(auth) Webauth::register() — user: %s",   base64_decode($user))');
+		assert('pixelpost\core\Log::debug("(auth) Webauth::register() — key: %s",    base64_decode($key))');
+
 		setcookie('PPU', $user, $expire, $path, $domain, false, true);
 		setcookie('PPK', $key,  0,       $path, $domain, false, true);
+
 		return true;
 	}
 
@@ -235,6 +256,8 @@ class WebAuth
 	{
 		try
 		{
+			assert('pixelpost\core\Log::debug("(auth) Webauth::login() check post data...")');
+
 			// page request is not a http POST
 			if (!$request->is_post()) throw new Exception('not posted');
 
@@ -251,16 +274,24 @@ class WebAuth
 			$priv = trim($post['priv']);
 			$key  = trim($post['key']);
 
+			assert('pixelpost\core\Log::debug("(auth) Webauth::login() - user: %s", $user)');
+			assert('pixelpost\core\Log::debug("(auth) Webauth::login() - priv: %s", $priv)');
+			assert('pixelpost\core\Log::debug("(auth) Webauth::login() - key: %s",  $key)');
+
 			// check if they are not empty
 			if ($user == '') throw new Exception('user is empty');
 			if ($priv == '') throw new Exception('priv is empty');
 			if ($key  == '') throw new Exception('key is empty');
+
+			assert('pixelpost\core\Log::debug("(auth) Webauth::login() validate user...")');
 
 			// check if user exists (and get it's password)
 			if (!self::_check_username($user, $id, $pass))
 			{
 				throw new Exception('auth invalid');
 			}
+
+			assert('pixelpost\core\Log::debug("(auth) Webauth::login() validate auth...")');
 
 			// load Auth class from plugin auth
 			$auth = self::_get_auth($user, $pass)
@@ -270,15 +301,21 @@ class WebAuth
 			// check if a generated token correspond to the generated key
 			if ($auth->get_token() != $key) throw new Exception('auth invalid');
 
+			assert('pixelpost\core\Log::debug("(auth) Webauth::login() register auth...")');
+
 			if (!self::register($user, $pass, $id, $request->get_host()))
 			{
 				throw new Exception('auth invalid');
 			}
 
+			assert('pixelpost\core\Log::debug("(auth) Webauth::login() auth ok.")');
+
 			echo json_encode(array('status' => 'valid', 'message' => 'auth valid'));
 		}
 		catch(Exception $e)
 		{
+			assert('pixelpost\core\Log::debug("(auth) Webauth::login() unauth: %s.", $e->getMessage())');
+
 			echo json_encode(array('status' => 'error', 'message' => $e->getMessage()));
 		}
 	}

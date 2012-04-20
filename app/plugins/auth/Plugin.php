@@ -184,9 +184,12 @@ class Plugin implements PluginInterface
 			WebAuth::disconnect($event->request);
 			return false;
 		default:
+			assert('pixelpost\core\Log::info("(auth) check admin page authentification")');
+
 			// check if user is authentificated
 			if (WebAuth::check($id, $name))
 			{
+				assert('pixelpost\core\Log::info("(auth) user %s is authentified", $name)');
 				// register the identification (permit to internal api call to be
 				// authenticated too).
 				self::$_user_id     = $id;
@@ -196,6 +199,7 @@ class Plugin implements PluginInterface
 			}
 			else
 			{
+				assert('pixelpost\core\Log::info("(auth) unauth user")');
 				// publish authentification form
 				WebAuth::auth();
 				// stop signal request.admin chain (admin plugin is not called).
