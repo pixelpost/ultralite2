@@ -4,7 +4,7 @@
 *.sqlite3
 *.db
 *.un~
-private/
+/private/
 /public/
-photos/
-index.php
+/photos/
+/index.php
