@@ -9,9 +9,12 @@ use pixelpost\core\Template,
 
 class Admin
 {
+	protected static $_page_account_active = false;
+
 	public static function template_nav(Event $event)
 	{
 		$event->response[] = Template::create()
+			  ->assign('is_active', static::$_page_account_active)
 			  ->assign('url', 'auth/account')
 			  ->assign('name', 'account')
 			  ->render('admin/tpl/_menu.php');
@@ -44,6 +47,8 @@ class Admin
 
 	public static function page_account(Event $event)
 	{
+		static::$_page_account_active = true;
+
 		require __DIR__ . '/admin/account.php';
 	}
 }

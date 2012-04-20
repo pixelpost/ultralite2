@@ -31,7 +31,9 @@
 				<a class="brand" href="http://pixelpost.org/">PixelPost</a>
 				<div class="nav-collapse">
 					<ul class="nav">
-						<li><a href="index">home</a></li>
+						<li {{ is_home_page|default(false)|if('class="active"','') }}>
+							<a href="index">home</a>
+						</li>
 						{{ 'admin.template.nav'|event|join }}
 					</ul>
 					{{ 'admin.template.navbar'|event|join }}
