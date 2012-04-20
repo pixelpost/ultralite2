@@ -10,6 +10,20 @@ try
 	$error = '';
 	$rollbackTo = 0;
 
+	// Load the request and retrieve step1 form and userdir in url data
+	$request  = core\Request::create()->auto();
+	$post     = $request->get_post();
+	$userdir  = $request->get_params();
+
+	array_pop($userdir); // remove install.php
+	array_pop($userdir); // remove app
+
+	$userdir  = implode('/', $userdir);
+	$base_url = $request->set_userdir($userdir)->get_base_url();
+
+	// need ADMIN_URL constant for webAuth
+	define('ADMIN_URL', $base_url . 'admin/');
+
 	// create the /private directory
 	if (mkdir(PRIV_PATH, 0775) == false)
 	{
@@ -75,18 +89,10 @@ try
 
 	$rollbackTo = 7;
 
-	// Load the request and retrieve step1 form and userdir in url data
-	$request = core\Request::create()->auto();
-	$post    = $request->get_post();
-	$userdir = $request->get_params();
-
-	array_pop($userdir); // remove install.php
-	array_pop($userdir); // remove app
-
 	// Load, update and save the config file
 	$conf           = core\Config::load(PRIV_PATH . '/config.json');
-	$conf->userdir  = implode('/', $userdir);
-	$conf->url      = $request->set_userdir($conf->userdir)->get_base_url();
+	$conf->userdir  = $userdir;
+	$conf->url      = $base_url;
 	$conf->timezone = $post['timezone'];
 	$conf->title    = $post['title'];
 	$conf->email    = $post['email'];
@@ -124,15 +130,12 @@ try
 		auth\Model::entity_grant_link($entityId, $grant['id']);
 	}
 
-	// need ADMIN_URL constant for webAuth
-	define('ADMIN_URL', $conf->url . $conf->pixelpost->admin . '/');
-
 	// authentificate the user
 	auth\WebAuth::register($userName, $userPass, $userId, $request->get_host());
 }
 catch(Exception $e)
 {
-	$error = $e->getMessage() . ', on line: ' . $e->getLine() . ' : ' . $e->getFile();
+	$error = $e->getMessage();
 
 	if ($rollbackTo >= 8) photo\Plugin::uninstall();
 	if ($rollbackTo >= 7) unlink(PRIV_PATH . '/sqlite3.db');

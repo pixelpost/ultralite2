@@ -1,42 +1,50 @@
 {% extends _main.tpl %}
 
 {% block Content %}
-<h1>Welcome!</h1>
+<h1 class="page-header">Welcome! <small>Pixelpost 2 installation</small></h1>
 <p>
 	Pixelpost will be installed in two minutes...
 </p>
-<form method="POST" action="install.php?step=2">
+<form class="form-horizontal" method="POST" accept-charset="utf-8" action="install.php?step=2">
 	<fieldset>
 		<legend>Configuration</legend>
-		<ol>
-			<li>
-				<label for="title">Title:</label>
+		<div class="control-group">
+			<label class="control-label" for="title">Title</label>
+			<div class="controls">
 				<input id="title" name="title" placeholder="My Photoblog" required />
-			</li>
-			<li>
-				<label for="username">Username:</label>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label" for="username">Username</label>
+			<div class="controls">
 				<input id="username" name="username" placeholder="Username" required />
-			</li>
-			<li>
-				<label for="password">Password:</label>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label" for="password">Password</label>
+			<div class="controls">
 				<input id="password" name="password" placeholder="Password" required />
-			</li>
-			<li>
-				<label for="email">Email:</label>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label" for="email">Email</label>
+			<div class="controls">
 				<input id="email" name="email" placeholder="your-email@address.com" required />
-			</li>
-			<li>
-				<label for="timezone">Timezone:</label>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label" for="timezone">Timezone</label>
+			<div class="controls">
 				<select id="timezone" name="timezone" required>
 					{% for tz in timezones %}
 					<option {{ (tz == phpTZ)|if('selected', '') }}>{{ tz }}</option>
 					{% endfor %}
 				<select>
-			</li>
-		</ol>
-	</fieldset>
-	<fieldset>
-		<button class="btn" type="submit">CONTINUE</button>
+			</div>
+		</div>
+		<div class="form-actions">
+			<button class="btn btn-primary btn-large" type="submit">Continue</button>
+		</div>
 	</fieldset>
 </form>
 {% endblock %}
