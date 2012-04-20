@@ -44,3 +44,11 @@
 	box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
 	float:none;
 }
+
+table.table-condensed.table-simple tr:first-child th {
+	border-top:0;
+}
+
+table.table-condensed.table-simple tr:first-child td {
+	border-top:0;
+}

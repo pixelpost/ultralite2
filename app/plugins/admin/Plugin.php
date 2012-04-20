@@ -53,12 +53,15 @@ class Plugin implements PluginInterface
 			// admin web interface
 			array('request.admin',         $self . '::admin_router'),
 			array('admin.index',           $page . '::page_index'),
+			array('admin.settings',        $page . '::page_settings'),
+			array('admin.settings.index',  $page . '::page_settings_index'),
 			array('admin.404',             $page . '::page_404'),
 			array('admin.phpinfo',         $self . '::phpinfo'),
+			array('admin.template.nav',    $page . '::template_nav', 200),
 			array('admin.template.widget', $page . '::template_widget', 200),
 		));
 
-		DEBUG and Event::register('admin.template.nav', $page . '::template_nav_phpinfo', 200);
+		DEBUG and Event::register('admin.template.nav', $page . '::template_nav_phpinfo', 201);
 	}
 
 	public static function phpinfo(Event $event)
