@@ -428,7 +428,7 @@ class TemplateCompiler
 
 				$me->extract_var($data, function($data) use ($loopIndex, $key, $var)
 				{
-					$v = current(explode('.', current(explode('|', $data))));
+					$v = mb_substr($data, 0, strcspn(utf8_decode($data), utf8_decode(' :§.|')));
 
 					if ($v == 'loop') return '#loop' . $loopIndex . mb_substr($data, 4);
 					if ($v == $var)   return '#' . $var . mb_substr($data, mb_strlen($var));
@@ -715,8 +715,8 @@ class TemplateCompiler
 			case 'rsort'   : return '$this->_filter_array_rsort(%s)';
 			case 'nsort'   : return '$this->_filter_array_nsort(%s)';
 			case 'length'  : return 'count(%s)';
-			case 'keys'    : return 'array_keys(%s)';
-			case 'values'  : return 'array_values(%s)';
+			case 'keys'    : return 'array_keys((array) %s)';
+			case 'values'  : return 'array_values((array) %s)';
 			case 'join'    :
 				if ($param) return 'implode(' . $param . ', %s)';
 				else        return 'implode(\' \', %s)';
