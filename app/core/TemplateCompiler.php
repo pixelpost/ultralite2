@@ -428,8 +428,10 @@ class TemplateCompiler
 
 				$me->extract_var($data, function($data) use ($loopIndex, $key, $var)
 				{
+
 					$v = mb_substr($data, 0, strcspn(utf8_decode($data), utf8_decode(' :§.|')));
 
+					if ($v == '')     return $data;
 					if ($v == 'loop') return '#loop' . $loopIndex . mb_substr($data, 4);
 					if ($v == $var)   return '#' . $var . mb_substr($data, mb_strlen($var));
 					if ($v == $key)   return '#' . $key . mb_substr($data, mb_strlen($key));
