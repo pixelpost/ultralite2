@@ -61,6 +61,7 @@ class Plugin implements PluginInterface
 			array('admin.settings.plugin',      $page . '::settings_plugin'),
 			array('admin.settings.manage',      $page . '::settings_manage'),
 			array('admin.settings.cache-flush', $page . '::settings_cache-flush'),
+			array('admin.settings.plugin.admin',$page . '::about'),
 			array('admin.template.nav',         $page . '::template_nav', 200),
 			array('admin.template.widget',      $page . '::template_widget', 200),
 		));

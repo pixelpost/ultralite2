@@ -1,3 +1,3 @@
 <?php
 
-\pixelpost\core\Fs::delete(PRIV_PATH . '/cache');
+pixelpost\core\Fs::delete(PRIV_PATH . '/cache');
