@@ -1,10 +1,12 @@
 {
-	"debug"   : false,
-	"version" : "",
-	"uid"     : "",
-	"title"   : "My Photoblog",
-	"url"     : "http://www.something.com/",
-	"userdir" : "",
-	"timezone": "UTC",
-	"plugins" : {}
+	"debug"    : false,
+	"version"  : "",
+	"uid"      : "",
+	"title"    : "My Photoblog",
+	"url"      : "http://www.something.com/",
+	"userdir"  : "",
+	"timezone" : "UTC",
+	"protected": [ "pixelpost", "admin" ],
+	"packaged" : [],
+	"plugins"  : {}
 }

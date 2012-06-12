@@ -7,7 +7,7 @@ use pixelpost\plugins\pixelpost\Plugin as PP,
 	pixelpost\core\Event;
 
 /**
- * ADMIN routers for pixelpost admin urls.
+ * ADMIN for pixelpost.
  *
  * @copyright  2011 Alban LEROUX <seza@paradoxal.org>
  * @license    http://creativecommons.org/licenses/by-sa/3.0/ Creative Commons
@@ -52,11 +52,14 @@ class Plugin implements PluginInterface
 			array('api.admin.version',     $api  . '::api_version'),
 			// admin web interface
 			array('request.admin',         $self . '::admin_router'),
-			array('admin.index',           $page . '::page_index'),
-			array('admin.settings',        $page . '::page_settings'),
-			array('admin.settings.index',  $page . '::page_settings_index'),
-			array('admin.404',             $page . '::page_404'),
 			array('admin.phpinfo',         $self . '::phpinfo'),
+			array('admin.index',           $page . '::home'),
+			array('admin.404',             $page . '::404'),
+			array('admin.settings',        $page . '::settings'),
+			array('admin.settings.index',  $page . '::settings_index'),
+			array('admin.settings.plugins',$page . '::settings_plugins'),
+			array('admin.settings.plugin', $page . '::settings_plugin'),
+			array('admin.settings.manage', $page . '::settings_manage'),
 			array('admin.template.nav',    $page . '::template_nav', 200),
 			array('admin.template.widget', $page . '::template_widget', 200),
 		));

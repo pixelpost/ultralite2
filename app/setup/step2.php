@@ -87,6 +87,9 @@ try
 	// create the database
 	core\Db::create();
 
+	// detect all plugins already in the package (and store the list in conf)
+	core\Plugin::detect();
+
 	$rollbackTo = 7;
 
 	// Load, update and save the config file
@@ -98,13 +101,11 @@ try
 	$conf->email    = $post['email'];
 	$conf->uid      = md5(uniqid() . microtime() . $request->get_request_url());
 	$conf->version  = VERSION;
+	$conf->packaged = array_keys(core\Filter::object_to_array($conf->plugins));
 	$conf->save();
 
-	// detect all plugins already in the package (and store the list in conf)
-	core\Plugin::detect();
-
 	// create the install plugin order
-	$manager = new DM(array_keys(core\Filter::object_to_array($conf->plugins)));
+	$manager = new DM($conf->packaged);
 
 	foreach($manager->process() as $plugin)
 	{

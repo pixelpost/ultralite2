@@ -45,10 +45,10 @@
 	float:none;
 }
 
-table.table-condensed.table-simple tr:first-child th {
+table.table-simple tr:first-child th {
 	border-top:0;
 }
 
-table.table-condensed.table-simple tr:first-child td {
+table.table-simple tr:first-child td {
 	border-top:0;
 }

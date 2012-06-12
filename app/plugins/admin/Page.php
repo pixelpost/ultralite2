@@ -11,26 +11,18 @@ class Page
 {
 	protected static $_page_setting_active = false;
 
-	public static function page_index(Event $event)
+	public static function __callStatic($__name, $__args)
 	{
-		require __DIR__ . '/page/home.php';
+		$event = current($__args);
+
+		require __DIR__ . '/page/' . str_replace('_', '/', $__name) . '.php';
 	}
 
-	public static function page_404(Event $event)
-	{
-		require __DIR__ . '/page/404.php';
-	}
-
-	public static function page_settings(Event $event)
+	public static function settings(Event $event)
 	{
 		static::$_page_setting_active = true;
 
 		PP::route($event);
-	}
-
-	public static function page_settings_index(Event $event)
-	{
-		require __DIR__ . '/page/settings/index.php';
 	}
 
 	public static function template_nav_phpinfo(Event $event)
