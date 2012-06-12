@@ -4,6 +4,7 @@ namespace pixelpost\plugins\pixelpost;
 
 use pixelpost\core\Config,
 	pixelpost\core\PluginInterface,
+	pixelpost\core\Template,
 	pixelpost\core\Event;
 
 /**
@@ -58,15 +59,19 @@ class Plugin implements PluginInterface
 
 	public static function register()
 	{
-		$conf = Config::create();
-
-		define('API_URL',   WEB_URL . $conf->pixelpost->api   . '/', true);
-		define('ADMIN_URL', WEB_URL . $conf->pixelpost->admin . '/', true);
-
-		Event::register('request.new', __CLASS__ . '::request_new');
+		Event::register_list(array(
+			array('request.new',                     __CLASS__ . '::request'),
+			array('error.new',                       __CLASS__ . '::error'),
+			array('admin.settings.plugin.pixelpost', __CLASS__ . '::about'),
+		));
 	}
 
-	public static function request_new(Event $event)
+	public static function about(Event $event)
+	{
+		Template::create()->publish('pixelpost/tpl/about.php');
+	}
+
+	public static function request(Event $event)
 	{
 		// retrieve the configuration plugin
 		$conf    = Config::create()->pixelpost;
@@ -74,6 +79,10 @@ class Plugin implements PluginInterface
 		// get the request and its url paramters
 		$request = $event->request;
 		$params  = $request->get_params() + array('index');
+
+		// create usefull constant
+		define('API_URL',   WEB_URL . $conf->api   . '/', true);
+		define('ADMIN_URL', WEB_URL . $conf->admin . '/', true);
 
 		// Make a choice between ADMIN, API, WEB.
 		// ADMIN and API base url are in the configuration file,
@@ -90,6 +99,20 @@ class Plugin implements PluginInterface
 
 		// we order to stop processing of the event request.new
 		return false;
+	}
+
+	public static function error(Event $event)
+	{
+		$error = $event->exception;
+
+		if (DEBUG) include __DIR__ . '/tpl/error_debug.php';
+		else       include __DIR__ . '/tpl/error.php';
+
+		// we need to stop the script, if not, PHP understand that the exception
+		// was not caugth. And raise an error:
+		// PHP Fatal error: Exception thrown without a stack frame in Unknown on
+		// line 0
+		exit();
 	}
 
 	/**
