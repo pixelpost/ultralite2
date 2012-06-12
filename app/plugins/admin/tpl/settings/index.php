@@ -21,6 +21,18 @@
 					<input class="input-xlarge" id="confemail" name="confemail" value="{{ confemail }}" placeholder="contact@administrator.org" required>
 				</div>
 			</div>
+			<div class="control-group">
+				<label for="conftz" class="control-label">
+					Timezone
+				</label>
+				<div class="controls">
+					<select class="input-xlarge" id="conftz" name="conftz" required>
+						{% for tz in timezones %}
+						<option {{ (tz == conftz)|if('selected', '') }}>{{ tz }}</option>
+						{% endfor %}
+					<select>
+				</div>
+			</div>
 		</fieldset>
 		<fieldset class="span6">
 			<legend>Routing</legend>
@@ -54,18 +66,6 @@
 		<fieldset class="span6">
 			<legend>System</legend>
 			<div class="control-group">
-				<label for="conftz" class="control-label">
-					Timezone
-				</label>
-				<div class="controls">
-					<select class="input-xlarge" id="conftz" name="conftz" required>
-						{% for tz in timezones %}
-						<option {{ (tz == conftz)|if('selected', '') }}>{{ tz }}</option>
-						{% endfor %}
-					<select>
-				</div>
-			</div>
-			<div class="control-group">
 				<label for="confdebug" class="control-label">
 					Debug mode
 				</label>
@@ -76,6 +76,17 @@
 					<label class="radio inline">
 						<input type="radio" name="confdebug" value="0" {{ confdebug|if('', 'checked') }}> Inactive
 					</label>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label">
+					Cache
+				</label>
+				<div class="controls">
+					<button id="cache-flush" class="btn">
+						<i class="icon icon-trash"></i> Flush
+					</button>
+					<span id="cache-flush-help"><i class="icon icon-question-sign"></i> what is this?</span>
 				</div>
 			</div>
 		</fieldset>
@@ -127,7 +138,20 @@ $(document).ready(function() {
 	$('#badge-debug').popover({
 		placement :'top',
 		title     :'This should be off',
-		content   :'Debug consume lot of ressource and log file continuously grows'
+		content   :'Debug consume lot of ressource and log file continuously grows.'
+	});
+
+	$('#cache-flush-help').popover({
+		placement :'top',
+		title     :'Flushing the cache',
+		content   :'This deletes all pages in cache, this may helps if you encountering some display problem.'
+	});
+
+	$('#cache-flush').click(function() {
+		$.get('settings/cache-flush', function() {
+			notify('success', 'cache is now empty.');
+		});
+		return false;
 	});
 });
 </script>

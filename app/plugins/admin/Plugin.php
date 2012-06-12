@@ -49,19 +49,20 @@ class Plugin implements PluginInterface
 
 		Event::register_list(array(
 			// api events
-			array('api.admin.version',     $api  . '::api_version'),
+			array('api.admin.version',          $api  . '::api_version'),
 			// admin web interface
-			array('request.admin',         $self . '::admin_router'),
-			array('admin.phpinfo',         $self . '::phpinfo'),
-			array('admin.index',           $page . '::home'),
-			array('admin.404',             $page . '::404'),
-			array('admin.settings',        $page . '::settings'),
-			array('admin.settings.index',  $page . '::settings_index'),
-			array('admin.settings.plugins',$page . '::settings_plugins'),
-			array('admin.settings.plugin', $page . '::settings_plugin'),
-			array('admin.settings.manage', $page . '::settings_manage'),
-			array('admin.template.nav',    $page . '::template_nav', 200),
-			array('admin.template.widget', $page . '::template_widget', 200),
+			array('request.admin',              $self . '::admin_router'),
+			array('admin.phpinfo',              $self . '::phpinfo'),
+			array('admin.index',                $page . '::home'),
+			array('admin.404',                  $page . '::404'),
+			array('admin.settings',             $page . '::settings'),
+			array('admin.settings.index',       $page . '::settings_index'),
+			array('admin.settings.plugins',     $page . '::settings_plugins'),
+			array('admin.settings.plugin',      $page . '::settings_plugin'),
+			array('admin.settings.manage',      $page . '::settings_manage'),
+			array('admin.settings.cache-flush', $page . '::settings_cache-flush'),
+			array('admin.template.nav',         $page . '::template_nav', 200),
+			array('admin.template.widget',      $page . '::template_widget', 200),
 		));
 
 		DEBUG and Event::register('admin.template.nav', $page . '::template_nav_phpinfo', 201);
