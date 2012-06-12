@@ -150,6 +150,7 @@ class Plugin implements PluginInterface
 			array('admin.auth',                $pp     . '::route'),
 			array('admin.auth.api-bridge',     $admin  . '::page_api_bridge'),
 			array('admin.auth.account',        $admin  . '::page_account'),
+			array('admin.settings.plugin.auth',$admin  . '::page_about'),
 		));
 	}
 

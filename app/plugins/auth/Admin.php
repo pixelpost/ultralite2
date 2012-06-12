@@ -51,4 +51,9 @@ class Admin
 
 		require __DIR__ . '/admin/account.php';
 	}
+
+	public static function page_about(Event $event)
+	{
+		Template::create()->publish('auth/tpl/about.php');
+	}
 }
