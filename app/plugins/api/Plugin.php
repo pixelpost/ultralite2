@@ -5,6 +5,7 @@ namespace pixelpost\plugins\api;
 use
 	pixelpost\core\Event,
 	pixelpost\core\Filter,
+	pixelpost\core\Template,
 	pixelpost\core\PluginInterface,
 	pixelpost\plugins\api\Exception as ApiException,
 	Exception,
@@ -47,7 +48,13 @@ class Plugin implements PluginInterface
 
 	public static function register()
 	{
-		Event::register('request.api', __CLASS__ . '::api_request');
+		Event::register('request.api',               __CLASS__ . '::api_request');
+		Event::register('admin.settings.plugin.api', __CLASS__ . '::about');
+	}
+
+	public static function about(Event $event)
+	{
+		Template::create()->publish('api/tpl/about.php');
 	}
 
 	/**
