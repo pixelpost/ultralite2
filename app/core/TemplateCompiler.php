@@ -520,7 +520,7 @@ class TemplateCompiler
 			return $index;
 		};
 
-		$this->replace_tag($this->tpl, '{% include "', '" %}', $callback);
+		$this->replace_tag($this->tpl, '{% include ', ' %}', $callback);
 
 		foreach($includes as $id => $include)
 		{
@@ -532,9 +532,17 @@ class TemplateCompiler
 
 			if (!file_exists($file)) throw Error::create(23, array($file));
 
-			$replace = file_get_contents($file);
+			$replace = new TemplateCompiler();
+			$replace->path = & $this->path;
+			$replace->raw  = & $this->raw;
+			$replace->tpl  = file_get_contents($file);
+			$replace->escape_raw_block();
+			$replace->remove_comment();
+			$replace->escape_escape();
+			$replace->extract_block();
+			$replace->make_include();
 
-			$this->tpl = str_replace($id, $replace, $this->tpl);
+			$this->tpl = str_replace($id, $replace->tpl, $this->tpl);
 		}
 	}
 
