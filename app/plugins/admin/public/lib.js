@@ -335,3 +335,22 @@ iterator = function (list, context) {
 		self.next();
 	};
 };
+
+// active elements
+$(document).ready(function()
+{
+	/**
+		This executes all defered javascript (until jquery is loaded for
+		example) identified by a class `defered-js` by calling the function
+		in the `data-defer` attribute.
+
+		Example:
+		<script class="defered-js" data-defer="my_function">
+			my_function() { ... }
+		</script>
+	*/
+	$('.defered-js').each(function() {
+		var f = $(this).attr('data-defer');
+		if (f && window[f] && typeof window[f] === 'function') window[f]();
+	});
+});
