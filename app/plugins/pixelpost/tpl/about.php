@@ -1,3 +1,4 @@
+<h3>About</h3>
 <p>
 	This plugin is the main piece of Pixelpost over the ultralite 2 framework.
 	<br>
