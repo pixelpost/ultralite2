@@ -352,7 +352,7 @@ class Model
 		{
 			foreach(self::entity_grant_list_by_entity($entity_id) as $grant)
 			{
-				self::entity_grant_unlink($user_id, $grant['id']);
+				self::entity_grant_unlink($entity_id, $grant['id']);
 			}
 		}
 		catch(ModelExceptionNoResult $e) {}

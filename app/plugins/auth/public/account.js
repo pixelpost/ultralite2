@@ -12,7 +12,7 @@ account_entity = function(dom_item)
 
 		modal.find('strong').text(self.name.text());
 
-		modal.find('.btn-primary').click(function(ev) {
+		modal.find('.btn-primary').off('click').click(function(ev) {
 			ev.preventDefault();
 
 			api_call('auth.entity.del', { 'entity': self.id }, function() {
@@ -44,6 +44,8 @@ account_entity = function(dom_item)
 
 	this.rename_event = function(ev)
 	{
+		ev.preventDefault();
+
 		var newname = self.rename.val();
 		var data    = { 'entity': self.id, 'name': newname };
 
@@ -59,6 +61,8 @@ account_entity = function(dom_item)
 
 	this.grant_event = function(ev)
 	{
+		ev.preventDefault();
+
 		var input  = $(this);
 		var gid    = input.val();
 		var method = input.attr('checked') ? 'add' : 'del';
