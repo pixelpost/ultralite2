@@ -24,7 +24,7 @@
 	{% endfor %}
 </p>
 
-<hr><div>{{ plugin.data() }}</div><hr>
+<div>{{ plugin.data() }}</div><hr>
 
 <a href="settings/plugins">&larr; go back to the list</a>
 {% endblock %}
