@@ -21,7 +21,7 @@ function api_call_raw(method, request, success) {
 
 	$.ajax({
 		'type'        : 'put',
-		"url"         : 'auth/api-bridge/json/',
+		"url"         : 'api/bridge/json/',
 		"dataType"    : "json",
 		"processData" : false,
 		"data"        : json_serialize({'method':method, 'request':request}),

@@ -48,13 +48,34 @@ class Plugin implements PluginInterface
 
 	public static function register()
 	{
-		Event::register('request.api',               __CLASS__ . '::api_request');
-		Event::register('admin.settings.plugin.api', __CLASS__ . '::about');
+		$self  = __CLASS__;
+		$pp    = 'pixelpost\plugins\pixelpost\Plugin';
+
+		Event::register_list(array(
+			array('request.api',               $self . '::api_request'),
+			array('admin.api',                 $pp   . '::route'),
+			array('admin.api.bridge',          $self . '::bridge'),
+			array('admin.template.js',         $self . '::admin_js'),
+			array('admin.settings.plugin.api', $self . '::about'),
+		));
 	}
 
 	public static function about(Event $event)
 	{
 		Template::create()->publish('api/tpl/about.php');
+	}
+
+	public static function admin_js(Event $event)
+	{
+		$event->response[] = Template::create()->render('api/tpl/api.js');
+	}
+
+	public static function bridge(Event $event)
+	{
+		// this is use web authentication instead of api authentication to
+		// call api methods. (if plugin auth is active)
+		// So, no tokens, no hmac, no nonce. More simple for admin JS calls.
+		$event->redirect('request.api');
 	}
 
 	/**
