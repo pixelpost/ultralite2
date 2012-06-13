@@ -1,3 +1,4 @@
+<h3>About</h3>
 <p>
 	The Auth plugin is a piece of Pixelpost base installation, it provides
 	security methods and controls. This part of pixelpost
