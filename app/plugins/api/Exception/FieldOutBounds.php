@@ -24,6 +24,6 @@ class FieldOutBounds extends \pixelpost\plugins\api\Exception
 		$code    = 'bad_data';
 		$message = 'Field `%s` need to be a number between %d and %d.';
 
-		parent::__construct($code, sprintf($message, $min, $max));
+		parent::__construct($code, sprintf($message, $field, $min, $max));
 	}
 }
