@@ -22,6 +22,11 @@ $checkDir = function($name, $base) use ($myConf, $newConf, &$conf)
 {
 	if ($newConf[$name] == $myConf->$name) return;
 
+	if (preg_match('#[^a-z0-9_-]#i', $newConf[$name]))
+	{
+		throw new ApiError\FieldNotValid($name, "dir '{$newConf[$name]}' should not contains others caracters than letters, digit, hyphen and underscore.");
+	}
+
 	if ($base != '') $base .= '/';
 
 	$oldPath = ROOT_PATH . '/' . $base . $myConf->$name;
@@ -37,11 +42,11 @@ $checkDir = function($name, $base) use ($myConf, $newConf, &$conf)
 
 $checkNumber = function($number, $min, $max, $message)
 {
-	if (!is_numeric($number)) throw new ApiError\FieldOutBounds($name, $min, $max);
+	if (!is_numeric($number)) throw new ApiError\FieldOutBounds('quality', $min, $max);
 
 	$int = abs(intval($number));
 
-	if ($int < $min || $int > $max) throw new ApiError\FieldOutBounds($name, $min, $max);
+	if ($int < $min || $int > $max) throw new ApiError\FieldOutBounds('quality', $min, $max);
 
 	return $int;
 };
@@ -50,29 +55,29 @@ $checkSize = function($name) use ($myConf, $newConf, &$conf, $checkNumber)
 {
 	$change = false; // need to resize all photo ?
 
-	if ($newConf['sizes'][$name]['type'] == $myConf->sizes->$name->type)
+	$newType = $newConf['sizes'][$name]['type'];
+
+	if ($newType != $myConf->sizes->$name->type)
 	{
 		$change = true;
 
-		$options = array('larger-border', 'fixed-width', 'fixed-height', 'fixed', 'sqare');
+		$options = array('larger-border', 'fixed-width', 'fixed-height', 'fixed', 'square');
 
-		switch($newConf['sizes'][$name]['type'])
+		switch($newType)
 		{
 			case 'larger-border':
 			case 'fixed-width'  :
 			case 'fixed-height' :
 			case 'fixed'        :
 			case 'square'       :
+				$conf->plugin_photo->sizes->$name->type = $newType;
 				break;
 			default:
 				throw new ApiError\FieldNotInList('type', $options);
 		}
-
-		$conf->plugin_photo->sizes->$name->type = $newConf['sizes'][$name]['type'];
 	}
 
-
-	if ($newConf['sizes'][$name]['type'] == 'fixed')
+	if ($newType == 'fixed')
 	{
 		$width  = $newConf['sizes'][$name]['width'];
 		$height = $newConf['sizes'][$name]['height'];
@@ -109,8 +114,8 @@ try
 	$checkDir('directory', '');
 
 	$change = false;
-	$change = $change || $checkSize('resized');
-	$change = $change || $checkSize('thumb');
+	$change = $checkSize('resized') || $change;
+	$change = $checkSize('thumb')   || $change;
 
 	$conf->plugin_photo->quality = $checkNumber($newConf['quality'], 40, 100, 'quality');
 

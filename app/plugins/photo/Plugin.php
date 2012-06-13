@@ -120,10 +120,11 @@ class Plugin implements PluginInterface
 			array('api.upload.end',        $api    . '::upload_end'),
 			array('api.upload.max-size',   $api    . '::upload_max_size'),
 			// admin web interface
-			array('admin.photos',          $pp     . '::route'),
-			array('admin.photos.index',    $admin  . '::page_index'),
-			array('admin.template.nav',    $admin  . '::template_nav'),
-			array('admin.template.widget', $admin  . '::template_widget'),
+			array('admin.photos',                $pp     . '::route'),
+			array('admin.photos.index',          $admin  . '::page_index'),
+			array('admin.template.nav',          $admin  . '::template_nav'),
+			array('admin.template.widget',       $admin  . '::template_widget'),
+			array('admin.settings.plugin.photo', $admin  . '::settings'),
 		));
 	}
 }

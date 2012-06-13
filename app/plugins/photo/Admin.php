@@ -38,4 +38,9 @@ class Admin
 
 		require __DIR__ . '/admin/home.php';
 	}
+
+	public static function settings(Event $event)
+	{
+		Template::create()->publish('photo/tpl/admin/about.php');
+	}
 }
