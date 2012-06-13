@@ -1,3 +1,4 @@
+<h3>About</h3>
 <p>
 	The API plugin is a piece of Pixelpost base installation, it provides
 	lot of methods, completed and used by all plugins. This part of pixelpost
