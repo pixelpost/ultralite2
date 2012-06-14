@@ -36,4 +36,17 @@ class Admin
 	{
 		Template::create()->publish('auth/tpl/about.php');
 	}
+
+	public static function secure_settings(Event $event)
+	{
+		if (!Plugin::is_granted('config'))
+		{
+			Template::create()
+				->assign('title', 'settings')
+				->publish('auth/tpl/unauth.php');
+
+			// stop the event processing
+			return false;
+		}
+	}
 }

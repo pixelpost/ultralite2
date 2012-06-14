@@ -149,6 +149,7 @@ class Plugin implements PluginInterface
 			array('admin.auth',                $pp     . '::route'),
 			array('admin.auth.account',        $admin  . '::page_account'),
 			array('admin.settings.plugin.auth',$admin  . '::page_about'),
+			array('admin.settings',            $admin  . '::secure_settings', 99),
 		));
 	}
 
