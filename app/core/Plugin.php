@@ -441,8 +441,6 @@ class Plugin
 	 */
 	public static function check_dependencies($plugin)
 	{
-		if (static::get_state($plugin) != static::STATE_UNINSTALLED) return true;
-
 		foreach(static::get_dependencies($plugin) as $dep => $version)
 		{
 			if (!static::is_exists($dep))
