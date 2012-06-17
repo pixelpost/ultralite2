@@ -32,7 +32,7 @@
 			<div class="control-group">
 				<label class="control-label" for="email">Email:</label>
 				<div class="controls">
-					<input id="email" name="email" value="{{ user.email }}" placeholder="email@address.com" required>
+					<input type="email" id="email" name="email" value="{{ user.email }}" placeholder="user@example.com" required>
 				</div>
 			</div>
 			<div class="control-group">
@@ -80,8 +80,8 @@
 					</p>
 				</div>
 				<div class="modal-footer">
-					<a href="#" class="btn" data-dismiss="modal">No</a>
-					<a href="#" class="btn btn-primary">Delete</a>
+					<a href="#" class="btn" data-dismiss="modal">Cancel</a>
+					<a href="#" class="btn btn-danger">Delete</a>
 				</div>
 			</div>
 

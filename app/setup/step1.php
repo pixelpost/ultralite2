@@ -4,7 +4,7 @@ $warnings = array();
 
 if ($isConfFileExists)
 {
-	$warnings[] = 'Found a config file, you should run update.php script';
+	$warnings[] = 'Found an existing config file, please run the update.php script';
 }
 else
 {
@@ -30,7 +30,7 @@ else
 	if (file_exists(ROOT_PATH . '/.htaccess'))
 	{
 		$messageVeryLong  = '/.htaccess` already exists: '
-						  . 'we cannot install the mod_rewrite rule, '
+						  . 'we cannot install the mod_rewrite rules, '
 						  . 'and secure your private data... '
 						  . ' Take a look at the `app/setup/samples/htaccess_sample` '
 						  . ' file for manual install.';

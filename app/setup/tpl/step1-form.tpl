@@ -51,7 +51,7 @@
 
 {% block Js %}
 <script type="text/javascript">
-	// for security we non transmit the password in clear text.
+	// for security we won't transmit the plain text password.
 	$(document).ready(function() {
 		$('form').submit(function(event) {
 			var p = $('#password');

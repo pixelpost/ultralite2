@@ -138,13 +138,13 @@ $(document).ready(function() {
 	$('#badge-debug').popover({
 		placement :'top',
 		title     :'This should be off',
-		content   :'Debug consume lot of ressource and log file continuously grows.'
+		content   :'Debug consumes more system resources as well as a log file which continuously grows.'
 	});
 
 	$('#cache-flush-help').popover({
 		placement :'top',
 		title     :'Flushing the cache',
-		content   :'This deletes all pages in cache, this may helps if you encountering some display problem.'
+		content   :'This deletes all pages in cache, this may help if you are encountering display problems.'
 	});
 
 	$('#cache-flush').click(function() {
