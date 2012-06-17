@@ -87,13 +87,15 @@ try
 	// create the database
 	core\Db::create();
 
+	$rollbackTo = 7;
+
+  // Load config (must be called before plugin detection)
+	$conf = core\Config::load(PRIV_PATH . '/config.json');
+
 	// detect all plugins already in the package (and store the list in conf)
 	core\Plugin::detect();
 
-	$rollbackTo = 7;
-
-	// Load, update and save the config file
-	$conf           = core\Config::load(PRIV_PATH . '/config.json');
+	// Update and save the config file
 	$conf->userdir  = $userdir;
 	$conf->url      = $base_url;
 	$conf->timezone = $post['timezone'];
