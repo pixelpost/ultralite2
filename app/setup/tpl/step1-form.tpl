@@ -23,13 +23,13 @@
 		<div class="control-group">
 			<label class="control-label" for="password">Password</label>
 			<div class="controls">
-				<input id="password" name="password" placeholder="Password" required />
+				<input id="password" name="password" type="password" placeholder="Password" required />
 			</div>
 		</div>
 		<div class="control-group">
 			<label class="control-label" for="email">Email</label>
 			<div class="controls">
-				<input id="email" name="email" placeholder="your-email@address.com" required />
+				<input id="email" name="email" type="email" placeholder="user@example.com" required />
 			</div>
 		</div>
 		<div class="control-group">
