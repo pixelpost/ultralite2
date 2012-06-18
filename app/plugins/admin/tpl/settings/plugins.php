@@ -73,7 +73,7 @@ $(document).ready(function() {
 				{% for plugin in all %}
 				<tr>
 					<td>
-						<a href="settings/plugin/{{ plugin()|url }}">{{ plugin.name()|title }}</a>
+						<a href="settings/plugin/{{ plugin()|url }}"><i class="icon-info-sign visible-hover"></i> {{ plugin.name()|title }}</a>
 					</td>
 					<td>
 						{% include admin/tpl/settings/_plugin_label.php %}

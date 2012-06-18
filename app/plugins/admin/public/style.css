@@ -52,3 +52,11 @@ table.table-simple tr:first-child th {
 table.table-simple tr:first-child td {
 	border-top:0;
 }
+
+.visible-hover{
+	visibility: hidden;
+}
+
+tr:hover .visible-hover{
+	visibility: visible;
+}
