@@ -1,11 +1,11 @@
 {% extends auth/tpl/_main.php %}
 
-{% block Title %}authentication{% endblock %}
+{% block Title %}Authentication{% endblock %}
 
 {% block Content %}
 <form class="row-fluid form-horizontal">
 	<fieldset>
-		<legend>Who are you ?</legend>
+		<legend>Who are you?</legend>
 
 		<div class="control-group">
 			<label class="control-label" for="user">Username:</label>
@@ -25,13 +25,13 @@
 				<i class="icon-user icon-white"></i> Log In
 			</button>
 			<span id="message" class="label"></span>
-			<a id="forget" href="#">Forget your password ? Click here to request a reset</a>
+			<a id="forget" href="#">Forget your password? Click here to request a reset</a>
 		</div>
 	</fieldset>
 </form>
 <noscript>
-	<div class="row-fluid alert alert-warning">
-		You need to have javascript actived !
+	<div class="row-fluid alert alert-error">
+		<strong>Error:</strong> JavaScript must be enabled to use the administration page.
 	</div>
 </noscript>
 {% endblock %}
