@@ -52,7 +52,7 @@
 		<h2 class>Manage your public keys</h2>
 
 		<p class="well form-inline">
-			<input id="key_name" placeholder="what is the key usage ?">
+			<input id="key_name" placeholder="Where will this key be used?">
 			<button class="btn" id="key_add">Create</button>
 		</p>
 
@@ -62,8 +62,10 @@
 			{% elsefor %}
 			<div class="alert alert-info alert-block">
 				<h3 class="alert-heading">Tip!</h3>
-				<p>A public key offers access to your pixelpost API. External
-					app can access and manage your pixelpost.
+				<p>A public key allows you to use external apps and services
+					to access and manage your website remotely, using the
+					<a href="https://github.com/pixelpost/ultralite2/wiki/api-home">Pixelpost API</a>,
+					without requiring you to disclose your username and password.
 				<p><strong>Create your first one!</strong>
 			</div>
 			{% endfor %}
@@ -75,8 +77,8 @@
 				</div>
 				<div class="modal-body">
 					<p>
-						Public key <strong></strong> will be deleted. Software depends
-						on it will no longer access to your pixelpost.
+						Public key <strong></strong> will be deleted. Software using this
+						key will no longer be able to access to your pixelpost information.
 					</p>
 				</div>
 				<div class="modal-footer">
