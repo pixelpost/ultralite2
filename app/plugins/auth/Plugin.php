@@ -166,7 +166,7 @@ class Plugin implements PluginInterface
 		// retrieve the web admin page called
 		list(,$page) = $event->request->get_params() + array('admin', 'index');
 
-		// skip page don't need authentification to be checked
+		// skip page don't need authentication to be checked
 		switch($page)
 		{
 		case '404':
@@ -184,12 +184,12 @@ class Plugin implements PluginInterface
 			WebAuth::disconnect($event->request);
 			return false;
 		default:
-			assert('pixelpost\core\Log::info("(auth) check admin page authentification")');
+			assert('pixelpost\core\Log::info("(auth) check admin page authentication');
 
-			// check if user is authentificated
+			// check if user is authenticated
 			if (WebAuth::check($id, $name))
 			{
-				assert('pixelpost\core\Log::info("(auth) user %s is authentified", $name)');
+				assert('pixelpost\core\Log::info("(auth) user %s is authenticated", $name)');
 				// register the identification (permit to internal api call to be
 				// authenticated too).
 				self::$_user_id     = $id;
@@ -200,7 +200,7 @@ class Plugin implements PluginInterface
 			else
 			{
 				assert('pixelpost\core\Log::info("(auth) unauth user")');
-				// publish authentification form
+				// publish authentication form
 				WebAuth::auth();
 				// stop signal request.admin chain (admin plugin is not called).
 				return false;
@@ -379,7 +379,7 @@ class Plugin implements PluginInterface
 	 */
 	public static function is_granted($grantRequested, $user_id = 0)
 	{
-		// check the authentification
+		// check the authentication
 		if (!self::is_auth()) return false;
 
 		// check virtual 'self' grant if a user id is provided

@@ -1,6 +1,6 @@
 {% extends auth/tpl/_main.php %}
 
-{% block Title %}Authentification{% endblock %}
+{% block Title %}authentication{% endblock %}
 
 {% block Content %}
 <form class="row-fluid form-horizontal">

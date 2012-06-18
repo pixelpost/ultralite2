@@ -47,7 +47,7 @@ class WebAuth
 	}
 
 	/**
-	 * Generate an authentification key
+	 * Generate an authentication key
 	 *
 	 * @param  int    $id
 	 * @param  string $user
@@ -158,7 +158,7 @@ class WebAuth
 	}
 
 	/**
-	 * Check if a user is authentified, if true, feel $id, $user and return true
+	 * Check if a user is authenticated, if true, feel $id, $user and return true
 	 * else return false
 	 *
 	 * @param  int $id
@@ -231,7 +231,7 @@ class WebAuth
 	}
 
 	/**
-	 * Publish the authentification form
+	 * Publish the authentication form
 	 */
 	public static function auth()
 	{
@@ -242,13 +242,13 @@ class WebAuth
 	}
 
 	/**
-	 * Receive data from authentification form (see auth() method).
+	 * Receive data from authentication form (see auth() method).
 	 * Verify if the couple user / pass is valid or not.
 	 *
 	 * If user is valid, he is registred (see: register() method).
 	 *
 	 * This method return JSON data.
-	 * See it's usage in authentification form in javascript code.
+	 * See it's usage in authentication form in javascript code.
 	 *
 	 * @param pixelpost\core\Request $request
 	 */
@@ -321,14 +321,14 @@ class WebAuth
 	}
 
 	/**
-	 * Receive data from authentification form (see auth() method).
+	 * Receive data from authentication form (see auth() method).
 	 * Verify if the user exists or not.
 	 *
 	 * If user exists, send an email to the admin specified a request for
 	 * password reset with a link to do it.
 	 *
 	 * This method return JSON data.
-	 * See it's usage in authentification form in javascript code.
+	 * See it's usage in authentication form in javascript code.
 	 *
 	 * @param pixelpost\core\Request $request
 	 */
