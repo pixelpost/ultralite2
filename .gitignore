@@ -1,11 +1,11 @@
-.htaccess
 .DS_Store
+.tm_properties
 *.tmproj
-*.sqlite3
 *.db
 *.un~
+tmtags
+/.htaccess
+/index.php
 /private/
 /public/
 /photos/
-/index.php
-.tm_properties
