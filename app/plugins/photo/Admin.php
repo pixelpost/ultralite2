@@ -16,7 +16,7 @@ class Admin
 			  ->assign('is_active', static::$_page_home_active)
 			  ->assign('url', 'photos')
 			  ->assign('name', 'photos')
-			  ->render('admin/tpl/_menu.php');
+			  ->render('admin/tpl/_menu.tpl');
 	}
 
 	public static function template_widget(Event $event)
@@ -29,7 +29,7 @@ class Admin
 			  ->assign('count', $count)
 			  ->assign('url', 'photos')
 			  ->assign('text', 'photos')
-			  ->render('admin/tpl/_widget.php');
+			  ->render('admin/tpl/_widget.tpl');
 	}
 
 	public static function page_index(Event $event)
@@ -41,6 +41,6 @@ class Admin
 
 	public static function settings(Event $event)
 	{
-		Template::create()->publish('photo/tpl/admin/about.php');
+		Template::create()->publish('photo/tpl/admin/about.tpl');
 	}
 }

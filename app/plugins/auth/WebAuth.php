@@ -238,7 +238,7 @@ class WebAuth
 		Template::create()
 			->assign('user', self::_get_user())
 			->assign('priv', self::_gen_challenge())
-			->publish('auth/tpl/auth.php');
+			->publish('auth/tpl/auth.tpl');
 	}
 
 	/**
@@ -360,7 +360,7 @@ class WebAuth
 				$content = Template::create()
 					->assign('user', $user)
 					->assign('key', self::_gen_reset_key($id, $user, $pass) . $id)
-					->render('auth/tpl/forget.php');
+					->render('auth/tpl/forget.tpl');
 
 				mb_send_mail($email, 'Pixelpost reset password request', $content);
 
@@ -420,7 +420,7 @@ class WebAuth
 			{
 				if (!$request->is_post())
 				{
-					Template::create()->publish('auth/tpl/reset.php');
+					Template::create()->publish('auth/tpl/reset.tpl');
 					return;
 				}
 				else

@@ -1,4 +1,4 @@
-{% extends auth/tpl/_main.php %}
+{% extends auth/tpl/_main.tpl %}
 
 {% block Title %}Password reset{% endblock %}
 

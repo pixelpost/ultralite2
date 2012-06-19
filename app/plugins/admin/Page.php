@@ -30,7 +30,7 @@ class Page
 		$event->response[] = Template::create()
 			  ->assign('url', 'phpinfo')
 			  ->assign('name', 'php info')
-			  ->render('admin/tpl/_menu.php');
+			  ->render('admin/tpl/_menu.tpl');
 	}
 
 	public static function template_nav(Event $event)
@@ -39,7 +39,7 @@ class Page
 			  ->assign('is_active', static::$_page_setting_active)
 			  ->assign('url', 'settings')
 			  ->assign('name', 'settings')
-			  ->render('admin/tpl/_menu.php');
+			  ->render('admin/tpl/_menu.tpl');
 	}
 
 	public static function template_widget(Event $event)
@@ -47,6 +47,6 @@ class Page
 		$event->response[] = Template::create()
 			->assign('count', 'v' . Config::create()->version)
 			->assign('text', 'settings')
-			->render('admin/tpl/_widget.php');
+			->render('admin/tpl/_widget.tpl');
 	}
 }

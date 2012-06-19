@@ -13,4 +13,4 @@ Template::create()
 		'is_new' => $manager->is_new(),
 	))
 	->assign('is_tab_plugins', true)
-	->publish('admin/tpl/settings/plugins.php');
+	->publish('admin/tpl/settings/plugins.tpl');

@@ -1,4 +1,4 @@
-{% extends admin/tpl/settings/_main.php %}
+{% extends admin/tpl/settings/_main.tpl %}
 
 {% block Content %}
 <div class="row-fluid">
@@ -7,11 +7,11 @@
 
 		<small>{{ plugin.version() }}</small>
 
-		{% include admin/tpl/settings/_plugin_label.php %}
+		{% include admin/tpl/settings/_plugin_label.tpl %}
 	</h2>
 
 	<div class="span6">
-		{% include admin/tpl/settings/_plugin_action.php %}
+		{% include admin/tpl/settings/_plugin_action.tpl %}
 	</div>
 </div>
 <p>

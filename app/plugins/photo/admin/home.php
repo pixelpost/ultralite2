@@ -32,4 +32,4 @@ $msize   = Api::call_api_method('upload.max-size');
 $tpl = Template::create()
 	->assign('photos', $photos['photo'])
 	->assign('post_max_size', $msize['max_size'])
-	->publish('photo/tpl/admin/home.php');
+	->publish('photo/tpl/admin/home.tpl');

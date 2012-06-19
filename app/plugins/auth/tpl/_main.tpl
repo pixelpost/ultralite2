@@ -1,4 +1,4 @@
-{% extends pixelpost/tpl/_main.php %}
+{% extends pixelpost/tpl/_main.tpl %}
 
 {% block Css %}
 	{# <link rel="stylesheet" href="{{ 'admin::style.css'|asset }}"> #}

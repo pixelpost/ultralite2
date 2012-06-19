@@ -62,7 +62,7 @@ class Plugin implements PluginInterface
 
 	public static function about(Event $event)
 	{
-		Template::create()->publish('api/tpl/about.php');
+		Template::create()->publish('api/tpl/about.tpl');
 	}
 
 	public static function admin_js(Event $event)

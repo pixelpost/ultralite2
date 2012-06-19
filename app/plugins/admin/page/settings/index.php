@@ -89,4 +89,4 @@ Template::create()
 	->assign($form)
 	->assign('is_tab_index', true)
 	->assign('timezones', $timezones)
-	->publish('admin/tpl/settings/index.php');
+	->publish('admin/tpl/settings/index.tpl');

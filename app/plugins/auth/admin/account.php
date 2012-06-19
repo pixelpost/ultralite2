@@ -57,4 +57,4 @@ Template::create()
 	->assign('user',           $user)
 	->assign('entities',       $entities['list'])
 	->assign('grants',         $grants['list'])
-	->publish('auth/tpl/account.php');
+	->publish('auth/tpl/account.tpl');

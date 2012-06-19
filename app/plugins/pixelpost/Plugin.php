@@ -68,7 +68,7 @@ class Plugin implements PluginInterface
 
 	public static function about(Event $event)
 	{
-		Template::create()->publish('pixelpost/tpl/about.php');
+		Template::create()->publish('pixelpost/tpl/about.tpl');
 	}
 
 	public static function request(Event $event)
@@ -105,8 +105,8 @@ class Plugin implements PluginInterface
 	{
 		$error = $event->exception;
 
-		if (DEBUG) include __DIR__ . '/tpl/error_debug.php';
-		else       include __DIR__ . '/tpl/error.php';
+		if (DEBUG) include __DIR__ . '/tpl/error_debug.tpl';
+		else       include __DIR__ . '/tpl/error.tpl';
 
 		// we need to stop the script, if not, PHP understand that the exception
 		// was not caugth. And raise an error:

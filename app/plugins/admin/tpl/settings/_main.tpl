@@ -1,4 +1,4 @@
-{% extends admin/tpl/_main.php %}
+{% extends admin/tpl/_main.tpl %}
 
 {% block Title %}Settings{% endblock %}
 

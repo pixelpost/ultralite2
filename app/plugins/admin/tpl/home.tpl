@@ -1,4 +1,4 @@
-{% extends admin/tpl/_main.php %}
+{% extends admin/tpl/_main.tpl %}
 
 {% block Content %}
 <div class="row-fluid">

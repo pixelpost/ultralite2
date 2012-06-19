@@ -16,4 +16,4 @@ if (!$plugin || !Plug::is_exists($plugin))
 Template::create()
 	->assign('plugin', new classes\Plugin($plugin))
 	->assign('is_tab_plugins', true)
-	->publish('admin/tpl/settings/plugin.php');
+	->publish('admin/tpl/settings/plugin.tpl');

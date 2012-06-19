@@ -15,14 +15,14 @@ class Admin
 			  ->assign('is_active', static::$_page_account_active)
 			  ->assign('url', 'auth/account')
 			  ->assign('name', 'account')
-			  ->render('admin/tpl/_menu.php');
+			  ->render('admin/tpl/_menu.tpl');
 	}
 
 	public static function template_navbar(Event $event)
 	{
 		$event->response[] = Template::create()
 				->assign('user', Plugin::get_entity_name())
-				->render('auth/tpl/admin-navbar.php');
+				->render('auth/tpl/admin-navbar.tpl');
 	}
 
 	public static function page_account(Event $event)
@@ -34,7 +34,7 @@ class Admin
 
 	public static function page_about(Event $event)
 	{
-		Template::create()->publish('auth/tpl/about.php');
+		Template::create()->publish('auth/tpl/about.tpl');
 	}
 
 	public static function secure_settings(Event $event)
@@ -43,7 +43,7 @@ class Admin
 		{
 			Template::create()
 				->assign('title', 'settings')
-				->publish('auth/tpl/unauth.php');
+				->publish('auth/tpl/unauth.tpl');
 
 			// stop the event processing
 			return false;

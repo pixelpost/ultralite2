@@ -1,4 +1,4 @@
-{% extends admin/tpl/_main.php %}
+{% extends admin/tpl/_main.tpl %}
 
 {% block Title %}404 page not found{% endblock %}
 

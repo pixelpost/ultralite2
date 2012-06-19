@@ -1,4 +1,4 @@
-{% extends admin/tpl/settings/_main.php %}
+{% extends admin/tpl/settings/_main.tpl %}
 
 {% block Content %}
 <form class="form-horizontal" accept-charset="utf-8" method="post">

@@ -1,4 +1,4 @@
-{% extends admin/tpl/settings/_main.php %}
+{% extends admin/tpl/settings/_main.tpl %}
 
 {% block Js %}
 <script>
@@ -76,10 +76,10 @@ $(document).ready(function() {
 						<a href="settings/plugin/{{ plugin()|url }}"><i class="icon-info-sign visible-hover"></i> {{ plugin.name()|title }}</a>
 					</td>
 					<td>
-						{% include admin/tpl/settings/_plugin_label.php %}
+						{% include admin/tpl/settings/_plugin_label.tpl %}
 					</td>
 					<td>
-						{% include admin/tpl/settings/_plugin_action.php %}
+						{% include admin/tpl/settings/_plugin_action.tpl %}
 					</td>
 				</tr>
 				{% endfor %}
