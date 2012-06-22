@@ -45,6 +45,8 @@ if ($event->request->is_post())
 // retrieve user data
 $user = Api::call_api_method('auth.user.get', array('user' => $user_online));
 
+$user += array('gravatar' => md5(strtolower($user['email'])));
+
 // retrieve user entities
 $entities = Api::call_api_method('auth.entity.list', array());
 

@@ -1,6 +1,9 @@
 {% extends admin/tpl/_main.tpl %}
 
-{% block Title %}Account settings{% endblock %}
+{% block Title %}
+	Account settings
+	<img class="pull-right" src="http://gravatar.com/avatar/{{ user.gravatar }}?s=60">
+{% endblock %}
 
 {% block Js %}
 <script src="{{ 'auth::account.js'|asset }}"></script>
