@@ -25,7 +25,7 @@ if ($grant)
 	$list = Model::entity_grant_list_by_grant($id, function(&$item)
 	{
 		// skip user's personnal entity
-		if ($item['is_me']) return false;
+		if (!$item['is_me']) return false;
 
 		// this can feel stupid but it's important to keep a distinction between
 		// user identifier and user name, even if today it is the same.
