@@ -184,7 +184,7 @@ class Plugin implements PluginInterface
 			WebAuth::disconnect($event->request);
 			return false;
 		default:
-			assert('pixelpost\core\Log::info("(auth) check admin page authentication');
+			assert('pixelpost\core\Log::info("(auth) check admin page authentication")');
 
 			// check if user is authenticated
 			if (WebAuth::check($id, $name))
