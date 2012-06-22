@@ -714,8 +714,8 @@ class TemplateCompiler
 			// math
 			case 'number'  : return '$this->_filter_number(%s)';
 			case 'between' : return '$this->_filter_between(%s, ' . $param . ')';
-			case 'even'    : return '((%s % 2) == 0)';
-			case 'odd'     : return '((%s % 2) == 1)';
+			case 'even'    : return '((%s %% 2) == 0)';
+			case 'odd'     : return '((%s %% 2) == 1)';
 			case 'abs'     : return 'abs(%s)';
 			case 'neg'     : return '(%s * -1)';
 			// array
