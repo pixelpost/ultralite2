@@ -130,7 +130,6 @@ $(document).ready(function() {
 	{
 		var e = new account_entity(this);
 		e.bind();
-		e.dom.show();
 	});
 
 	$('#key_add').click(function()
