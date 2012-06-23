@@ -5,6 +5,7 @@ namespace pixelpost\plugins\auth;
 use pixelpost\core\Config,
 	pixelpost\core\Filter,
 	pixelpost\core\Event,
+	pixelpost\core\Template,
 	pixelpost\core\PluginInterface,
 	pixelpost\plugins\api\Exception as ApiException;
 
@@ -197,6 +198,14 @@ class Plugin implements PluginInterface
 				// authenticated too).
 				self::$_user_id     = $id;
 				self::$_entity_name = $name;
+
+				// check if user have a read access
+				if (!self::is_granted('read'))
+				{
+					Template::create()->publish('auth/tpl/unauth.tpl');
+					return false;
+				}
+
 				// call admin page
 				return true;
 			}
