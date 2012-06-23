@@ -10,7 +10,7 @@
 	<li class="{{ is_tab_plugins|default(false)|if('active', '') }}">
 		<a href="settings/plugins">Plugins</a>
 	</li>
-	{{ 'settings.template.tabs'|event|join }}
+	{{ 'admin.template.settings.tabs'|event|join }}
 </ul>
 {% child %}
 {% endblock %}
