@@ -375,6 +375,25 @@ class Filter
 	}
 
 	/**
+	 * Return only a column from a multidimentionnal array
+	 *
+	 * @param array $array
+	 * @param mixed $column
+	 * @return array
+	 */
+	public static function array_column($array, $column)
+	{
+		$a = array();
+
+		foreach ($array as $key => $value)
+		{
+			if (isset($value[$column])) $a[$key] = $value[$column];
+		}
+
+		return $a;
+	}
+
+	/**
 	 * Convert multidimantionnal object to array
 	 *
 	 * @param  stdClass $object
