@@ -17,7 +17,7 @@
 	<div class="span6">
 		<h2 class="lead">Manage public keys</h2>
 
-		{% include auth/tpl/_entity_modal.tpl %}
+		{% include auth/tpl/_entity_form.tpl %}
 
 		<div id="entities">
 			{% for entity in entities %}
