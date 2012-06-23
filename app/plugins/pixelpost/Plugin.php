@@ -5,6 +5,7 @@ namespace pixelpost\plugins\pixelpost;
 use pixelpost\core\Config,
 	pixelpost\core\PluginInterface,
 	pixelpost\core\Template,
+	pixelpost\core\Request,
 	pixelpost\core\Event;
 
 /**
@@ -60,7 +61,8 @@ class Plugin implements PluginInterface
 	public static function register()
 	{
 		Event::register_list(array(
-			array('http.new',                        __CLASS__ . '::request'),
+			array('app.start',                       __CLASS__ . '::startup'),
+			array('http.new',                        __CLASS__ . '::http'),
 			array('error.new',                       __CLASS__ . '::error'),
 			array('admin.settings.plugin.pixelpost', __CLASS__ . '::about'),
 		));
@@ -71,7 +73,27 @@ class Plugin implements PluginInterface
 		Template::create()->publish('pixelpost/tpl/about.tpl');
 	}
 
-	public static function request(Event $event)
+	public static function startup(Event $event)
+	{
+		// retrieve the configuration plugin
+		$conf = Config::create();
+
+		// create usefull constant
+		define('API_URL',   WEB_URL . $conf->pixelpost->api   . '/', true);
+		define('ADMIN_URL', WEB_URL . $conf->pixelpost->admin . '/', true);
+
+		// parse the http request
+		assert('pixelpost\core\Log::info("(pixelpost) Web request creation")');
+
+		$request = Request::create()->set_userdir(Config::create()->userdir)->auto();
+
+		// send the event as we have a new http request
+		assert('pixelpost\core\Log::info("(pixelpost) Handle %s", $request->get_request_url())');
+
+		$event = Event::signal('http.new', compact('request'));
+	}
+
+	public static function http(Event $event)
 	{
 		// retrieve the configuration plugin
 		$conf    = Config::create()->pixelpost;
@@ -79,10 +101,6 @@ class Plugin implements PluginInterface
 		// get the request and its url paramters
 		$request = $event->request;
 		$params  = $request->get_params() + array('index');
-
-		// create usefull constant
-		define('API_URL',   WEB_URL . $conf->api   . '/', true);
-		define('ADMIN_URL', WEB_URL . $conf->admin . '/', true);
 
 		// Make a choice between ADMIN, API, WEB.
 		// ADMIN and API base url are in the configuration file,

@@ -125,14 +125,12 @@ assert('pixelpost\core\Log::info("(bootstrap) plugin registration")');
 
 Plugin::make_registration();
 
-// Step 8. We need to parse the incoming request
-assert('pixelpost\core\Log::info("(bootstrap) Web request creation")');
+// Step 8. Send the signal that all is ready to go!
+assert('pixelpost\core\Log::info("(bootstrap) application starts")');
 
-$request = Request::create()->set_userdir($conf->userdir)->auto();
+Event::signal('app.start');
 
-// Step 9. We just said we have a new request ! Enjoy :)
-assert('pixelpost\core\Log::info("(bootstrap) Handle %s", $request->get_request_url())');
+// Step 9. Send the signal that all is finished!
+assert('pixelpost\core\Log::info("(bootstrap) application ends")');
 
-$event = Event::signal('http.new', array('request' => $request));
-
-assert('pixelpost\core\Log::info("(bootstrap) Terminated")');
+Event::signal('app.end');
