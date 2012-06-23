@@ -133,6 +133,6 @@ $request = Request::create()->set_userdir($conf->userdir)->auto();
 // Step 9. We just said we have a new request ! Enjoy :)
 assert('pixelpost\core\Log::info("(bootstrap) Handle %s", $request->get_request_url())');
 
-$event = Event::signal('request.new', array('request' => $request));
+$event = Event::signal('http.new', array('request' => $request));
 
 assert('pixelpost\core\Log::info("(bootstrap) Terminated")');

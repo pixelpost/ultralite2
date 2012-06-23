@@ -60,7 +60,7 @@ class Plugin implements PluginInterface
 	public static function register()
 	{
 		Event::register_list(array(
-			array('request.new',                     __CLASS__ . '::request'),
+			array('http.new',                        __CLASS__ . '::request'),
 			array('error.new',                       __CLASS__ . '::error'),
 			array('admin.settings.plugin.pixelpost', __CLASS__ . '::about'),
 		));
@@ -89,15 +89,15 @@ class Plugin implements PluginInterface
 		// other words is the WEB interface.
 		switch (current($params))
 		{
-			case $conf->admin : $event_name = 'request.admin'; array_shift($params); break;
-			case $conf->api   : $event_name = 'request.api';   array_shift($params); break;
-			default           : $event_name = 'request.web';   break;
+			case $conf->admin : $event_name = 'http.admin'; array_shift($params); break;
+			case $conf->api   : $event_name = 'http.api';   array_shift($params); break;
+			default           : $event_name = 'http.web';   break;
 		}
 
 		// send the event
 		Event::signal($event_name, compact('request', 'params'));
 
-		// we order to stop processing of the event request.new
+		// we order to stop processing of the event http.new
 		return false;
 	}
 

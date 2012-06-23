@@ -51,7 +51,7 @@ class Plugin implements PluginInterface
 			// api events
 			array('api.admin.version',          $api  . '::api_version'),
 			// admin web interface
-			array('request.admin',              $self . '::admin_router'),
+			array('http.admin',                 $self . '::admin_router'),
 			array('admin.phpinfo',              $self . '::phpinfo'),
 			array('admin.index',                $page . '::home'),
 			array('admin.404',                  $page . '::404'),
@@ -76,7 +76,7 @@ class Plugin implements PluginInterface
 	}
 
 	/**
-	 * Treat a new request comming from event 'request.admin' and check the second
+	 * Treat a new request comming from event 'http.admin' and check the second
 	 * part of the requested URL to find what admin page is asked for.
 	 *
 	 * This produce an event admin.* where * is replaced by the requested page.
@@ -99,6 +99,6 @@ class Plugin implements PluginInterface
 			return false;
 		}
 
-		$event->set_name('request.admin');
+		$event->set_name('http.admin');
 	}
 }

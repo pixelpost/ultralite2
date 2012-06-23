@@ -144,7 +144,7 @@ class Plugin implements PluginInterface
 			array('api.auth.entity.grant.add',    $api   . '::auth_entity_grant_add'),
 			array('api.auth.entity.grant.del',    $api   . '::auth_entity_grant_del'),
 			// admin web interface
-			array('request.admin',                $self  . '::request_admin', 99),
+			array('http.admin',                   $self  . '::request_admin', 99),
 			array('admin.auth',                   $pp    . '::route'),
 			array('admin.auth.account',           $admin . '::page_account'),
 			array('admin.template.nav',           $admin . '::template_nav', 150),
@@ -159,7 +159,7 @@ class Plugin implements PluginInterface
 
 	/**
 	 * Verify if a user is authenticated for admin pages. if not print the login
-	 * pages and break the request.admin chain (cause the original admin page
+	 * pages and break the http.admin chain (cause the original admin page
 	 * called is not generated).
 	 *
 	 * @param pixelpost\core\Event $event
@@ -214,7 +214,7 @@ class Plugin implements PluginInterface
 				assert('pixelpost\core\Log::info("(auth) unauth user")');
 				// publish authentication form
 				WebAuth::auth();
-				// stop signal request.admin chain (admin plugin is not called).
+				// stop signal http.admin chain (admin plugin is not called).
 				return false;
 			}
 		}

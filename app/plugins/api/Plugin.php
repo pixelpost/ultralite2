@@ -52,7 +52,7 @@ class Plugin implements PluginInterface
 		$pp    = 'pixelpost\plugins\pixelpost\Plugin';
 
 		Event::register_list(array(
-			array('request.api',               $self . '::api_request'),
+			array('http.api',                  $self . '::api_request'),
 			array('admin.api',                 $pp   . '::route'),
 			array('admin.api.bridge',          $self . '::bridge'),
 			array('admin.template.js',         $self . '::admin_js'),
@@ -75,11 +75,11 @@ class Plugin implements PluginInterface
 		// this is use web authentication instead of api authentication to
 		// call api methods. (if plugin auth is active)
 		// So, no tokens, no hmac, no nonce. More simple for admin JS calls.
-		$event->redirect('request.api');
+		$event->redirect('http.api');
 	}
 
 	/**
-	 * Treat a new request comming from event 'request.api' and check the second
+	 * Treat a new request comming from event 'http.api' and check the second
 	 * part of the requested URL to find what the format of response is asked
 	 * for (JSON, XML).
 	 * When format is found, this call for a request treatment (see: process())
@@ -149,7 +149,7 @@ class Plugin implements PluginInterface
 		// send the response to the client
 		echo $codec->encode($response);
 
-		// stop processing of the event request.api by returning false
+		// stop processing of the event http.api by returning false
 		return false;
 	}
 
