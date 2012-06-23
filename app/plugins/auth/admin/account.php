@@ -15,12 +15,12 @@ $form->check($event->request);
 $user = array('user' => $form->user_id);
 
 // retrieve user data
-$user += Api::call_api_method('auth.user.get', $user);
+$user += Api::call('auth.user.get', $user);
 $user += array('gravatar' => md5(strtolower($user['email'])));
 
 // retrieve user entities and grants
-$entities = current(Api::call_api_method('auth.entity.list'));
-$grants   = current(Api::call_api_method('auth.grant.list', $user));
+$entities = current(Api::call('auth.entity.list'));
+$grants   = current(Api::call('auth.grant.list', $user));
 
 // create the form template
 $form_tpl = $form->render($user);

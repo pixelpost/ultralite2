@@ -6,21 +6,21 @@ use pixelpost\core\Template,
 	pixelpost\plugins\api\Plugin as Api;
 
 // retrieve in firts all admins for flag them in the list
-$list = Api::call_api_method('auth.user.list', array('grant' => 'admin'));
+$list = current(Api::call('auth.user.list', array('grant' => 'admin')));
+
 $admins = array();
 
-foreach ($list['list'] as $user)
+foreach ($list as $user)
 {
 	$admins[$user['user']] = true;
 }
 
 // retrieve now the whole list of users
 $users = array();
-$list = Api::call_api_method('auth.user.list');
 
-foreach($list['list'] as $user)
+foreach(current(Api::call('auth.user.list')) as $user)
 {
-	$infos   = Api::call_api_method('auth.user.get',   $user);
+	$infos = Api::call('auth.user.get', $user);
 
 	$users[] = $user + $infos + array(
 		'is_admin' => isset($admins[$user['user']]),

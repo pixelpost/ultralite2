@@ -48,7 +48,7 @@ class UserForm
 		}
 
 		// make the update
-		Api::call_api_method('auth.user.set', $p + array('user' => $this->user_id));
+		Api::call('auth.user.set', $p + array('user' => $this->user_id));
 
 		// update some flag
 		$this->flag_success   = true;

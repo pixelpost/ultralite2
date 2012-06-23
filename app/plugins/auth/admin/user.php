@@ -22,7 +22,7 @@ try
 	$form->check($event->request);
 
 	$user = array('user' => $form->user_id);
-	$user += Api::call_api_method('auth.user.get', $user);
+	$user += Api::call('auth.user.get', $user);
 }
 catch(Exception $e)
 {
@@ -34,9 +34,9 @@ catch(Exception $e)
 $form_tpl = $form->render($user);
 
 // load all existing grants and user's grants and user's entities
-$grants   = current(Api::call_api_method('auth.grant.list'));
-$granted  = current(Api::call_api_method('auth.grant.list', $user));
-$entities = current(Api::call_api_method('auth.entity.list', $user));
+$grants   = current(Api::call('auth.grant.list'));
+$granted  = current(Api::call('auth.grant.list', $user));
+$entities = current(Api::call('auth.entity.list', $user));
 
 // transform couple ['grant' => 'X', 'name' => 'Y'] to ['X' => 'Y']
 // array_combine work only on populated array

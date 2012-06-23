@@ -21,7 +21,7 @@ class Admin
 
 	public static function template_widget(Event $event)
 	{
-		$result = Api::call_api_method('photo.count', array());
+		$result = Api::call('photo.count');
 
 		$count  = $result['total'];
 

@@ -27,16 +27,16 @@ $pager   = array('page' => $photoPage, 'max-per-page' => 10);
 $sort    = array('publish-date' => 'desc');
 $request = compact('fields', 'pager', 'sort');
 
-$photos  = Api::call_api_method('photo.list', $request);
+$photos  = Api::call('photo.list', $request);
 
 $is_upload = true;
 
 // if user does not have a right access API Ungranted exception is thrown
-// and cactched by Api::call_api_method.
+// and cactched by Api::call.
 // In this case we disable upload
 try
 {
-	$msize = Api::call_api_method('upload.max-size');
+	$msize = Api::call('upload.max-size');
 }
 catch(Exception $e)
 {

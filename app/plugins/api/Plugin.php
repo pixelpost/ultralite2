@@ -276,13 +276,13 @@ class Plugin implements PluginInterface
 	}
 
 	/**
-	 * Make a call to a Api methode
+	 * Make a call to a Api method
 	 *
 	 * @param  string $method
 	 * @param  array  $request
 	 * @return array
 	 */
-	public static function call_api_method($method, $request = array())
+	public static function call($method, $request = array())
 	{
 		$method = 'api.' . $method;
 

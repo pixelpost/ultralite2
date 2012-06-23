@@ -30,7 +30,7 @@ if (!isset(self::$valid_mime[$type]))
 }
 
 // Test cohesion between file size and chunks number
-extract(Api::call_api_method('upload.max-size')); // set $max_size
+extract(Api::call('upload.max-size')); // set $max_size
 
 $file_max_size = $max_size * $chunks * 3 / 4; // 3/4 is base64 -> bytes
 

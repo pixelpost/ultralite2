@@ -3,6 +3,7 @@
 namespace pixelpost\plugins\photo;
 
 use pixelpost\core\Filter,
+	pixelpost\plugins\api\Plugin as Api,
 	pixelpost\plugins\api\Exception as ApiError,
 	pixelpost\plugins\auth\Plugin as Auth;
 
@@ -32,7 +33,7 @@ switch($size)
 // prepare your request data
 $request = array('id' => $id, 'fields' => array('filename'));
 
-$response = pixelpost\plugins\api\Plugin::call_api_method($request);
+$response = Api::call($request);
 
 // retrieve the photoId filename
 $filename = $response['filename'];
