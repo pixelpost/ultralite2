@@ -82,15 +82,28 @@ class Plugin implements PluginInterface
 		define('API_URL',   WEB_URL . $conf->pixelpost->api   . '/', true);
 		define('ADMIN_URL', WEB_URL . $conf->pixelpost->admin . '/', true);
 
-		// parse the http request
-		assert('pixelpost\core\Log::info("(pixelpost) Web request creation")');
+		if (PHP_SAPI == 'cli')
+		{
+			$argc = $_SERVER['argc'];
+			$argv = $_SERVER['argv'];
 
-		$request = Request::create()->set_userdir(Config::create()->userdir)->auto();
+			// send the event as we have a new cli request
+			assert('pixelpost\core\Log::info("(pixelpost) Handle: php %s", implode(" ", $argv))');
 
-		// send the event as we have a new http request
-		assert('pixelpost\core\Log::info("(pixelpost) Handle %s", $request->get_request_url())');
+			$event = Event::signal('cli.new', compact('argc', 'argv'));
+		}
+		else
+		{
+			// parse the http request
+			assert('pixelpost\core\Log::info("(pixelpost) Web request creation")');
 
-		$event = Event::signal('http.new', compact('request'));
+			$request = Request::create()->set_userdir(Config::create()->userdir)->auto();
+
+			// send the event as we have a new http request
+			assert('pixelpost\core\Log::info("(pixelpost) Handle: %s", $request->get_request_url())');
+
+			$event = Event::signal('http.new', compact('request'));
+		}
 	}
 
 	public static function http(Event $event)
