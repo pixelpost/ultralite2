@@ -2,9 +2,11 @@
 
 namespace pixelpost\plugins\photo;
 
-use pixelpost\core\Template,
+use Exception,
+	pixelpost\core\Template,
 	pixelpost\core\Filter,
-	pixelpost\plugins\api\Plugin as Api;
+	pixelpost\plugins\api\Plugin as Api,
+	pixelpost\plugins\api\Exception\Ungranted;
 
 // retrieve the page number of paginated photo list
 $urlParams = $event->params + array('page:1');
@@ -26,10 +28,28 @@ $sort    = array('publish-date' => 'desc');
 $request = compact('fields', 'pager', 'sort');
 
 $photos  = Api::call_api_method('photo.list', $request);
-$msize   = Api::call_api_method('upload.max-size');
+
+$is_upload = true;
+
+// if user does not have a right access API Ungranted exception is thrown
+// and cactched by Api::call_api_method.
+// In this case we disable upload
+try
+{
+	$msize = Api::call_api_method('upload.max-size');
+}
+catch(Exception $e)
+{
+	if ($e->getPrevious() instanceof Ungranted)
+	{
+		$msize = array('max_size' => 0);
+		$is_upload = false;
+	}
+}
 
 // load the template
 $tpl = Template::create()
 	->assign('photos', $photos['photo'])
+	->assign('is_upload', $is_upload)
 	->assign('post_max_size', $msize['max_size'])
 	->publish('photo/tpl/admin/home.tpl');

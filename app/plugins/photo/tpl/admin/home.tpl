@@ -8,13 +8,16 @@
 
 
 {% block Js %}
+{% if is_upload %}
 <script src="{{ 'photo::js/dropbox.js'|asset }}"></script>
 <script>
 	PP_DROPBOX_MAX_SIZE = {{ post_max_size }};
 </script>
+{% endif %}
 {% endblock %}
 
 {% block Content %}
+{% if is_upload %}
 <div id="dropbox">
 	<span id="droplabel">Drop files here…</span>
 	<div id="dropaction">
@@ -24,6 +27,7 @@
 	<a id="dropselect" href="#">…or select a file.</a>
 	<input id="dropfiles" accept="image/*" type="file" multiple>
 </div>
+{% endif %}
 
 <ul class="thumbnails">
 	{% for photo in photos %}
