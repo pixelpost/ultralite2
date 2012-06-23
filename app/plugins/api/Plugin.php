@@ -52,7 +52,7 @@ class Plugin implements PluginInterface
 		$pp    = 'pixelpost\plugins\pixelpost\Plugin';
 
 		Event::register_list(array(
-			array('http.api',                  $self . '::api_request'),
+			array('http.api',                  $self . '::http'),
 			array('admin.api',                 $pp   . '::route'),
 			array('admin.api.bridge',          $self . '::bridge'),
 			array('admin.template.js',         $self . '::admin_js'),
@@ -91,7 +91,7 @@ class Plugin implements PluginInterface
 	 * @param  pixelpost\core\Event $event
 	 * @return bool
 	 */
-	public static function api_request(Event $event)
+	public static function http(Event $event)
 	{
 		// retreive the format in which the request is sended
 		$format = array_shift($event->params);

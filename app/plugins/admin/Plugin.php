@@ -51,7 +51,7 @@ class Plugin implements PluginInterface
 			// api events
 			array('api.admin.version',          $api  . '::api_version'),
 			// admin web interface
-			array('http.admin',                 $self . '::admin_router'),
+			array('http.admin',                 $self . '::http_router'),
 			array('admin.phpinfo',              $self . '::phpinfo'),
 			array('admin.index',                $page . '::home'),
 			array('admin.404',                  $page . '::404'),
@@ -87,7 +87,7 @@ class Plugin implements PluginInterface
 	 * @param  pixelpost\core\Event $event
 	 * @return bool
 	 */
-	public static function admin_router(Event $event)
+	public static function http_router(Event $event)
 	{
 		$event->set_name('admin');
 
