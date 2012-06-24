@@ -66,12 +66,12 @@ else
 $template = (count($warnings) > 0) ? 'step1-fail.tpl' : 'step1-form.tpl';
 
 $tpl = pixelpost\core\Template::create();
-
 $tpl->set_cache_raw_template(false);
 $tpl->set_template_path(APP_PATH . '/setup/tpl');
 
-$tpl->warnings  = $warnings;
-$tpl->phpTZ     = $phpTZ;
-$tpl->timezones = DateTimeZone::listIdentifiers();
+$tpl->use_public = false;
+$tpl->warnings   = $warnings;
+$tpl->phpTZ      = $phpTZ;
+$tpl->timezones  = DateTimeZone::listIdentifiers();
 
 $tpl->publish($template);

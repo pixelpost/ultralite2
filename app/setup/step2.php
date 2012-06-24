@@ -15,8 +15,10 @@ try
 	$post     = $request->get_post();
 	$userdir  = $request->get_params();
 
+	if (PHAR) array_pop($userdir); // remove index.php
+
 	array_pop($userdir); // remove setup
-	array_pop($userdir); // remove app
+	array_pop($userdir); // remove app (or pixelpost.phar.php)
 
 	$userdir  = implode('/', $userdir);
 	$base_url = $request->set_userdir($userdir)->get_base_url();
@@ -74,10 +76,14 @@ try
 	$rollbackTo = 5;
 
 	// copy the /index.php file
-	$src = APP_PATH  . '/setup/samples/index_sample.php';
-	$dst = ROOT_PATH . '/index.php';
+	$file = PHAR ? basename(Phar::running()) : 'app/app.php';
+	$dst  = ROOT_PATH . '/index.php';
+	$tpl  = core\Template::create();
+	$tpl->set_cache_raw_template(false);
+	$tpl->set_template_path(APP_PATH . '/setup/samples');
+	$tpl->assign('file', $file);
 
-	if (copy($src, $dst) == false)
+	if (file_put_contents($dst, $tpl->render('index_sample.php')) == false)
 	{
 		throw new Exception(sprintf('Cannot copy `%s` to `%s`.', $src, $dst));
 	}
@@ -150,10 +156,15 @@ catch(Exception $e)
 	if ($rollbackTo >= 1) rmdir(PRIV_PATH);
 }
 
-$tpl = core\Template::create()->set_cache_raw_template(false)->set_template_path(__DIR__ . '/tpl');
+$template = ($error != '') ? 'step2-fail.tpl' : 'step2-success.tpl';
 
-$tpl->error = $error;
-$tpl->data  = core\Filter::array_to_object($post);
-$tpl->home  = ADMIN_URL;
+$tpl = core\Template::create();
+$tpl->set_cache_raw_template(false);
+$tpl->set_template_path(APP_PATH . '/setup/tpl');
 
-$tpl->publish(($error != '') ? 'step2-fail.tpl' : 'step2-success.tpl');
+$tpl->use_public = ($error == '');
+$tpl->home       = ADMIN_URL;
+$tpl->data       = core\Filter::array_to_object($post);
+$tpl->error      = $error;
+
+$tpl->publish($template);
