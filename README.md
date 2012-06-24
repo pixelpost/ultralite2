@@ -20,7 +20,7 @@ Setup & Configuration
 ---------------------
 
 1. Copy the `app` folder in your web directory.
-2. Launch the install script `http://www.example.com/app/install.php`.
+2. Launch the install script `http://www.example.com/app/setup/`.
 3. Enjoy!
 
 License & Copyright

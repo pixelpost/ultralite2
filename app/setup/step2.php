@@ -15,13 +15,13 @@ try
 	$post     = $request->get_post();
 	$userdir  = $request->get_params();
 
-	array_pop($userdir); // remove install.php
+	array_pop($userdir); // remove setup
 	array_pop($userdir); // remove app
 
 	$userdir  = implode('/', $userdir);
 	$base_url = $request->set_userdir($userdir)->get_base_url();
 
-	// need ADMIN_URL constant for webAuth
+	// need ADMIN_URL constant for WebAuth class (see: plugin auth)
 	define('ADMIN_URL', $base_url . 'admin/');
 
 	// create the /private directory

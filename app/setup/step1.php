@@ -4,7 +4,7 @@ $warnings = array();
 
 if ($isConfFileExists)
 {
-	$warnings[] = 'Found an existing config file, please run the update.php script';
+	$warnings[] = 'Found an existing config file, please run the app.php script';
 }
 else
 {
@@ -17,25 +17,25 @@ else
 	// check if private folder already exists
 	if (file_exists(PRIV_PATH))
 	{
-		$warnings[] = '`' . PRIV_PATH . '` already exists (config file and database, will not be created).';
+		$warnings[] = '`' . PRIV_PATH . '` already exists: '
+		            . 'config file and database, will not be created.';
 	}
 
 	// check if public folder already exists
 	if (file_exists(PUB_PATH))
 	{
-		$warnings[] = '`' . PUB_PATH . '` already exists (files in it will be exposed on internet).';
+		$warnings[] = '`' . PUB_PATH . '` already exists: '
+					. 'files in it will be exposed on internet.';
 	}
 
 	// check if a .htaccess file allready exists
 	if (file_exists(ROOT_PATH . '/.htaccess'))
 	{
-		$messageVeryLong  = '/.htaccess` already exists: '
-						  . 'we cannot install the mod_rewrite rules, '
-						  . 'and secure your private data... '
-						  . ' Take a look at the `app/setup/samples/htaccess_sample` '
-						  . ' file for manual install.';
-
-		$warnings[] = '`' . ROOT_PATH . $messageVeryLong;
+		$warnings[] = '`' . ROOT_PATH . '/.htaccess` already exists: '
+					. 'we cannot install the mod_rewrite rules, '
+					. 'and secure your private data... '
+					. 'Take a look at the `app/setup/samples/htaccess_sample` '
+					. 'file for manual install.';
 	}
 
 	// check if GD is installed in version 2
@@ -67,11 +67,11 @@ $template = (count($warnings) > 0) ? 'step1-fail.tpl' : 'step1-form.tpl';
 
 $tpl = pixelpost\core\Template::create();
 
-$tpl->set_cache_raw_template(false)->set_template_path(__DIR__ . '/tpl');
+$tpl->set_cache_raw_template(false);
+$tpl->set_template_path(APP_PATH . '/setup/tpl');
 
 $tpl->warnings  = $warnings;
 $tpl->phpTZ     = $phpTZ;
 $tpl->timezones = DateTimeZone::listIdentifiers();
 
 $tpl->publish($template);
-

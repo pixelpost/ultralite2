@@ -5,7 +5,7 @@
 <p>
 	Pixelpost will be installed in two minutes...
 </p>
-<form class="form-horizontal" method="POST" accept-charset="utf-8" action="install.php?step=2">
+<form class="form-horizontal" method="POST" accept-charset="utf-8" action="?step=2">
 	<fieldset>
 		<legend>Configuration</legend>
 		<div class="control-group">

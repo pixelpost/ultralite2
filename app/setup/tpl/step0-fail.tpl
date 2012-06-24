@@ -3,8 +3,8 @@
 	<head>
 		<title>Pixelpost Setup</title>
 		<meta charset="utf-8">
-		<link rel="stylesheet" href="plugins/pixelpost/public/asset/bootstrap.min.css">
-		<link rel="stylesheet" href="plugins/pixelpost/public/asset/bootstrap-responsive.min.css">
+		<link rel="stylesheet" href="../plugins/pixelpost/public/asset/bootstrap.min.css">
+		<link rel="stylesheet" href="../plugins/pixelpost/public/asset/bootstrap-responsive.min.css">
 	</head>
 	<body lang="en" class="container-fluid">
 		<h1 class="page-header">Sorry</h1>
