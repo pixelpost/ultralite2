@@ -22,13 +22,19 @@ Setup & Configuration
 ## Classic method
 
 1. Copy the `app` folder in your web directory.
-2. Launch the install script `http://www.example.com/app/setup/`.
+2. Launch the install script `http://www.example.com/app/setup/index.php`.
+3. Enjoy!
+
+## Command line method
+
+1. Copy the `app` folder in your web directory.
+2. Execute the command line `php app/setup/cli.php`.
 3. Enjoy!
 
 ## Phar method
 
-1. Copy the `pixelpost.phar.php` file in your web directory.
-2. Launch the install script `http://www.example.com/pixelpost.phar.php`.
+1. Copy the `lite.phar.php` file in your web directory.
+2. Launch the archive `http://www.example.com/lite.phar.php`.
 3. Enjoy!
 
 Create a Phar archive

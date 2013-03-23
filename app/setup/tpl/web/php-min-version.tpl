@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Pixelpost Setup</title>
+		<title>Pixelpost 2 Setup</title>
 		<meta charset="utf-8">
 		<link rel="stylesheet" href="../plugins/pixelpost/public/asset/bootstrap.min.css">
 		<link rel="stylesheet" href="../plugins/pixelpost/public/asset/bootstrap-responsive.min.css">

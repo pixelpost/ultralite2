@@ -20,8 +20,9 @@ ini_set('html_errors',                'off');
 ini_set('display_errors',             'stdout');
 
 // A little of constant creation
-defined('PHAR')      or define('PHAR',      false,                  true);
 defined('VERSION')   or define('VERSION',   '0.0.1',                true);
+defined('PHAR')      or define('PHAR',      false,                  true);
+defined('CLI')       or define('CLI',       PHP_SAPI == 'cli',      true);
 defined('ROOT_PATH') or define('ROOT_PATH', dirname(__DIR__),       true);
 defined('APP_PATH')  or define('APP_PATH',  ROOT_PATH . '/app',     true);
 defined('CORE_PATH') or define('CORE_PATH', APP_PATH  . '/core',    true);
@@ -29,6 +30,7 @@ defined('PLUG_PATH') or define('PLUG_PATH', APP_PATH  . '/plugins', true);
 defined('PUB_PATH')  or define('PUB_PATH',  ROOT_PATH . '/public',  true);
 defined('PRIV_PATH') or define('PRIV_PATH', ROOT_PATH . '/private', true);
 defined('LOG_FILE')  or define('LOG_FILE',  PRIV_PATH . '/log',     true);
+defined('CONF_FILE') or define('CONF_FILE', PRIV_PATH . '/config',  true);
 
 // A little of error handling
 set_error_handler(function ($errno, $errstr, $errfile, $errline)

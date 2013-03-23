@@ -1,8 +1,11 @@
 <?php
+/**
+ * @return array of string all detected warnings.
+ */
 
 $warnings = array();
 
-if ($isConfFileExists)
+if (file_exists(CONF_FILE))
 {
 	$warnings[] = 'Found an existing config file, please run the app.php script';
 }
@@ -44,7 +47,7 @@ else
 		$warnings[] = 'GD 2 library is not installed.';
 	}
 
-	if (GD_MAJOR_VERSION < 2)
+	if (defined('GD_MAJOR_VERSION') && GD_MAJOR_VERSION < 2)
 	{
 		$warnings[] = 'GD library is too old. You need version 2.0.0 or later. '
 		            . 'Your current GD version is ' . GD_VERSION . '.';
@@ -63,15 +66,4 @@ else
 	}
 }
 
-$template = (count($warnings) > 0) ? 'step1-fail.tpl' : 'step1-form.tpl';
-
-$tpl = pixelpost\core\Template::create();
-$tpl->set_cache_raw_template(false);
-$tpl->set_template_path(APP_PATH . '/setup/tpl');
-
-$tpl->use_public = false;
-$tpl->warnings   = $warnings;
-$tpl->phpTZ      = $phpTZ;
-$tpl->timezones  = DateTimeZone::listIdentifiers();
-
-$tpl->publish($template);
+return $warnings;

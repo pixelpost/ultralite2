@@ -1,7 +1,16 @@
 <?php
+/**
+ * Don't forget to provided variables:
+ *
+ * @var $request pixelpost\core\Request The setup url
+ *
+ * before include this script
+ *
+ * @return string Error message, empty string if all is Ok.
+ */
 
 use pixelpost\core,
-	pixelpost\setup\DependencyManager as DM,
+	pixelpost\setup\install\DependencyManager as DM,
 	pixelpost\plugins\auth,
 	pixelpost\plugins\photo;
 
@@ -11,7 +20,6 @@ try
 	$rollbackTo = 0;
 
 	// Load the request and retrieve step1 form and userdir in url data
-	$request  = core\Request::create()->auto();
 	$post     = $request->get_post();
 	$userdir  = $request->get_params();
 
@@ -76,14 +84,14 @@ try
 	$rollbackTo = 5;
 
 	// copy the /index.php file
-	$file = PHAR ? basename(Phar::running()) : 'app/app.php';
-	$dst  = ROOT_PATH . '/index.php';
-	$tpl  = core\Template::create();
-	$tpl->set_cache_raw_template(false);
-	$tpl->set_template_path(APP_PATH . '/setup/samples');
-	$tpl->assign('file', $file);
+	$file  = PHAR ? basename(Phar::running()) : 'app/app.php';
+	$dst   = ROOT_PATH . '/index.php';
+	$index = core\Template::create()
+		->set_cache_raw_template(false)
+		->set_template_path(APP_PATH . '/setup/samples')
+		->assign('file', $file);
 
-	if (file_put_contents($dst, $tpl->render('index_sample.php')) == false)
+	if (file_put_contents($dst, $index->render('index_sample.php')) == false)
 	{
 		throw new Exception(sprintf('Cannot copy `%s` to `%s`.', $src, $dst));
 	}
@@ -95,8 +103,8 @@ try
 
 	$rollbackTo = 7;
 
-  // Load config (must be called before plugin detection)
-	$conf = core\Config::load(PRIV_PATH . '/config.json');
+	// Load config (must be called before plugin detection)
+	$conf = core\Config::load(CONF_FILE);
 
 	// detect all plugins already in the package (and store the list in conf)
 	core\Plugin::detect();
@@ -114,8 +122,9 @@ try
 
 	// create the install plugin order
 	$manager = new DM($conf->packaged);
+	$addons  = $manager->process();
 
-	foreach($manager->process() as $plugin)
+	foreach($addons as $plugin)
 	{
 		if (core\Plugin::active($plugin)) continue;
 
@@ -140,31 +149,26 @@ try
 	}
 
 	// authentificate the user
-	auth\WebAuth::register($userName, $userPass, $userId, $request->get_host());
+	if (!CLI) auth\WebAuth::register($userName, $userPass, $userId, $request->get_host());
 }
 catch(Exception $e)
 {
 	$error = $e->getMessage();
 
-	if ($rollbackTo >= 8) photo\Plugin::uninstall();
-	if ($rollbackTo >= 7) unlink(PRIV_PATH . '/sqlite3.db');
+	if ($rollbackTo >= 8)
+	{
+		foreach (array_reverse($addons) as $plugin)
+		{
+			core\Plugin::uninstall($plugin);
+		}
+	}
+	if ($rollbackTo >= 7) core\Db::delete();
 	if ($rollbackTo >= 6) unlink(ROOT_PATH . '/index.php');
 	if ($rollbackTo >= 5) unlink(PRIV_PATH . '/.htaccess');
 	if ($rollbackTo >= 4) unlink(ROOT_PATH . '/.htaccess');
-	if ($rollbackTo >= 3) unlink(PRIV_PATH . '/config.json');
+	if ($rollbackTo >= 3) unlink(CONF_FILE);
 	if ($rollbackTo >= 2) rmdir(PUB_PATH);
 	if ($rollbackTo >= 1) rmdir(PRIV_PATH);
 }
 
-$template = ($error != '') ? 'step2-fail.tpl' : 'step2-success.tpl';
-
-$tpl = core\Template::create();
-$tpl->set_cache_raw_template(false);
-$tpl->set_template_path(APP_PATH . '/setup/tpl');
-
-$tpl->use_public = ($error == '');
-$tpl->home       = ADMIN_URL;
-$tpl->data       = core\Filter::array_to_object($post);
-$tpl->error      = $error;
-
-$tpl->publish($template);
+return $error;

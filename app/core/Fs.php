@@ -30,7 +30,7 @@ class Fs
 
 		$len = mb_strlen($src);
 
-		foreach(new RII(new RDI($src), RII::LEAVES_ONLY) as $file)
+		foreach(new RII(new RDI($src, RDI::SKIP_DOTS), RII::LEAVES_ONLY) as $file)
 		{
 			$path = $dest . mb_substr($file->getPath(), $len);
 
@@ -69,7 +69,7 @@ class Fs
 
 		assert('pixelpost\core\Log::info("(Fs) delete folder %s", $dir)');
 
-		foreach(new RII(new RDI($dir), RII::CHILD_FIRST) as $file)
+		foreach(new RII(new RDI($dir, RDI::SKIP_DOTS), RII::CHILD_FIRST) as $file)
 		{
 			$isDir = $file->isDir();
 			$file  = $file->getPathName();

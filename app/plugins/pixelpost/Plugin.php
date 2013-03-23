@@ -82,7 +82,7 @@ class Plugin implements PluginInterface
 		define('API_URL',   WEB_URL . $conf->pixelpost->api   . '/', true);
 		define('ADMIN_URL', WEB_URL . $conf->pixelpost->admin . '/', true);
 
-		if (PHP_SAPI == 'cli')
+		if (CLI)
 		{
 			$argc = $_SERVER['argc'];
 			$argv = $_SERVER['argv'];

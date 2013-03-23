@@ -1,6 +1,6 @@
 <?php
 
-namespace pixelpost\setup;
+namespace pixelpost\setup\install;
 
 use Exception,
 	pixelpost\core\Plugin;

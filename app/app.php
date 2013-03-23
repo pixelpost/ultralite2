@@ -10,7 +10,7 @@ use pixelpost\core\Config,
 require_once 'bootstrap.php';
 
 // We need to parse the config file and set the configured environnement
-$conf = Config::load(PRIV_PATH . '/config.json');
+$conf = Config::load(CONF_FILE);
 
 // Debug can also be switched on by setting the Apache envrionment
 // variable `APPLICATION_ENV` to `development` in .htaccess

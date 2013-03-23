@@ -4,7 +4,7 @@
 <div class="row-fluid">
 	<h1 class="page-header">Welcome! <small>Pixelpost 2 installation</small></h1>
 	<p>
-		Pixelpost will be installed in two minutes...
+		Pixelpost {{ @VERSION }} will be installed in two minutes...
 	</p>
 	<div class="alert alert-block">
 		<h2 class="alert-heading">Please note:</h2>
@@ -15,7 +15,7 @@
 		</ul>
 	</div>
 	<p>
-		<a class="btn btn-primary btn-large" href="install.php?step=1">VERIFY AGAIN</a>
+		<a class="btn btn-primary btn-large" href="index.php">VERIFY AGAIN</a>
 	</p>
 </div>
 {% endblock %}

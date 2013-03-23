@@ -8,6 +8,6 @@
 </p>
 
 <p>
-	<a class="btn btn-primary btn-large" href="{{ home }}">Finish</a>
+	<a class="btn btn-primary btn-large" href="{{ @ADMIN_URL }}">Finish</a>
 </p>
 {% endblock %}

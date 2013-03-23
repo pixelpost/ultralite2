@@ -3,9 +3,9 @@
 {% block Content %}
 <h1 class="page-header">Welcome! <small>Pixelpost 2 installation</small></h1>
 <p>
-	Pixelpost will be installed in two minutes...
+	Pixelpost {{ @VERSION }} will be installed in two minutes...
 </p>
-<form class="form-horizontal" method="POST" accept-charset="utf-8" action="?step=2">
+<form class="form-horizontal" method="POST" accept-charset="utf-8">
 	<fieldset>
 		<legend>Configuration</legend>
 		<div class="control-group">

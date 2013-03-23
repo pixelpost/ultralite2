@@ -1,0 +1,1 @@
+Pixelpost version: {{ @VERSION }}

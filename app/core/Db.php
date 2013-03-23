@@ -33,7 +33,9 @@ class Db extends SQLite3
 	{
 		if (!is_null(static::$_instance)) throw Error::create(10);
 
-		$this->open(static::$_database ?: PRIV_PATH . '/sqlite3.db');
+		static::$_database = static::$_database ?: PRIV_PATH . '/sqlite3.db';
+
+		$this->open(static::$_database);
 
 		static::$_instance = $this;
 	}
@@ -55,6 +57,18 @@ class Db extends SQLite3
 	public static function create()
 	{
 		return static::$_instance ?: new static;
+	}
+
+	/**
+	 * Do the opposite of create()
+	 *
+	 * @return pixelpost\core\Db
+	 */
+	public static function delete()
+	{
+		static::$_instance->close();
+		static::$_instance = null;
+		unlink(static::$_database);
 	}
 
 	/**

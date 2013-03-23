@@ -20,7 +20,7 @@ define('PHAR',      true,                true);
 define('ROOT_PATH', __DIR__,             true);
 define('APP_PATH',  'phar://$app_alias', true);
 
-require APP_PATH . '/bootstrap.php';
+require_once APP_PATH . '/bootstrap.php';
 
 if (file_exists(PRIV_PATH . '/config.json'))
 {
@@ -28,13 +28,13 @@ if (file_exists(PRIV_PATH . '/config.json'))
 }
 else
 {
-	if (PHP_SAPI != 'cli')
+	if (CLI)
 	{
-		Phar::webPhar('$app_alias', '/setup/index.php');
+		require APP_PATH . '/setup/cli.php';
 	}
 	else
 	{
-		echo 'Welcome to pixelpost';
+		Phar::webPhar('$app_alias', '/setup/index.php');
 	}
 }
 
