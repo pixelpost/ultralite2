@@ -1,11 +1,10 @@
 <?php
 
-namespace app\plugins\photo;
+namespace pixelpost\plugins\upload;
 
 use pixelpost\plugins\auth\Plugin   as Auth,
 	pixelpost\plugins\api\Plugin    as Api,
 	pixelpost\plugins\api\Exception as ApiError;
-
 
 // grants checks
 if (!Auth::is_granted('write')) throw new ApiError\Ungranted('upload.send');
@@ -27,11 +26,8 @@ if ($is_id === false) throw new ApiError\FieldNotValid('id',   'not a valid id')
 if ($chunk === false) throw new ApiError\FieldNotValid('id',   'not an integer');
 if ($data  === false) throw new ApiError\FieldNotValid('data', 'not base64');
 
-// where are stored uploads
-$path = PRIV_PATH . '/upload';
-
 // the metadata file name
-$fname  = $path . '/' . $id;
+$fname  = Plugin::get_upload_dir() . '/' . $id;
 
 // where are stored the chunks
 $fchunk = $fname . '_chunks/chunk_' . $chunk;

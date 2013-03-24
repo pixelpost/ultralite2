@@ -67,8 +67,6 @@ class Plugin implements PluginInterface
 		mkdir($path . '/resized' , 0775);
 		mkdir($path . '/thumb'   , 0775);
 
-		mkdir(PRIV_PATH . '/upload', 0775);
-
 		return true;
 	}
 
@@ -77,7 +75,6 @@ class Plugin implements PluginInterface
 		$conf = Config::create();
 
 		$photo_dir  = ROOT_PATH . '/' . $conf->plugin_photo->directory;
-		$upload_dir = PRIV_PATH . '/upload';
 
 		unset($conf->plugin_photo);
 
@@ -86,7 +83,6 @@ class Plugin implements PluginInterface
 		Model::table_delete();
 
 		Fs::delete($photo_dir);
-		Fs::delete($upload_dir);
 
 		return true;
 	}
@@ -115,10 +111,6 @@ class Plugin implements PluginInterface
 			array('api.photo.size',        $api    . '::photo_size'),
 			array('api.photo.config.get',  $api    . '::config_get'),
 			array('api.photo.config.set',  $api    . '::config_set'),
-			array('api.upload.init',       $api    . '::upload_init'),
-			array('api.upload.send',       $api    . '::upload_send'),
-			array('api.upload.end',        $api    . '::upload_end'),
-			array('api.upload.max-size',   $api    . '::upload_max_size'),
 			// admin web interface
 			array('admin.photos',                $pp     . '::route'),
 			array('admin.photos.index',          $admin  . '::page_index'),

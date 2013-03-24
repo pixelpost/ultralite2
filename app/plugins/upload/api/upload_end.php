@@ -1,6 +1,6 @@
 <?php
 
-namespace app\plugins\photo;
+namespace pixelpost\plugins\upload;
 
 use pixelpost\plugins\auth\Plugin   as Auth,
 	pixelpost\plugins\api\Plugin    as Api,
@@ -22,7 +22,7 @@ $is_id = (bool) preg_match('/^up_[\w\._-]+$/', $id);
 if ($is_id === false) throw new ApiError\FieldNotValid('id', 'not a valid id');
 
 // where are stored uploads
-$path = PRIV_PATH . '/upload';
+$path = Plugin::get_upload_dir();
 
 // the metadata file name
 $fname  = $path . '/' . $id;

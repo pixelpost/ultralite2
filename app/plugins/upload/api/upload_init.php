@@ -1,6 +1,6 @@
 <?php
 
-namespace app\plugins\photo;
+namespace pixelpost\plugins\upload;
 
 use pixelpost\plugins\auth\Plugin   as Auth,
 	pixelpost\plugins\api\Plugin    as Api,
@@ -20,9 +20,8 @@ $name   = trim($event->request->name);
 $size   = filter_var($event->request->size,   FILTER_VALIDATE_INT);
 $chunks = filter_var($event->request->chunks, FILTER_VALIDATE_INT);
 
-if ($size === false)   throw new ApiError\FieldNotValid('size', 'not an integer');
+if ($size   === false) throw new ApiError\FieldNotValid('size',   'not an integer');
 if ($chunks === false) throw new ApiError\FieldNotValid('chunks', 'not an integer');
-
 
 if (!isset(self::$valid_mime[$type]))
 {
@@ -42,11 +41,8 @@ if ($file_max_size < $size)
 	throw new ApiError\FieldNotValid('size', $msg);
 }
 
-// where are stored uploads
-$path = PRIV_PATH . '/upload';
-
 // the metadata filename
-$fname = tempnam($path, 'up_');
+$fname = tempnam(Plugin::get_upload_dir(), 'up_');
 
 // the file id
 $id = basename($fname);

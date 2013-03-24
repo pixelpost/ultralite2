@@ -1,4 +1,4 @@
-#dropbox {
+.dropbox {
     position: relative;
     margin-bottom:1em;
 	min-height: 3em;
@@ -9,31 +9,31 @@
 	color: #BBB;
 }
 
-#dropbox > div > img {
+.dropbox > div > img {
     margin:20px 10px;
 }
 
-#dropbox button {
+.dropbox button {
     display:none;
 }
 
-#droplabel {
+.droplabel {
 	font-size: 2em;
     line-height:3em;
 }
 
-#dropselect,
-#dropselect:link,
-#dropselect:hover {
+.dropselect,
+.dropselect:link,
+.dropselect:hover {
     font-size:0.8em;
     color:#DDD;
     text-decoration:underline;
     text-align:right;
 }
 
-#dropfiles { display: none; }
+.dropfiles { display: none; }
 
-#dropaction {
+.dropaction {
 	margin: 0 1em 1em 1em;
 	min-height:2.5em;
 }

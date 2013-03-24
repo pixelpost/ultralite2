@@ -3,12 +3,13 @@
 {% block Title %}Photos managment{% endblock %}
 
 {% block Css %}
-<link rel="stylesheet" href="{{ 'photo::css/admin.css'|asset }}">
+<link rel="stylesheet" href="{{ 'upload::dropbox.css'|asset }}">
 {% endblock %}
 
 
 {% block Js %}
 {% if is_upload %}
+<script src="{{ 'upload::dropbox.js'|asset }}"></script>
 <script src="{{ 'photo::js/dropbox.js'|asset }}"></script>
 <script>
 	PP_DROPBOX_MAX_SIZE = {{ post_max_size }};
