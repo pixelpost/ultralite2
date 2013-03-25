@@ -45,6 +45,7 @@ catch(Exception $e)
 		$msize = array('max_size' => 0);
 		$is_upload = false;
 	}
+	else throw $e;
 }
 
 // load the template
