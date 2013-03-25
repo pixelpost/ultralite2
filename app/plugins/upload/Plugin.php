@@ -3,6 +3,7 @@
 namespace pixelpost\plugins\upload;
 
 use pixelpost\core\Fs
+	pixelpost\core\Event,
 	pixelpost\core\PluginInterface;
 
 class Plugin implements PluginInterface
