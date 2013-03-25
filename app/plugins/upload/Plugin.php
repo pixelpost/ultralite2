@@ -2,9 +2,10 @@
 
 namespace pixelpost\plugins\upload;
 
-use pixelpost\core\Fs;
+use pixelpost\core\Fs
+	pixelpost\core\PluginInterface;
 
-class Plugin
+class Plugin implements PluginInterface
 {
 	const UPLOAD_DIR = 'upload';
 
