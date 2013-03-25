@@ -27,7 +27,7 @@ class PluginManager
 
 		if (Plug::detect())
 		{
-			$this->all = (array) $conf->plugins;
+			$this->all = (array) Config::create()->plugins;
 			$this->new = array_diff_key($this->all, $detected);
 		}
 	}
