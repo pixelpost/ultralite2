@@ -27,10 +27,17 @@ class Page
 
 	public static function template_nav_phpinfo(Event $event)
 	{
-		$event->response[] = Template::create()
-			  ->assign('url', 'phpinfo')
-			  ->assign('name', 'php info')
-			  ->render('admin/tpl/_menu.tpl');
+		if (DEBUG)
+		{
+			$event->response[] = Template::create()
+				  ->assign('url', 'phpinfo')
+				  ->assign('name', 'php info')
+				  ->render('admin/tpl/_menu.tpl');
+		}
+		else
+		{
+			$event->set_processed(false);
+		}
 	}
 
 	public static function template_nav(Event $event)

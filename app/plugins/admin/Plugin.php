@@ -63,10 +63,9 @@ class Plugin implements PluginInterface
 			array('admin.settings.cache-flush', $page . '::settings_cache-flush'),
 			array('admin.settings.plugin.admin',$page . '::about'),
 			array('admin.template.nav',         $page . '::template_nav', 200),
+			array('admin.template.nav',         $page . '::template_nav_phpinfo', 201),
 			array('admin.template.widget',      $page . '::template_widget', 200),
 		));
-
-		DEBUG and Event::register('admin.template.nav', $page . '::template_nav_phpinfo', 201);
 	}
 
 	public static function phpinfo(Event $event)
