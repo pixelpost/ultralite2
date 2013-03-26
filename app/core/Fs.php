@@ -103,4 +103,64 @@ class Fs
 
 		return $result;
 	}
+
+	/**
+	 * Write a file like file_put_contents() with an exclusive lock on the file.
+	 * Use $rename parameter to move the $file to its final destination, so
+	 * $file become a temp file and $rename the final file. This move is done
+	 * under the lock (this is why it is interesting to do it).
+	 *
+	 * @see pixelpost\core\Fs::lock_read()
+	 * @param string $file    The file name
+	 * @param string $content The file content
+	 * @param string $wait    True by default, if should wait for a lock or cancel the write.
+	 * @param string $rename  If provided, the file is renamed before the lock is released
+	 * @return bool           True if success else False
+	 */
+	public static function lock_write($file, $content, $wait = true, $rename = null)
+	{
+		if (false === $fp = fopen($file, 'cb')) return false;
+
+		$lock = flock($fp, ($wait) ? LOCK_EX : LOCK_EX | LOCK_NB);
+
+		if ($lock)
+		{
+			ftruncate($fp, 0);
+			fwrite($fp, $content);
+			fflush($fp);
+			if (!is_null($rename))
+			{
+				if (file_exists($rename)) unlink($rename);
+				rename($file, $rename);
+			}
+			flock($fp, LOCK_UN);
+		}
+
+		fclose($fp);
+		return $lock;
+	}
+
+	/**
+	 * Read a file like file_get_contents() with a share lock on the file.
+	 * This prevent to read a truncated file which is currently modified by
+	 * lock_write()
+	 *
+	 * @see pixelpost\core\Fs::lock_write()
+	 * @param string $file The file name
+	 * @return bool|string False or The file content
+	 */
+	public static function lock_read($file)
+	{
+		if (false === $fp = fopen($file, 'rb')) return false;
+
+		$lock = flock($fp, LOCK_SH, true);
+
+		if ($lock) $content = file_get_contents($file);
+
+		fclose($fp);
+
+		if ($lock) return $content;
+
+		return false;
+	}
 }
