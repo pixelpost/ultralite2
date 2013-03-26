@@ -31,6 +31,7 @@ defined('PUB_PATH')  or define('PUB_PATH',  ROOT_PATH . '/public',  true);
 defined('PRIV_PATH') or define('PRIV_PATH', ROOT_PATH . '/private', true);
 defined('LOG_FILE')  or define('LOG_FILE',  PRIV_PATH . '/log',     true);
 defined('CONF_FILE') or define('CONF_FILE', PRIV_PATH . '/config',  true);
+defined('BOOT_FILE') or define('BOOT_FILE', PRIV_PATH . '/boot',    true);
 
 // A little of error handling
 set_error_handler(function ($errno, $errstr, $errfile, $errline)

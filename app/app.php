@@ -3,6 +3,7 @@
 namespace pixelpost;
 
 use pixelpost\core\Config,
+	pixelpost\core\Fs,
 	pixelpost\core\Filter,
 	pixelpost\core\Plugin,
 	pixelpost\core\Event;
@@ -28,11 +29,18 @@ date_default_timezone_set($conf->timezone);
 
 assert('pixelpost\core\Log::info("(bootstrap) new process: %s",  PROCESS_ID)');
 assert('pixelpost\core\Log::debug("(bootstrap) VERSION: %s",     VERSION)');
+assert('pixelpost\core\Log::debug("(bootstrap) NOCONF: %s",      NOCONF)');
+assert('pixelpost\core\Log::debug("(bootstrap) PHAR: %s",        PHAR)');
+assert('pixelpost\core\Log::debug("(bootstrap) CLI: %s",         CLI)');
 assert('pixelpost\core\Log::debug("(bootstrap) ROOT_PATH: %s",   ROOT_PATH)');
 assert('pixelpost\core\Log::debug("(bootstrap) APP_PATH: %s",    APP_PATH)');
 assert('pixelpost\core\Log::debug("(bootstrap) CORE_PATH: %s",   CORE_PATH)');
 assert('pixelpost\core\Log::debug("(bootstrap) PLUG_PATH: %s",   PLUG_PATH)');
 assert('pixelpost\core\Log::debug("(bootstrap) PRIV_PATH: %s",   PRIV_PATH)');
+assert('pixelpost\core\Log::debug("(bootstrap) PUB_PATH: %s",    PUB_PATH)');
+assert('pixelpost\core\Log::debug("(bootstrap) LOG_FILE: %s",    LOG_FILE)');
+assert('pixelpost\core\Log::debug("(bootstrap) CONF_FILE: %s",   CONF_FILE)');
+assert('pixelpost\core\Log::debug("(bootstrap) BOOT_FILE: %s",   BOOT_FILE)');
 assert('pixelpost\core\Log::debug("(bootstrap) WEB_URL: %s",     WEB_URL)');
 assert('pixelpost\core\Log::debug("(bootstrap) CONTENT_URL: %s", CONTENT_URL)');
 
@@ -45,9 +53,9 @@ if (Filter::compare_version($conf->version, VERSION))
 }
 
 // Step 7. Registers activated plugins
-assert('pixelpost\core\Log::info("(bootstrap) plugin registration")');
+assert('pixelpost\core\Log::info("(bootstrap) read boot file")');
 
-Plugin::make_registration();
+Event::load(require BOOT_FILE);
 
 // Step 8. Send the signal that all is ready to go!
 assert('pixelpost\core\Log::info("(bootstrap) application starts")');

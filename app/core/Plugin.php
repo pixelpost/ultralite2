@@ -87,18 +87,33 @@ class Plugin
 		Filter::is_string($plugin);
 		Filter::is_string($state);
 
+		$invalid_boot = false;
+
 		switch ($state)
 		{
 			case static::STATE_UNINSTALLED : break;
-			case static::STATE_INACTIVE    : break;
-			case static::STATE_ACTIVE      : break;
+			case static::STATE_INACTIVE    : $invalid_boot = true; break;
+			case static::STATE_ACTIVE      : $invalid_boot = true; break;
 			default                        : throw new Error(6, array($state));
 		}
 
 		$conf = Config::create();
-		$conf->plugins->$plugin = $state;
+		$conf->addons->$addon = $state;
+		$conf->save();
 
-		return $conf->save();
+		if ($invalid_boot)
+		{
+			Event::clean();
+			static::make_registration();
+
+			$tmpfile = BOOT_FILE . '.tmp';
+			$state   = Event::save();
+			$content = sprintf('<?php return %s;', var_export($state, true));
+
+			Fs::lock_write($tmpfile, $content, false, BOOT_FILE);
+		}
+
+		return true;
 	}
 
 	/**
