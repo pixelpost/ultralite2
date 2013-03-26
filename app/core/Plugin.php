@@ -244,8 +244,6 @@ class Plugin
 	 */
 	public static function register($plugin)
 	{
-		require_once static::get_file($plugin);
-
 		return call_user_func(static::get_method($plugin, 'register'));
 	}
 
