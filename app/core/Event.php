@@ -61,6 +61,47 @@ class Event extends ArrayObject
 	}
 
 	/**
+	 * Save the current registred events in a list
+	 *
+	 * @see pixelpost\core\Event::load()
+	 * @return array The saved event list
+	 */
+	public static function save()
+	{
+		// sort all event
+		foreach(static::$_ordered as $eventName => $ordered)
+		{
+			if ($ordered) continue;
+
+			ksort(static::$_listen[$eventName]);
+			static::$_ordered[$eventName] = true;
+		}
+
+		return array(
+			'events'  => static::$_listen,
+			'ordered' => static::$_ordered,
+		);
+	}
+
+	/**
+	 * Reload a registred event list.
+	 *
+	 * @see pixelpost\core\Event::save()
+	 * @param  array $array The saved event list
+	 * @return bool         True if the saved list is loaded correctly
+	 */
+	public static function load(array $state)
+	{
+		if (!isset($state['events']))  return false;
+		if (!isset($state['ordered'])) return false;
+
+		static::$_listen  = $state['events'];
+		static::$_ordered = $state['ordered'];
+
+		return true;
+	}
+
+	/**
 	 * Register a callback method to an event name. This implies when a event is
 	 * thrown (see: signal()), the callback method is called with the event
 	 * class argument.
