@@ -14,7 +14,6 @@ use ArrayObject;
  */
 class Event extends ArrayObject
 {
-
 	/**
 	 * @var array containts the list of callback indexed by event name and priority.
 	 */
@@ -49,6 +48,16 @@ class Event extends ArrayObject
 	public static function create(array $data = array())
 	{
 		return new static($data);
+	}
+
+	/**
+	 * Remove all registred events
+	 *
+	 */
+	public static function clean()
+	{
+		static::$_listen  = array();
+		static::$_ordered = array();
 	}
 
 	/**
