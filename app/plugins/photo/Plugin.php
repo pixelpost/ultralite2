@@ -31,6 +31,7 @@ class Plugin implements PluginInterface
 			'pixelpost' => '0.0.1',
 			'api'       => '0.0.1',
 			'auth'      => '0.0.1',
+			'upload'    => '0.0.1',
 		);
 	}
 
