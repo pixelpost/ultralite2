@@ -56,6 +56,8 @@ class Event extends ArrayObject
 	 */
 	public static function clean()
 	{
+		assert('pixelpost\core\Log::info("(Event) clean")');
+
 		static::$_listen  = array();
 		static::$_ordered = array();
 	}
@@ -77,6 +79,8 @@ class Event extends ArrayObject
 			static::$_ordered[$eventName] = true;
 		}
 
+		assert('pixelpost\core\Log::debug("(Event) event state exported")');
+
 		return array(
 			'events'  => static::$_listen,
 			'ordered' => static::$_ordered,
@@ -94,6 +98,8 @@ class Event extends ArrayObject
 	{
 		if (!isset($state['events']))  return false;
 		if (!isset($state['ordered'])) return false;
+
+		assert('pixelpost\core\Log::info("(Event) load new state")');
 
 		static::$_listen  = $state['events'];
 		static::$_ordered = $state['ordered'];
